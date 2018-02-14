@@ -272,12 +272,7 @@ namespace TimeTableAutoCompleteTool
         }
 
 
-        //
-        //
         //以下为使用NPOI进行Excel操作
-        //
-        //
-
         private void SelectPath()
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
@@ -356,7 +351,8 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("J"))
                                 {//把车次表格先刷白去字
                                     if (!row.GetCell(j).ToString().Contains("由") &&
-                                        !row.GetCell(j).ToString().Contains("续"))
+                                        !row.GetCell(j).ToString().Contains("续") &&
+                                        !row.GetCell(j).ToString().Contains("开行"))
                                     {
                                         //去中文后再找
                                         row.GetCell(j).CellStyle = removeColors;
