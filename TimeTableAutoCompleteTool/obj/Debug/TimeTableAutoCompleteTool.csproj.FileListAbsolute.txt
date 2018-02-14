@@ -7,3 +7,9 @@ D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoComplete
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.dll
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OOXML.dll
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXml4Net.dll
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXmlFormats.dll
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.xml

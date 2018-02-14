@@ -38,6 +38,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.testTB = new System.Windows.Forms.RichTextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -46,9 +50,9 @@
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(36, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(263, 21);
+            this.label1.Size = new System.Drawing.Size(327, 21);
             this.label1.TabIndex = 0;
-            this.label1.Text = "1.将当日开行车次客调命令复制于此";
+            this.label1.Text = "1.将当日开行车次客调命令复制于下方文本框";
             // 
             // command_rTb
             // 
@@ -104,7 +108,7 @@
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.start_Btn.Location = new System.Drawing.Point(40, 402);
             this.start_Btn.Name = "start_Btn";
-            this.start_Btn.Size = new System.Drawing.Size(465, 65);
+            this.start_Btn.Size = new System.Drawing.Size(465, 49);
             this.start_Btn.TabIndex = 6;
             this.start_Btn.Text = "处理时刻表";
             this.start_Btn.UseVisualStyleBackColor = true;
@@ -125,7 +129,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label5.Location = new System.Drawing.Point(305, 23);
+            this.label5.Location = new System.Drawing.Point(359, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(200, 17);
             this.label5.TabIndex = 8;
@@ -133,18 +137,64 @@
             // 
             // testTB
             // 
-            this.testTB.Location = new System.Drawing.Point(511, 75);
+            this.testTB.Location = new System.Drawing.Point(540, 75);
             this.testTB.Name = "testTB";
-            this.testTB.Size = new System.Drawing.Size(465, 245);
+            this.testTB.Size = new System.Drawing.Size(246, 376);
             this.testTB.TabIndex = 9;
             this.testTB.Text = "";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label6.Location = new System.Drawing.Point(168, 341);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 17);
+            this.label6.TabIndex = 8;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label7.Location = new System.Drawing.Point(28, 472);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(486, 17);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "绿色为开行，红色为停开，白色为客调命令未包含车次。高峰/临客/周末在车次前含有标注";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.Location = new System.Drawing.Point(536, 44);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(186, 21);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "客调命令中提取出的车次";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.label9.Location = new System.Drawing.Point(553, 472);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(233, 17);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "意见反馈/Bug反馈请联系运转车间-罗思聪";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(977, 489);
+            this.ClientSize = new System.Drawing.Size(842, 498);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.testTB);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.start_Btn);
@@ -174,6 +224,10 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox testTB;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 

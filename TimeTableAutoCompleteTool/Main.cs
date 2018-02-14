@@ -7,6 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NPOI.SS.UserModel;
+//2003
+using NPOI.HSSF.UserModel;
+//2007以后
+using NPOI.XSSF.UserModel;
+using System.IO;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -14,14 +20,18 @@ namespace TimeTableAutoCompleteTool
     {
         private Boolean hasText = false;
         private Boolean hasFilePath = false;
+        private List<CommandModel> commandModel;
+        OpenFileDialog ExcelFile;
 
         public Main()
         {
+            
             InitializeComponent();
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
+            this.Text = "TrainTimetableAutoCompleteTool-基于客调命令的时刻表自动完成工具";
             start_Btn.Enabled = false;
         }
 
@@ -42,22 +52,6 @@ namespace TimeTableAutoCompleteTool
         private void importTimeTable_Btn_Click(object sender, EventArgs e)
         {
             SelectPath();
-        }
-
-        private void SelectPath()
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
-            openFileDialog1.InitialDirectory = "c:\\";
-            openFileDialog1.Filter = "Excel files (*.xls)|*.xls";
-            openFileDialog1.FilterIndex = 2;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                this.filePath_lbl.Text = openFileDialog1.FileName;     //显示文件路径 
-                hasFilePath = true;
-                startBtnCheck();
-            }
         }
 
         private void startBtnCheck()
@@ -181,6 +175,8 @@ namespace TimeTableAutoCompleteTool
                 commands = commands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
             }
             testTB.Text = commands;
+            commandModel = AllModels;
+            updateTimeTable();
         }
 
         private String removeUnuseableWord()
@@ -275,9 +271,161 @@ namespace TimeTableAutoCompleteTool
             return AllModels;
         }
 
+
+        //
+        //
+        //以下为使用NPOI进行Excel操作
+        //
+        //
+
+        private void SelectPath()
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
+            openFileDialog1.Filter = "Excel 2007 文件 (*.xlsx)|*.xlsx|Excel 2003 文件 (*.xls)|*.xls";
+            //openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
+            openFileDialog1.FilterIndex = 2;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                this.filePath_lbl.Text = openFileDialog1.FileName;     //显示文件路径 
+                hasFilePath = true;
+                ExcelFile = openFileDialog1;
+                startBtnCheck();
+            }
+        }
+
         private void updateTimeTable()
         {
-      
+            IWorkbook workbook = null;  //新建IWorkbook对象  
+            string fileName = ExcelFile.FileName;
+            try
+            {
+                FileStream fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
+                {
+                    workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                }
+                else if (fileName.IndexOf(".xls") > 0) // 2003版本  
+                {
+                    workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                }
+                
+                //两种表格样式
+                ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
+                stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
+                stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                ICellStyle normalTrainStyle = workbook.CreateCellStyle();
+                normalTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightGreen.Index;
+                normalTrainStyle.FillPattern = FillPattern.SolidForeground;
+                normalTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightGreen.Index;
+                normalTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                ICellStyle removeColors = workbook.CreateCellStyle();
+                removeColors.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                removeColors.FillPattern = FillPattern.SolidForeground;
+                removeColors.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                removeColors.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
+                IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                for (int i = 0; i < sheet.LastRowNum; i++)  //对工作表每一行  
+                {
+                    row = sheet.GetRow(i);   //row读入第i行数据  
+                    if (row != null)
+                    {
+                        for (int j = 0; j < row.LastCellNum; j++)  //对工作表每一列  
+                        {
+                            if (row.GetCell(j) != null)
+                            {
+                                if (row.GetCell(j).ToString().Contains("G") ||
+                                    row.GetCell(j).ToString().Contains("D") ||
+                                    row.GetCell(j).ToString().Contains("C") ||
+                                    row.GetCell(j).ToString().Contains("J"))
+                                {//把车次表格先刷白去字
+                                    if (!row.GetCell(j).ToString().Contains("由") &&
+                                        !row.GetCell(j).ToString().Contains("续"))
+                                    {
+                                        //去中文后再找
+                                        row.GetCell(j).CellStyle = removeColors;
+                                        row.GetCell(j).SetCellValue(System.Text.RegularExpressions.Regex.Replace(row.GetCell(j).ToString(), @"[\u4e00-\u9fa5]", ""));
+                                    }
+                                    else
+                                    {
+                                        //这个格子不是要找的
+                                        continue;
+                                    }
+                                    foreach (CommandModel model in commandModel)
+                                    {//根据客调命令刷单元格颜色
+                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber))
+                                        {
+                                            if (model.streamStatus)
+                                            {
+                                                row.GetCell(j).CellStyle = normalTrainStyle;
+                                            }
+                                            else
+                                            {
+                                                row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                            }
+                                            if(model.trainType == 1)
+                                            {
+                                                row.GetCell(j).SetCellValue("高峰"+ row.GetCell(j).ToString());
+                                            }
+                                            else if (model.trainType == 2)
+                                            {
+                                                row.GetCell(j).SetCellValue("临客" + row.GetCell(j).ToString());
+                                            }
+                                            else if (model.trainType == 3)
+                                            {
+                                                row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                /*重新修改文件指定单元格样式*/
+                FileStream fs1 = File.OpenWrite(ExcelFile.FileName);
+                workbook.Write(fs1);
+                fs1.Close();
+                Console.ReadLine();
+                fileStream.Close();
+                workbook.Close();
+                MessageBox.Show("时刻表修改完成，点击确定后将打开文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+                //info.WorkingDirectory = Application.StartupPath;
+                 info.FileName = ExcelFile.FileName;
+                 info.Arguments = "";
+                try
+                {
+                    System.Diagnostics.Process.Start(info);
+                }
+                catch (System.ComponentModel.Win32Exception we)
+                {
+                    MessageBox.Show(this, we.Message);
+                    return;
+                 }     
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("该文件正在使用中，请关闭后重试","提示",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
         }
     }
 }
