@@ -69,14 +69,14 @@ namespace TimeTableAutoCompleteTool
         private void start_Btn_Click(object sender, EventArgs e)
         {
             analyseCommand();
+            updateTimeTable();
         }
 
         private void analyseCommand()
         {   //分析客调命令
+            //删除不需要的标点符号-字符
             String[] AllCommand = removeUnuseableWord().Split('。');
             List<CommandModel> AllModels = new List<CommandModel>();
-            //所有英文字符转中文字符
-
             for (int i = 0; i < AllCommand.Length; i++)
             {
                 String[] command;
@@ -84,9 +84,24 @@ namespace TimeTableAutoCompleteTool
                 Boolean streamStatus = true;
                 int trainType = 0;
                    command = AllCommand[i].Split('：');
-                    if (command.Length == 2 ||
-                        command.Length == 3)
+                    if (command.Length > 1)
                     {
+                        if(command.Length > 3)
+                        {                //特殊数据
+                                     //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
+                                     //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
+                            for (int r = 0; r < command.Length; r++)
+                            {//从后往前开始找车次
+                                if (command[command.Length - r - 1].Contains("G") ||
+                                    command[command.Length - r - 1].Contains("D") ||
+                                    command[command.Length - r - 1].Contains("C") ||
+                                    command[command.Length - r - 1].Contains("J"))
+                                {//有就用那个了…
+                                command[1] = command[command.Length - r - 1];
+                                break;
+                                }
+                            }
+                        }
                     if (command.Length == 3)
                     //标注停运状态
                     {
@@ -141,7 +156,7 @@ namespace TimeTableAutoCompleteTool
                             AllModels.Add(model);
                         }
                     }
-                    }
+                }
             }
             //测试用
             String commands = "";
@@ -176,7 +191,7 @@ namespace TimeTableAutoCompleteTool
             }
             testTB.Text = commands;
             commandModel = AllModels;
-            updateTimeTable();
+            
         }
 
         private String removeUnuseableWord()
