@@ -86,7 +86,10 @@ namespace TimeTableAutoCompleteTool
                    command = AllCommand[i].Split('：');
                     if (command.Length > 1)
                     {
-                        if(command.Length > 3)
+                        if(!command[1].Contains('G') &&
+                        !command[1].Contains('D') &&
+                        !command[1].Contains('C') &&
+                        !command[1].Contains('J') )
                         {                //特殊数据
                                      //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
                                      //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
@@ -158,7 +161,7 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
             }
-            //测试用
+            //右方显示框内容
             String commands = "";
             foreach (CommandModel model in AllModels)
             {
@@ -287,7 +290,7 @@ namespace TimeTableAutoCompleteTool
         }
 
 
-        //以下为使用NPOI进行Excel操作
+        //使用NPOI进行Excel操作
         private void SelectPath()
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
