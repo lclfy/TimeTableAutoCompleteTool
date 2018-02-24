@@ -35,6 +35,9 @@
   <PropertyGroup>
     <ApplicationIcon>Logo2.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TimeTableAutoCompleteTool.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>NPOI\Net40\ICSharpCode.SharpZipLib.dll</HintPath>
