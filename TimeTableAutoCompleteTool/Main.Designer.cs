@@ -49,16 +49,20 @@
             this.buildLBL = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.AllTrainsCountLBL = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.AllPsngerTrainsCountLBL = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.AllTrainsCountLBL = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.stoppedTrainsCountLBL = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.AllTrainsInTimeTableLBL = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -75,7 +79,7 @@
             // 
             this.command_rTb.Location = new System.Drawing.Point(40, 75);
             this.command_rTb.Name = "command_rTb";
-            this.command_rTb.Size = new System.Drawing.Size(465, 245);
+            this.command_rTb.Size = new System.Drawing.Size(465, 263);
             this.command_rTb.TabIndex = 1;
             this.command_rTb.Text = "";
             this.command_rTb.TextChanged += new System.EventHandler(this.command_rTb_TextChanged);
@@ -84,7 +88,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(36, 335);
+            this.label2.Location = new System.Drawing.Point(2, 306);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 21);
             this.label2.TabIndex = 2;
@@ -93,7 +97,7 @@
             // importTimeTable_Btn
             // 
             this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(410, 326);
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 302);
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
             this.importTimeTable_Btn.TabIndex = 3;
@@ -105,7 +109,7 @@
             // 
             this.filePathLBL.AutoSize = true;
             this.filePathLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePathLBL.Location = new System.Drawing.Point(36, 366);
+            this.filePathLBL.Location = new System.Drawing.Point(6, 338);
             this.filePathLBL.Name = "filePathLBL";
             this.filePathLBL.Size = new System.Drawing.Size(56, 17);
             this.filePathLBL.TabIndex = 4;
@@ -123,7 +127,7 @@
             // start_Btn
             // 
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.start_Btn.Location = new System.Drawing.Point(40, 402);
+            this.start_Btn.Location = new System.Drawing.Point(9, 368);
             this.start_Btn.Name = "start_Btn";
             this.start_Btn.Size = new System.Drawing.Size(465, 49);
             this.start_Btn.TabIndex = 6;
@@ -176,11 +180,11 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label7.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label7.Location = new System.Drawing.Point(28, 481);
+            this.label7.Location = new System.Drawing.Point(28, 487);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(486, 17);
+            this.label7.Size = new System.Drawing.Size(570, 17);
             this.label7.TabIndex = 10;
-            this.label7.Text = "绿色为开行，红色为停开，白色为客调命令未包含车次。高峰/临客/周末在车次前含有标注";
+            this.label7.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注";
             // 
             // label8
             // 
@@ -197,7 +201,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label9.Location = new System.Drawing.Point(537, 481);
+            this.label9.Location = new System.Drawing.Point(684, 487);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(233, 17);
             this.label9.TabIndex = 12;
@@ -237,7 +241,7 @@
             this.buildLBL.AutoSize = true;
             this.buildLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buildLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.buildLBL.Location = new System.Drawing.Point(948, 481);
+            this.buildLBL.Location = new System.Drawing.Point(948, 487);
             this.buildLBL.Name = "buildLBL";
             this.buildLBL.Size = new System.Drawing.Size(56, 17);
             this.buildLBL.TabIndex = 16;
@@ -245,21 +249,73 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.importTimeTable_Btn);
+            this.groupBox1.Controls.Add(this.filePathLBL);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.start_Btn);
             this.groupBox1.Location = new System.Drawing.Point(31, 43);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(483, 426);
+            this.groupBox1.Size = new System.Drawing.Size(483, 435);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.groupBox3);
-            this.groupBox2.Controls.Add(this.groupBox4);
             this.groupBox2.Location = new System.Drawing.Point(521, 43);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(464, 426);
+            this.groupBox2.Size = new System.Drawing.Size(464, 435);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.AllTrainsInTimeTableLBL);
+            this.groupBox3.Controls.Add(this.label14);
+            this.groupBox3.Controls.Add(this.stoppedTrainsCountLBL);
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.label15);
+            this.groupBox3.Controls.Add(this.label16);
+            this.groupBox3.Controls.Add(this.label12);
+            this.groupBox3.Controls.Add(this.AllPsngerTrainsCountLBL);
+            this.groupBox3.Controls.Add(this.AllTrainsCountLBL);
+            this.groupBox3.Location = new System.Drawing.Point(19, 321);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(426, 105);
+            this.groupBox3.TabIndex = 21;
+            this.groupBox3.TabStop = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.Location = new System.Drawing.Point(261, 25);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(68, 17);
+            this.label12.TabIndex = 17;
+            this.label12.Text = "匹配车次数";
+            // 
+            // AllTrainsCountLBL
+            // 
+            this.AllTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.AllTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.AllTrainsCountLBL.Location = new System.Drawing.Point(345, 17);
+            this.AllTrainsCountLBL.Name = "AllTrainsCountLBL";
+            this.AllTrainsCountLBL.Size = new System.Drawing.Size(75, 31);
+            this.AllTrainsCountLBL.TabIndex = 18;
+            this.AllTrainsCountLBL.Text = "0";
+            this.AllTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label16.Location = new System.Drawing.Point(38, 79);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(100, 17);
+            this.label16.TabIndex = 23;
+            this.label16.Text = "(去除0G,0J,DJ等)";
             // 
             // AllPsngerTrainsCountLBL
             // 
@@ -268,9 +324,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.AllPsngerTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.AllPsngerTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.AllPsngerTrainsCountLBL.Location = new System.Drawing.Point(56, 21);
+            this.AllPsngerTrainsCountLBL.Location = new System.Drawing.Point(141, 59);
             this.AllPsngerTrainsCountLBL.Name = "AllPsngerTrainsCountLBL";
-            this.AllPsngerTrainsCountLBL.Size = new System.Drawing.Size(97, 31);
+            this.AllPsngerTrainsCountLBL.Size = new System.Drawing.Size(75, 37);
             this.AllPsngerTrainsCountLBL.TabIndex = 22;
             this.AllPsngerTrainsCountLBL.Text = "0";
             this.AllPsngerTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -279,69 +335,69 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label15.Location = new System.Drawing.Point(34, 56);
+            this.label15.Location = new System.Drawing.Point(41, 62);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(140, 17);
+            this.label15.Size = new System.Drawing.Size(92, 17);
             this.label15.TabIndex = 21;
-            this.label15.Text = "已选时刻表中开行列车数";
+            this.label15.Text = "匹配旅客列车数";
             // 
-            // label16
+            // label3
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label16.Location = new System.Drawing.Point(52, 73);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(100, 17);
-            this.label16.TabIndex = 23;
-            this.label16.Text = "(去除0G,0J,DJ等)";
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(261, 59);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 17);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "停开车次数";
             // 
-            // AllTrainsCountLBL
+            // label13
             // 
-            this.AllTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.AllTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.AllTrainsCountLBL.Location = new System.Drawing.Point(60, 21);
-            this.AllTrainsCountLBL.Name = "AllTrainsCountLBL";
-            this.AllTrainsCountLBL.Size = new System.Drawing.Size(88, 31);
-            this.AllTrainsCountLBL.TabIndex = 18;
-            this.AllTrainsCountLBL.Text = "0";
-            this.AllTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label13.Location = new System.Drawing.Point(238, 78);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(113, 17);
+            this.label13.TabIndex = 25;
+            this.label13.Text = "标注停运+客调未含";
             // 
-            // label12
+            // stoppedTrainsCountLBL
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label12.Location = new System.Drawing.Point(22, 61);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(163, 20);
-            this.label12.TabIndex = 17;
-            this.label12.Text = "已选时刻表中匹配车次数";
+            this.stoppedTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.stoppedTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.stoppedTrainsCountLBL.Location = new System.Drawing.Point(347, 62);
+            this.stoppedTrainsCountLBL.Name = "stoppedTrainsCountLBL";
+            this.stoppedTrainsCountLBL.Size = new System.Drawing.Size(73, 31);
+            this.stoppedTrainsCountLBL.TabIndex = 26;
+            this.stoppedTrainsCountLBL.Text = "0";
+            this.stoppedTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // groupBox3
+            // label14
             // 
-            this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Controls.Add(this.AllTrainsCountLBL);
-            this.groupBox3.Location = new System.Drawing.Point(19, 321);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(210, 99);
-            this.groupBox3.TabIndex = 21;
-            this.groupBox3.TabStop = false;
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label14.Location = new System.Drawing.Point(41, 25);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(92, 17);
+            this.label14.TabIndex = 27;
+            this.label14.Text = "时刻表内车次数";
             // 
-            // groupBox4
+            // AllTrainsInTimeTableLBL
             // 
-            this.groupBox4.Controls.Add(this.label16);
-            this.groupBox4.Controls.Add(this.AllPsngerTrainsCountLBL);
-            this.groupBox4.Controls.Add(this.label15);
-            this.groupBox4.Location = new System.Drawing.Point(235, 321);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(210, 99);
-            this.groupBox4.TabIndex = 19;
-            this.groupBox4.TabStop = false;
+            this.AllTrainsInTimeTableLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.AllTrainsInTimeTableLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.AllTrainsInTimeTableLBL.Location = new System.Drawing.Point(142, 18);
+            this.AllTrainsInTimeTableLBL.Name = "AllTrainsInTimeTableLBL";
+            this.AllTrainsInTimeTableLBL.Size = new System.Drawing.Size(73, 31);
+            this.AllTrainsInTimeTableLBL.TabIndex = 28;
+            this.AllTrainsInTimeTableLBL.Text = "0";
+            this.AllTrainsInTimeTableLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1016, 507);
+            this.ClientSize = new System.Drawing.Size(1016, 513);
             this.Controls.Add(this.buildLBL);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.wrongTB);
@@ -353,11 +409,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.start_Btn);
             this.Controls.Add(this.filePath_lbl);
-            this.Controls.Add(this.filePathLBL);
-            this.Controls.Add(this.importTimeTable_Btn);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.command_rTb);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
@@ -366,11 +418,11 @@
             this.Name = "Main";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Main_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -401,10 +453,14 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label AllTrainsCountLBL;
-        private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label AllPsngerTrainsCountLBL;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label stoppedTrainsCountLBL;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label AllTrainsInTimeTableLBL;
+        private System.Windows.Forms.Label label14;
     }
 }
 

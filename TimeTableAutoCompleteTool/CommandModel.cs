@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace TimeTableAutoCompleteTool
 {
     class CommandModel
-    {//车次号，停运状态，高峰临客
+    {//车次号，停运状态(0停开，1开行，2次日)，高峰临客
         public string trainNumber { get; set; }
-        public Boolean streamStatus { get; set; }  
+        public int streamStatus { get; set; }  
         //0为普通-1为高峰-2为临客-3为周末-有的再加
         public int trainType { get; set; }
     }

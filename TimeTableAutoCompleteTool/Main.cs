@@ -32,8 +32,8 @@ namespace TimeTableAutoCompleteTool
 
         private void Main_Load(object sender, EventArgs e)
         {
-            this.Text = "TrainTimetableAutoCompleteTool-基于客调命令的时刻表自动完成工具";
-            buildLBL.Text = "180224";
+            this.Text = "TrainTimetableAutoCompleteTool-时刻表辅助工具";
+            buildLBL.Text = "180225";
             start_Btn.Enabled = false;
         }
 
@@ -83,7 +83,7 @@ namespace TimeTableAutoCompleteTool
             {
                 String[] command;
                 String[] AllTrainNumberInOneRaw;
-                Boolean streamStatus = true;
+                int streamStatus = 1;
                 //用于某些情况下标记不正常车次避免重复添加
                 Boolean isNormal = true;
 
@@ -150,7 +150,7 @@ namespace TimeTableAutoCompleteTool
                                     command[command.Length - n - 1].Contains("J") ||
                                     command[command.Length - n - 1].Contains("0"))
                                 {//如果停运标记后面还有车的话
-                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), true, trainType);
+                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), 1, trainType);
                                     foreach (CommandModel model in tempModels)
                                     {
                                         AllModels.Add(model);
@@ -174,7 +174,7 @@ namespace TimeTableAutoCompleteTool
                                     //停开与开行分开进行建模
                                     if (stopped == true)
                                     {//不开
-                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）","").Split('-'), false, trainType);
+                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）","").Split('-'), 0, trainType);
                                         foreach (CommandModel model in tempModels)
                                         {
                                             AllModels.Add(model);
@@ -182,7 +182,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     else if(stopped == false)
                                     {//开
-                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）", "").Split('-'), true, trainType);
+                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）", "").Split('-'), 1, trainType);
                                         foreach (CommandModel model in tempModels)
                                         {
                                             AllModels.Add(model);
@@ -193,7 +193,7 @@ namespace TimeTableAutoCompleteTool
                             else
                             {
                                 //正常情况-则默认所有车次停开
-                                streamStatus = false;
+                                streamStatus = 0;
                             }
                         }
                         break;
@@ -208,7 +208,7 @@ namespace TimeTableAutoCompleteTool
                         {
                             if (AllTrainNumberInOneRaw[h].Contains("停"))
                             {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
-                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）", "").Split('-'),false,trainType);
+                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（","").Replace("）", "").Split('-'),0,trainType);
                                 foreach(CommandModel model in tempModels)
                                 {
                                     AllModels.Add(model);
@@ -216,7 +216,40 @@ namespace TimeTableAutoCompleteTool
                             }
                             else
                             {
-                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), true, trainType);
+                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType);
+                                foreach (CommandModel model in tempModels)
+                                {
+                                    AllModels.Add(model);
+                                }
+                            }
+                        }
+                    }
+                    else if (command[1].Contains("次日"))
+                    {
+                        
+                        AllTrainNumberInOneRaw = command[1].Split('-');
+                        //同理-部分次日-则次日与当日分开进行建模
+                        for (int h = 0; h < AllTrainNumberInOneRaw.Length; h++)
+                        {
+                            if (AllTrainNumberInOneRaw[h].Contains("次日"))
+                            {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
+                                List<CommandModel> tempModels;
+                                if (streamStatus != 0)
+                                {
+                                    tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 2, trainType);
+                                }
+                                else
+                                {
+                                    tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType);
+                                }
+                                foreach (CommandModel model in tempModels)
+                                {
+                                    AllModels.Add(model);
+                                }
+                            }
+                            else
+                            {
+                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType);
                                 foreach (CommandModel model in tempModels)
                                 {
                                     AllModels.Add(model);
@@ -244,7 +277,7 @@ namespace TimeTableAutoCompleteTool
             {
                 String streamStatus = "";
                 String trainType = "";
-                if (model.streamStatus == true)
+                if (model.streamStatus == 1)
                 {
                     streamStatus = "开行";
                 }
@@ -277,7 +310,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 
             }
-            outputTB.Text = commands;
+            outputTB.Text = "共"+AllModels.Count.ToString()+"趟" +"\r\n"+commands;
             wrongTB.Text = wrongCommands;
             commandModel = AllModels;
             
@@ -340,7 +373,7 @@ namespace TimeTableAutoCompleteTool
             return standardCommand;
         }
 
-        private List<CommandModel> trainModelAddFunc(String[] AllTrainNumberInOneRaw, Boolean streamStatus,int trainType)
+        private List<CommandModel> trainModelAddFunc(String[] AllTrainNumberInOneRaw, int streamStatus,int trainType)
         {//建立车次模型-通用方法
             //处理单程双车次车辆
             List<CommandModel> AllModels = new List<CommandModel>();
@@ -427,6 +460,8 @@ namespace TimeTableAutoCompleteTool
             //车次统计
             int allTrainsCount = 0;
             int allPsngerTrainsCount = 0;
+            int stoppedTrainsCount = 0;
+            int allTrainsInTimeTable = 0;
 
             try
             {
@@ -459,6 +494,15 @@ namespace TimeTableAutoCompleteTool
                 normalTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                 normalTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
 
+                ICellStyle tomorrowlTrainStyle = workbook.CreateCellStyle();
+                tomorrowlTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                tomorrowlTrainStyle.FillPattern = FillPattern.SolidForeground;
+                tomorrowlTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                tomorrowlTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
                 ICellStyle removeColors = workbook.CreateCellStyle();
                 removeColors.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
                 removeColors.FillPattern = FillPattern.SolidForeground;
@@ -488,6 +532,8 @@ namespace TimeTableAutoCompleteTool
                                         !row.GetCell(j).ToString().Contains("续") &&
                                         !row.GetCell(j).ToString().Contains("开行"))
                                     {
+                                        //时刻表中车次+1
+                                        allTrainsInTimeTable++;
                                         //去中文后再找-去掉高峰-周末-临客等字
                                         row.GetCell(j).CellStyle = removeColors;
                                         row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString(), @"[\u4e00-\u9fa5]", ""));
@@ -497,10 +543,13 @@ namespace TimeTableAutoCompleteTool
                                         //这个格子不是要找的
                                         continue;
                                     }
+                                    //若遍历后都没有找到 停运+1
+                                    bool ContainsTrainNumber = false;
                                     foreach (CommandModel model in commandModel)
                                     {//根据客调命令刷单元格颜色
                                         if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber))
                                         {
+                                            ContainsTrainNumber = true;
                                             //车次统计+1
                                             allTrainsCount++;
                                             if (!row.GetCell(j).ToString().Trim().Contains("0G")&&
@@ -512,13 +561,17 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 allPsngerTrainsCount++;
                                             }
-                                            if (model.streamStatus)
+                                            if (model.streamStatus == 1)
                                             {
                                                 row.GetCell(j).CellStyle = normalTrainStyle;
                                             }
-                                            else
+                                            else if(model.streamStatus == 0)
                                             {
+                                                stoppedTrainsCount++;
                                                 row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                            }else if(model.streamStatus == 2)
+                                            {
+                                                row.GetCell(j).CellStyle = tomorrowlTrainStyle;
                                             }
                                             if(model.trainType == 1)
                                             {
@@ -533,6 +586,10 @@ namespace TimeTableAutoCompleteTool
                                                 row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString());
                                             }
                                         }
+                                    }
+                                    if (!ContainsTrainNumber)
+                                    {
+                                        stoppedTrainsCount++;
                                     }
                                 }
                             }
@@ -549,6 +606,8 @@ namespace TimeTableAutoCompleteTool
                 //显示车次总数
                 AllTrainsCountLBL.Text = allTrainsCount.ToString();
                 AllPsngerTrainsCountLBL.Text = allPsngerTrainsCount.ToString();
+                stoppedTrainsCountLBL.Text = stoppedTrainsCount.ToString();
+                AllTrainsInTimeTableLBL.Text = allTrainsInTimeTable.ToString();
                 MessageBox.Show("时刻表修改完成，点击确定后将打开文件", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
                 //info.WorkingDirectory = Application.StartupPath;
