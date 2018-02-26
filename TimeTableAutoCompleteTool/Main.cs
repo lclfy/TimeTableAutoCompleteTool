@@ -22,7 +22,9 @@ namespace TimeTableAutoCompleteTool
         private Boolean hasText = false;
         private Boolean hasFilePath = false;
         private List<CommandModel> commandModel;
+        private List<CaculatorModel> caculatorModel;
         OpenFileDialog ExcelFile;
+        string filePath = "";
 
         public Main()
         {
@@ -35,6 +37,7 @@ namespace TimeTableAutoCompleteTool
             this.Text = "TrainTimetableAutoCompleteTool-时刻表辅助工具";
             buildLBL.Text = "180225";
             start_Btn.Enabled = false;
+            TrainEarlyCaculator_Btn.Enabled = false;
         }
 
         private void command_rTb_TextChanged(object sender, EventArgs e)
@@ -43,6 +46,7 @@ namespace TimeTableAutoCompleteTool
             {
                 hasText = true;
                 startBtnCheck();
+                analyseCommand();
             }
             else
             {
@@ -61,17 +65,25 @@ namespace TimeTableAutoCompleteTool
             if(hasFilePath && hasText)
             {
                 start_Btn.Enabled = true;
+                TrainEarlyCaculator_Btn.Enabled = true;
             }
             else
             {
                 start_Btn.Enabled = false;
+                TrainEarlyCaculator_Btn.Enabled = false;
             }
         }
 
         private void start_Btn_Click(object sender, EventArgs e)
         {
-            analyseCommand();
-            updateTimeTable();
+            if(commandModel.Count != 0)
+            {
+                updateTimeTable();
+            }
+            else
+            {
+                MessageBox.Show("未检测到任何车次信息", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
 
         private void analyseCommand()
@@ -475,7 +487,7 @@ namespace TimeTableAutoCompleteTool
                     workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
                 }
                 
-                //两种表格样式
+                //表格样式
                 ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
                 stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
                 stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
@@ -625,10 +637,218 @@ namespace TimeTableAutoCompleteTool
             }
             catch (IOException)
             {
-                MessageBox.Show("该文件正在使用中，请关闭后重试","提示",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("时刻表文件正在使用中，请关闭后重试","提示",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
+        }
+
+        //赶点计算器
+        private void TrainEarlyCaculator_Btn_Click(object sender, EventArgs e)
+        {
+            if(caculatorModel == null ||
+                caculatorModel.Count == 0||
+                !filePath.Equals(ExcelFile.FileName.ToString()))
+            {
+                if (!startCaculator())
+                {//返回false 即模型内无内容
+                    MessageBox.Show("未匹配到车次，赶点车次为18点以后的回库车 以及全天的旅客列车。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+            filePath = ExcelFile.FileName.ToString();
+            TrainEarlyCaculator form = new TrainEarlyCaculator(caculatorModel);
+            form.Show();
+        }
+
+        public bool startCaculator()
+        {
+            IWorkbook workbook = null;  //新建IWorkbook对象  
+            string fileName = ExcelFile.FileName;
+            //车次统计
+            int allTrainsCount = 0;
+            int allPsngerTrainsCount = 0;
+            int stoppedTrainsCount = 0;
+            int allTrainsInTimeTable = 0;
+            List<CaculatorModel> _caculatorModelList = new List<CaculatorModel>();
+            try
+            {
+                FileStream fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
+                {
+                    workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                }
+                else if (fileName.IndexOf(".xls") > 0) // 2003版本  
+                {
+                    workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                }
+
+                ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
+                IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                for (int i = 0; i < sheet.LastRowNum; i++)  //对工作表每一行  
+                {
+                    row = sheet.GetRow(i);   //row读入第i行数据  
+                    if (row != null)
+                    {
+                        for (int j = 0; j < row.LastCellNum; j++)  //对工作表每一列  
+                        {
+                            if (row.GetCell(j) != null)
+                            {
+                                if (row.GetCell(j).ToString().Contains("G") ||
+                                    row.GetCell(j).ToString().Contains("D") ||
+                                    row.GetCell(j).ToString().Contains("C") ||
+                                    row.GetCell(j).ToString().Contains("J"))
+                                {//把车次表格先去字
+                                    if (!row.GetCell(j).ToString().Contains("由") &&
+                                        !row.GetCell(j).ToString().Contains("续") &&
+                                        !row.GetCell(j).ToString().Contains("开行"))
+                                    {
+                                        //时刻表中车次+1
+                                        allTrainsInTimeTable++;
+                                        //去中文后再找-去掉高峰-周末-临客等字
+                                        row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString(), @"[\u4e00-\u9fa5]", ""));
+                                    }
+                                    else
+                                    {
+                                        //这个格子不是要找的
+                                        continue;
+                                    }
+                                    //若遍历后都没有找到 停运+1
+                                    bool ContainsTrainNumber = false;
+                                    bool GotTheTrain = false;
+                                    foreach (CommandModel model in commandModel)
+                                    {//找到了-判断是否符合计入赶点统计
+                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber))
+                                        {
+                                            ContainsTrainNumber = true;
+                                            //车次统计+1
+                                            allTrainsCount++;
+                                            if (!row.GetCell(j).ToString().Trim().Contains("0G") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("0D") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("0J") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("0C") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("00") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("DJ"))
+                                            {
+                                                allPsngerTrainsCount++;
+                                            }
+                                            if(!row.GetCell(j).ToString().Trim().Contains("0J") &&
+                                                !row.GetCell(j).ToString().Trim().Contains("DJ"))
+                                            {//0J和DJ不加入
+                                                for (int p = j; p < row.LastCellNum; p++)
+                                                {//找车次的右边 有没有股道数 找到股道数时 左右两边为该车次的图定时间
+                                                    int res = 0;
+                                                    if(row.GetCell(p)!= null)
+                                                    {
+                                                        if (int.TryParse(row.GetCell(p).ToString(), out res))
+                                                        {
+                                                            if (res > 0 && res < 33)
+                                                            {//找到股道了，应当break这个for，添加模型(添加时再判断是不是18点以后回库车，是不是旅客列车)
+                                                                if (model.streamStatus != 0)
+                                                                {//停运的不加进去
+                                                                    CaculatorModel tempModel = addToCaculatorModel(model.trainNumber, row.GetCell(p - 1).ToString().Trim(), row.GetCell(p + 1).ToString().Trim());
+                                                                    if (tempModel.trainNumber != null)
+                                                                    {
+                                                                        _caculatorModelList.Add(tempModel);
+                                                                    }
+                                                                }
+                                                                GotTheTrain = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (GotTheTrain)
+                                                {
+                                                    break;
+                                                }
+                                            }     
+                                            if (model.streamStatus != 1)
+                                                stoppedTrainsCount++;
+                                        }
+                                    }
+                                    if (!ContainsTrainNumber)
+                                    {
+                                        stoppedTrainsCount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                /*重新修改文件指定单元格样式*/
+                FileStream fs1 = File.OpenWrite(ExcelFile.FileName);
+                workbook.Write(fs1);
+                fs1.Close();
+                Console.ReadLine();
+                fileStream.Close();
+                workbook.Close();
+                //显示车次总数
+                AllTrainsCountLBL.Text = allTrainsCount.ToString();
+                AllPsngerTrainsCountLBL.Text = allPsngerTrainsCount.ToString();
+                stoppedTrainsCountLBL.Text = stoppedTrainsCount.ToString();
+                AllTrainsInTimeTableLBL.Text = allTrainsInTimeTable.ToString();
+                caculatorModel = _caculatorModelList;
+                if(caculatorModel.Count == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("时刻表文件正在使用中，请关闭后重试", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false ;
+            }
+        }
+
+        private CaculatorModel addToCaculatorModel(string trainNumber, string shouldArriveTime, string shouldStartTime)
+        {//判断是否符合赶点车条件，符合则加入model，返回成功/失败
+            CaculatorModel _caculatorModel = new CaculatorModel();
+            //筛掉18点以前的出库入库车
+            int res = 0;
+            if(trainNumber.Contains("0G") ||
+                trainNumber.Contains("0C") ||
+                trainNumber.Contains("0J") ||
+                trainNumber.Contains("0D"))
+            {//入库回库车
+                int.TryParse(shouldStartTime.Split(':')[0], out res);
+                if (res > 1 && res < 18)
+                {
+                    return _caculatorModel;
+                }
+                else
+                {//18点以后只计算回库车
+                    if (trainNumber.ToCharArray()[trainNumber.Length - 1].Equals('0')||
+                        trainNumber.ToCharArray()[trainNumber.Length-1].Equals('2') ||
+                        trainNumber.ToCharArray()[trainNumber.Length-1].Equals('4') ||
+                        trainNumber.ToCharArray()[trainNumber.Length-1].Equals('6') ||
+                        trainNumber.ToCharArray()[trainNumber.Length-1].Equals('8'))
+                    {
+                        _caculatorModel.trainNumber = trainNumber;
+                        _caculatorModel.shouldArriveTime = shouldArriveTime;
+                        _caculatorModel.shouldStartTime = shouldStartTime;
+                        return _caculatorModel;
+                    }
+                }
+
+            }
+            else
+            {//如果不是回库车 就筛掉始发车-终到车
+                if (!shouldArriveTime.Contains(":") ||
+                    !shouldStartTime.Contains(":"))
+                {
+                    return _caculatorModel;
+                }
+                _caculatorModel.trainNumber = trainNumber;
+                _caculatorModel.shouldArriveTime = shouldArriveTime;
+                _caculatorModel.shouldStartTime = shouldStartTime;
+                return _caculatorModel;
+            }
+            return _caculatorModel;
         }
     }
 }

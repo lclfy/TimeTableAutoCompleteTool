@@ -50,16 +50,17 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.AllTrainsCountLBL = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.AllPsngerTrainsCountLBL = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.stoppedTrainsCountLBL = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             this.AllTrainsInTimeTableLBL = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.stoppedTrainsCountLBL = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.AllPsngerTrainsCountLBL = new System.Windows.Forms.Label();
+            this.AllTrainsCountLBL = new System.Windows.Forms.Label();
+            this.TrainEarlyCaculator_Btn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -79,7 +80,7 @@
             // 
             this.command_rTb.Location = new System.Drawing.Point(40, 75);
             this.command_rTb.Name = "command_rTb";
-            this.command_rTb.Size = new System.Drawing.Size(465, 263);
+            this.command_rTb.Size = new System.Drawing.Size(465, 228);
             this.command_rTb.TabIndex = 1;
             this.command_rTb.Text = "";
             this.command_rTb.TextChanged += new System.EventHandler(this.command_rTb_TextChanged);
@@ -88,7 +89,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(2, 306);
+            this.label2.Location = new System.Drawing.Point(5, 270);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 21);
             this.label2.TabIndex = 2;
@@ -97,7 +98,7 @@
             // importTimeTable_Btn
             // 
             this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 302);
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 266);
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
             this.importTimeTable_Btn.TabIndex = 3;
@@ -109,7 +110,7 @@
             // 
             this.filePathLBL.AutoSize = true;
             this.filePathLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePathLBL.Location = new System.Drawing.Point(6, 338);
+            this.filePathLBL.Location = new System.Drawing.Point(9, 302);
             this.filePathLBL.Name = "filePathLBL";
             this.filePathLBL.Size = new System.Drawing.Size(56, 17);
             this.filePathLBL.TabIndex = 4;
@@ -127,11 +128,11 @@
             // start_Btn
             // 
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.start_Btn.Location = new System.Drawing.Point(9, 368);
+            this.start_Btn.Location = new System.Drawing.Point(12, 332);
             this.start_Btn.Name = "start_Btn";
-            this.start_Btn.Size = new System.Drawing.Size(465, 49);
+            this.start_Btn.Size = new System.Drawing.Size(465, 44);
             this.start_Btn.TabIndex = 6;
-            this.start_Btn.Text = "处理时刻表";
+            this.start_Btn.Text = "开始标记时刻表";
             this.start_Btn.UseVisualStyleBackColor = true;
             this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
             // 
@@ -249,6 +250,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.TrainEarlyCaculator_Btn);
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.label2);
@@ -286,26 +288,67 @@
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             // 
-            // label12
+            // AllTrainsInTimeTableLBL
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label12.Location = new System.Drawing.Point(261, 25);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(68, 17);
-            this.label12.TabIndex = 17;
-            this.label12.Text = "匹配车次数";
+            this.AllTrainsInTimeTableLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.AllTrainsInTimeTableLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.AllTrainsInTimeTableLBL.Location = new System.Drawing.Point(142, 18);
+            this.AllTrainsInTimeTableLBL.Name = "AllTrainsInTimeTableLBL";
+            this.AllTrainsInTimeTableLBL.Size = new System.Drawing.Size(73, 31);
+            this.AllTrainsInTimeTableLBL.TabIndex = 28;
+            this.AllTrainsInTimeTableLBL.Text = "0";
+            this.AllTrainsInTimeTableLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // AllTrainsCountLBL
+            // label14
             // 
-            this.AllTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.AllTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.AllTrainsCountLBL.Location = new System.Drawing.Point(345, 17);
-            this.AllTrainsCountLBL.Name = "AllTrainsCountLBL";
-            this.AllTrainsCountLBL.Size = new System.Drawing.Size(75, 31);
-            this.AllTrainsCountLBL.TabIndex = 18;
-            this.AllTrainsCountLBL.Text = "0";
-            this.AllTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label14.Location = new System.Drawing.Point(41, 25);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(92, 17);
+            this.label14.TabIndex = 27;
+            this.label14.Text = "时刻表内车次数";
+            // 
+            // stoppedTrainsCountLBL
+            // 
+            this.stoppedTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.stoppedTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.stoppedTrainsCountLBL.Location = new System.Drawing.Point(347, 62);
+            this.stoppedTrainsCountLBL.Name = "stoppedTrainsCountLBL";
+            this.stoppedTrainsCountLBL.Size = new System.Drawing.Size(73, 31);
+            this.stoppedTrainsCountLBL.TabIndex = 26;
+            this.stoppedTrainsCountLBL.Text = "0";
+            this.stoppedTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label13.Location = new System.Drawing.Point(238, 78);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(113, 17);
+            this.label13.TabIndex = 25;
+            this.label13.Text = "标注停运+客调未含";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(261, 59);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 17);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "停开车次数";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label15.Location = new System.Drawing.Point(41, 62);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(92, 17);
+            this.label15.TabIndex = 21;
+            this.label15.Text = "匹配旅客列车数";
             // 
             // label16
             // 
@@ -316,6 +359,16 @@
             this.label16.Size = new System.Drawing.Size(100, 17);
             this.label16.TabIndex = 23;
             this.label16.Text = "(去除0G,0J,DJ等)";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.Location = new System.Drawing.Point(261, 25);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(68, 17);
+            this.label12.TabIndex = 17;
+            this.label12.Text = "匹配车次数";
             // 
             // AllPsngerTrainsCountLBL
             // 
@@ -331,67 +384,27 @@
             this.AllPsngerTrainsCountLBL.Text = "0";
             this.AllPsngerTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label15
+            // AllTrainsCountLBL
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label15.Location = new System.Drawing.Point(41, 62);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(92, 17);
-            this.label15.TabIndex = 21;
-            this.label15.Text = "匹配旅客列车数";
+            this.AllTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.AllTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.AllTrainsCountLBL.Location = new System.Drawing.Point(345, 17);
+            this.AllTrainsCountLBL.Name = "AllTrainsCountLBL";
+            this.AllTrainsCountLBL.Size = new System.Drawing.Size(75, 31);
+            this.AllTrainsCountLBL.TabIndex = 18;
+            this.AllTrainsCountLBL.Text = "0";
+            this.AllTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label3
+            // TrainEarlyCaculator_Btn
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(261, 59);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 17);
-            this.label3.TabIndex = 24;
-            this.label3.Text = "停开车次数";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label13.Location = new System.Drawing.Point(238, 78);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(113, 17);
-            this.label13.TabIndex = 25;
-            this.label13.Text = "标注停运+客调未含";
-            // 
-            // stoppedTrainsCountLBL
-            // 
-            this.stoppedTrainsCountLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.stoppedTrainsCountLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.stoppedTrainsCountLBL.Location = new System.Drawing.Point(347, 62);
-            this.stoppedTrainsCountLBL.Name = "stoppedTrainsCountLBL";
-            this.stoppedTrainsCountLBL.Size = new System.Drawing.Size(73, 31);
-            this.stoppedTrainsCountLBL.TabIndex = 26;
-            this.stoppedTrainsCountLBL.Text = "0";
-            this.stoppedTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label14.Location = new System.Drawing.Point(41, 25);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(92, 17);
-            this.label14.TabIndex = 27;
-            this.label14.Text = "时刻表内车次数";
-            // 
-            // AllTrainsInTimeTableLBL
-            // 
-            this.AllTrainsInTimeTableLBL.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.AllTrainsInTimeTableLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.AllTrainsInTimeTableLBL.Location = new System.Drawing.Point(142, 18);
-            this.AllTrainsInTimeTableLBL.Name = "AllTrainsInTimeTableLBL";
-            this.AllTrainsInTimeTableLBL.Size = new System.Drawing.Size(73, 31);
-            this.AllTrainsInTimeTableLBL.TabIndex = 28;
-            this.AllTrainsInTimeTableLBL.Text = "0";
-            this.AllTrainsInTimeTableLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.TrainEarlyCaculator_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TrainEarlyCaculator_Btn.Location = new System.Drawing.Point(12, 382);
+            this.TrainEarlyCaculator_Btn.Name = "TrainEarlyCaculator_Btn";
+            this.TrainEarlyCaculator_Btn.Size = new System.Drawing.Size(465, 44);
+            this.TrainEarlyCaculator_Btn.TabIndex = 21;
+            this.TrainEarlyCaculator_Btn.Text = "计算赶点统计";
+            this.TrainEarlyCaculator_Btn.UseVisualStyleBackColor = true;
+            this.TrainEarlyCaculator_Btn.Click += new System.EventHandler(this.TrainEarlyCaculator_Btn_Click);
             // 
             // Main
             // 
@@ -461,6 +474,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label AllTrainsInTimeTableLBL;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button TrainEarlyCaculator_Btn;
     }
 }
 
