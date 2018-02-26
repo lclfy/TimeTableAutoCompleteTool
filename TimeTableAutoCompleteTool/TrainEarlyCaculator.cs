@@ -38,17 +38,39 @@ namespace TimeTableAutoCompleteTool
                 
                 this.trainsInformation_lv.Columns.Add(ch);    //将列头添加到ListView控件。
             }
-            ListViewItem lvi = new ListViewItem();
-            lvi.SubItems[0].Text = "100";
-            lvi.SubItems.Add("0G1830");
-            lvi.SubItems.Add("22:22");
-            lvi.SubItems.Add("22:50");
-            lvi.SubItems.Add("22:30");
-            lvi.SubItems.Add("22:55");
-            lvi.SubItems.Add("3");
-            this.trainsInformation_lv.Items.Add(lvi);
-
+            int counter = 1;
+            foreach(CaculatorModel model in caculatorModelList)
+            {
+                if(counter == 1)
+                {
+                    CurrentTrainNumber_lbl.Text = model.trainNumber;
+                    ShouldArriveTime_lbl.Text = model.shouldArriveTime;
+                    ShouldStartTime_lbl.Text = model.shouldStartTime;
+                }
+                ListViewItem lvi = new ListViewItem();
+                lvi.SubItems[0].Text = counter.ToString();
+                counter++;
+                lvi.SubItems.Add(model.trainNumber);
+                lvi.SubItems.Add(model.shouldArriveTime);
+                lvi.SubItems.Add("");
+                lvi.SubItems.Add(model.shouldStartTime);
+                lvi.SubItems.Add("");
+                lvi.SubItems.Add("");
+                this.trainsInformation_lv.Items.Add(lvi);
+            }
             this.trainsInformation_lv.EndUpdate();
+
+            
+        }
+
+        private void trainsInformation_lv_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (trainsInformation_lv.SelectedItems.Count != 0)
+            {
+                CurrentTrainNumber_lbl.Text = trainsInformation_lv.SelectedItems[0].SubItems[1].Text;
+                ShouldArriveTime_lbl.Text = trainsInformation_lv.SelectedItems[0].SubItems[2].Text;
+                ShouldStartTime_lbl.Text = trainsInformation_lv.SelectedItems[0].SubItems[4].Text;
+            }
 
         }
 
@@ -84,7 +106,23 @@ namespace TimeTableAutoCompleteTool
             }
         }
 
-        private void trainsInformation_lv_SelectedIndexChanged(object sender, EventArgs e)
+        private void ActuallyArriveTime_tb_Click(object sender, EventArgs e)
+        {
+            if (ActuallyArriveTime_tb.Text.Equals("0000"))
+            {
+                ActuallyArriveTime_tb.Text = "";
+            }
+        }
+
+        private void ActuallyStartTime_tb_Click(object sender, EventArgs e)
+        {
+            if (ActuallyStartTime_tb.Text.Equals("0000"))
+            {
+                ActuallyStartTime_tb.Text = "";
+            }
+        }
+
+        private void ActuallyArriveTime_tb_TextChanged(object sender, EventArgs e)
         {
 
         }

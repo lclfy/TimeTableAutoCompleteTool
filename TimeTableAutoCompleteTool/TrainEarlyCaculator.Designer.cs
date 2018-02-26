@@ -46,18 +46,22 @@
             this.label7 = new System.Windows.Forms.Label();
             this.earlyTimeCount_lbl = new System.Windows.Forms.Label();
             this.copy_btn = new System.Windows.Forms.Button();
+            this.ArriveMinus_btn = new System.Windows.Forms.Button();
+            this.ArrivePlus_btn = new System.Windows.Forms.Button();
+            this.StartMinus_btn = new System.Windows.Forms.Button();
+            this.StartPlus_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CurrentTrainNumber_lbl
             // 
-            this.CurrentTrainNumber_lbl.AutoSize = true;
             this.CurrentTrainNumber_lbl.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.CurrentTrainNumber_lbl.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.CurrentTrainNumber_lbl.Location = new System.Drawing.Point(154, 25);
+            this.CurrentTrainNumber_lbl.Location = new System.Drawing.Point(142, 25);
             this.CurrentTrainNumber_lbl.Name = "CurrentTrainNumber_lbl";
-            this.CurrentTrainNumber_lbl.Size = new System.Drawing.Size(74, 31);
+            this.CurrentTrainNumber_lbl.Size = new System.Drawing.Size(94, 31);
             this.CurrentTrainNumber_lbl.TabIndex = 0;
-            this.CurrentTrainNumber_lbl.Text = "G508";
+            this.CurrentTrainNumber_lbl.Text = "----";
+            this.CurrentTrainNumber_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2
             // 
@@ -165,12 +169,14 @@
             // 
             this.ActuallyArriveTime_tb.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ActuallyArriveTime_tb.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.ActuallyArriveTime_tb.Location = new System.Drawing.Point(38, 213);
+            this.ActuallyArriveTime_tb.Location = new System.Drawing.Point(44, 213);
             this.ActuallyArriveTime_tb.Name = "ActuallyArriveTime_tb";
-            this.ActuallyArriveTime_tb.Size = new System.Drawing.Size(89, 35);
+            this.ActuallyArriveTime_tb.Size = new System.Drawing.Size(74, 35);
             this.ActuallyArriveTime_tb.TabIndex = 11;
-            this.ActuallyArriveTime_tb.Text = "0805";
+            this.ActuallyArriveTime_tb.Text = "0000";
             this.ActuallyArriveTime_tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ActuallyArriveTime_tb.Click += new System.EventHandler(this.ActuallyArriveTime_tb_Click);
+            this.ActuallyArriveTime_tb.TextChanged += new System.EventHandler(this.ActuallyArriveTime_tb_TextChanged);
             this.ActuallyArriveTime_tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ActuallyArriveTime_tb_KeyDown);
             this.ActuallyArriveTime_tb.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ActuallyArriveTime_tb_KeyPress);
             // 
@@ -178,12 +184,13 @@
             // 
             this.ActuallyStartTime_tb.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.ActuallyStartTime_tb.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.ActuallyStartTime_tb.Location = new System.Drawing.Point(258, 213);
+            this.ActuallyStartTime_tb.Location = new System.Drawing.Point(263, 213);
             this.ActuallyStartTime_tb.Name = "ActuallyStartTime_tb";
-            this.ActuallyStartTime_tb.Size = new System.Drawing.Size(89, 35);
+            this.ActuallyStartTime_tb.Size = new System.Drawing.Size(75, 35);
             this.ActuallyStartTime_tb.TabIndex = 12;
-            this.ActuallyStartTime_tb.Text = "0805";
+            this.ActuallyStartTime_tb.Text = "0000";
             this.ActuallyStartTime_tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ActuallyStartTime_tb.Click += new System.EventHandler(this.ActuallyStartTime_tb_Click);
             this.ActuallyStartTime_tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ActuallyStartTime_tb_KeyDown);
             this.ActuallyStartTime_tb.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ActuallyStartTime_tb_KeyPress);
             // 
@@ -199,9 +206,11 @@
             // 
             // trainsInformation_lv
             // 
+            this.trainsInformation_lv.FullRowSelect = true;
             this.trainsInformation_lv.Location = new System.Drawing.Point(377, 91);
+            this.trainsInformation_lv.MultiSelect = false;
             this.trainsInformation_lv.Name = "trainsInformation_lv";
-            this.trainsInformation_lv.Size = new System.Drawing.Size(345, 269);
+            this.trainsInformation_lv.Size = new System.Drawing.Size(360, 269);
             this.trainsInformation_lv.TabIndex = 14;
             this.trainsInformation_lv.UseCompatibleStateImageBehavior = false;
             this.trainsInformation_lv.SelectedIndexChanged += new System.EventHandler(this.trainsInformation_lv_SelectedIndexChanged);
@@ -224,24 +233,68 @@
             this.earlyTimeCount_lbl.Name = "earlyTimeCount_lbl";
             this.earlyTimeCount_lbl.Size = new System.Drawing.Size(160, 31);
             this.earlyTimeCount_lbl.TabIndex = 16;
-            this.earlyTimeCount_lbl.Text = "120分钟";
+            this.earlyTimeCount_lbl.Text = "0分钟";
             this.earlyTimeCount_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // copy_btn
             // 
             this.copy_btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.copy_btn.Location = new System.Drawing.Point(647, 47);
+            this.copy_btn.Location = new System.Drawing.Point(662, 47);
             this.copy_btn.Name = "copy_btn";
             this.copy_btn.Size = new System.Drawing.Size(75, 29);
             this.copy_btn.TabIndex = 17;
             this.copy_btn.Text = "复制";
             this.copy_btn.UseVisualStyleBackColor = true;
             // 
+            // ArriveMinus_btn
+            // 
+            this.ArriveMinus_btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ArriveMinus_btn.Location = new System.Drawing.Point(12, 216);
+            this.ArriveMinus_btn.Name = "ArriveMinus_btn";
+            this.ArriveMinus_btn.Size = new System.Drawing.Size(32, 29);
+            this.ArriveMinus_btn.TabIndex = 18;
+            this.ArriveMinus_btn.Text = "-";
+            this.ArriveMinus_btn.UseVisualStyleBackColor = true;
+            // 
+            // ArrivePlus_btn
+            // 
+            this.ArrivePlus_btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ArrivePlus_btn.Location = new System.Drawing.Point(118, 216);
+            this.ArrivePlus_btn.Name = "ArrivePlus_btn";
+            this.ArrivePlus_btn.Size = new System.Drawing.Size(32, 29);
+            this.ArrivePlus_btn.TabIndex = 19;
+            this.ArrivePlus_btn.Text = "+";
+            this.ArrivePlus_btn.UseVisualStyleBackColor = true;
+            // 
+            // StartMinus_btn
+            // 
+            this.StartMinus_btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.StartMinus_btn.Location = new System.Drawing.Point(231, 216);
+            this.StartMinus_btn.Name = "StartMinus_btn";
+            this.StartMinus_btn.Size = new System.Drawing.Size(32, 29);
+            this.StartMinus_btn.TabIndex = 20;
+            this.StartMinus_btn.Text = "-";
+            this.StartMinus_btn.UseVisualStyleBackColor = true;
+            // 
+            // StartPlus_btn
+            // 
+            this.StartPlus_btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.StartPlus_btn.Location = new System.Drawing.Point(338, 216);
+            this.StartPlus_btn.Name = "StartPlus_btn";
+            this.StartPlus_btn.Size = new System.Drawing.Size(32, 29);
+            this.StartPlus_btn.TabIndex = 21;
+            this.StartPlus_btn.Text = "+";
+            this.StartPlus_btn.UseVisualStyleBackColor = true;
+            // 
             // TrainEarlyCaculator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(752, 398);
+            this.ClientSize = new System.Drawing.Size(768, 398);
+            this.Controls.Add(this.StartPlus_btn);
+            this.Controls.Add(this.StartMinus_btn);
+            this.Controls.Add(this.ArrivePlus_btn);
+            this.Controls.Add(this.ArriveMinus_btn);
             this.Controls.Add(this.copy_btn);
             this.Controls.Add(this.earlyTimeCount_lbl);
             this.Controls.Add(this.label7);
@@ -288,5 +341,9 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label earlyTimeCount_lbl;
         private System.Windows.Forms.Button copy_btn;
+        private System.Windows.Forms.Button ArriveMinus_btn;
+        private System.Windows.Forms.Button ArrivePlus_btn;
+        private System.Windows.Forms.Button StartMinus_btn;
+        private System.Windows.Forms.Button StartPlus_btn;
     }
 }
