@@ -35,7 +35,7 @@ namespace TimeTableAutoCompleteTool
         private void Main_Load(object sender, EventArgs e)
         {
             this.Text = "TrainTimetableAutoCompleteTool-时刻表辅助工具";
-            buildLBL.Text = "180225";
+            buildLBL.Text = "180303";
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
         }
@@ -366,6 +366,8 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("j", "J");
             if (standardCommand.Contains("CRH"))
                 standardCommand = standardCommand.Replace("CRH", "");
+            if (standardCommand.Contains("CR"))
+                standardCommand = standardCommand.Replace("CR", "");
             if (standardCommand.Contains("；"))
                 standardCommand = standardCommand.Replace("；", "");
             //特殊情况添加 221、2018年02月22日，CRH380AL-2600：【0J5901-DJ5902-G6718(石家庄～北京西):停运】，0G4909-G4910-G801/4-G6611-G1559/8-G807-0G808。
@@ -480,13 +482,63 @@ namespace TimeTableAutoCompleteTool
                 FileStream fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
                 {
-                    workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                    try
+                    {
+                        workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                    }catch(Exception e)
+                    {
+                        if(File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1]))
+                        {
+                            MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//要复制的文件路径
+                            string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
+                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+                            fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
+                        }
+                        else
+                        {
+                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                            return;
+                        }
+                    }
+                    
                 }
                 else if (fileName.IndexOf(".xls") > 0) // 2003版本  
                 {
-                    workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                    try
+                    {
+                        workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                    }
+                    catch(Exception e)
+                    {
+                        if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1]))
+                        {
+                            MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//要复制的文件路径
+                            string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
+                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+                            fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
+                        }
+                        else
+                        {
+                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                            return;
+                        }
+                    }      
                 }
-                
+
+                if (workbook != null && !ExcelFile.FileName.Contains("自动备份-"))
+                {
+                    string pLocalFilePath = ExcelFile.FileName.ToString();//要复制的文件路径
+                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//指定存储的路径
+                    File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+
+                }
+
                 //表格样式
                 ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
                 stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
@@ -676,11 +728,38 @@ namespace TimeTableAutoCompleteTool
                 FileStream fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
                 {
-                    workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                    try
+                    {
+                        workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并更换备份文件-位于\\时刻表->backup内，点击确定打开）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                        return false;
+                    }
+
                 }
                 else if (fileName.IndexOf(".xls") > 0) // 2003版本  
                 {
-                    workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                    try
+                    {
+                        workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并更换备份文件-位于\\时刻表->backup内，点击确定打开）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                        return false;
+                    }
+                }
+
+                if (workbook != null)
+                {
+                    string pLocalFilePath = ExcelFile.FileName.ToString();//要复制的文件路径
+                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//指定存储的路径
+                    File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+
                 }
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  

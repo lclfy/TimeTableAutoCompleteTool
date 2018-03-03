@@ -48,6 +48,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.buildLBL = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TrainEarlyCaculator_Btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.AllTrainsInTimeTableLBL = new System.Windows.Forms.Label();
@@ -60,7 +61,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.AllPsngerTrainsCountLBL = new System.Windows.Forms.Label();
             this.AllTrainsCountLBL = new System.Windows.Forms.Label();
-            this.TrainEarlyCaculator_Btn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -78,9 +78,9 @@
             // 
             // command_rTb
             // 
-            this.command_rTb.Location = new System.Drawing.Point(40, 75);
+            this.command_rTb.Location = new System.Drawing.Point(9, 32);
             this.command_rTb.Name = "command_rTb";
-            this.command_rTb.Size = new System.Drawing.Size(465, 228);
+            this.command_rTb.Size = new System.Drawing.Size(465, 274);
             this.command_rTb.TabIndex = 1;
             this.command_rTb.Text = "";
             this.command_rTb.TextChanged += new System.EventHandler(this.command_rTb_TextChanged);
@@ -89,7 +89,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(5, 270);
+            this.label2.Location = new System.Drawing.Point(6, 312);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 21);
             this.label2.TabIndex = 2;
@@ -98,7 +98,7 @@
             // importTimeTable_Btn
             // 
             this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 266);
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(382, 312);
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
             this.importTimeTable_Btn.TabIndex = 3;
@@ -110,7 +110,7 @@
             // 
             this.filePathLBL.AutoSize = true;
             this.filePathLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePathLBL.Location = new System.Drawing.Point(9, 302);
+            this.filePathLBL.Location = new System.Drawing.Point(10, 353);
             this.filePathLBL.Name = "filePathLBL";
             this.filePathLBL.Size = new System.Drawing.Size(56, 17);
             this.filePathLBL.TabIndex = 4;
@@ -128,7 +128,7 @@
             // start_Btn
             // 
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.start_Btn.Location = new System.Drawing.Point(12, 332);
+            this.start_Btn.Location = new System.Drawing.Point(9, 379);
             this.start_Btn.Name = "start_Btn";
             this.start_Btn.Size = new System.Drawing.Size(465, 44);
             this.start_Btn.TabIndex = 6;
@@ -250,16 +250,26 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.TrainEarlyCaculator_Btn);
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.start_Btn);
+            this.groupBox1.Controls.Add(this.command_rTb);
             this.groupBox1.Location = new System.Drawing.Point(31, 43);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(483, 435);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
+            // 
+            // TrainEarlyCaculator_Btn
+            // 
+            this.TrainEarlyCaculator_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TrainEarlyCaculator_Btn.Location = new System.Drawing.Point(-1, 1);
+            this.TrainEarlyCaculator_Btn.Name = "TrainEarlyCaculator_Btn";
+            this.TrainEarlyCaculator_Btn.Size = new System.Drawing.Size(10, 12);
+            this.TrainEarlyCaculator_Btn.TabIndex = 21;
+            this.TrainEarlyCaculator_Btn.UseVisualStyleBackColor = true;
+            this.TrainEarlyCaculator_Btn.Click += new System.EventHandler(this.TrainEarlyCaculator_Btn_Click);
             // 
             // groupBox2
             // 
@@ -395,22 +405,12 @@
             this.AllTrainsCountLBL.Text = "0";
             this.AllTrainsCountLBL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // TrainEarlyCaculator_Btn
-            // 
-            this.TrainEarlyCaculator_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TrainEarlyCaculator_Btn.Location = new System.Drawing.Point(12, 382);
-            this.TrainEarlyCaculator_Btn.Name = "TrainEarlyCaculator_Btn";
-            this.TrainEarlyCaculator_Btn.Size = new System.Drawing.Size(465, 44);
-            this.TrainEarlyCaculator_Btn.TabIndex = 21;
-            this.TrainEarlyCaculator_Btn.Text = "计算赶点统计";
-            this.TrainEarlyCaculator_Btn.UseVisualStyleBackColor = true;
-            this.TrainEarlyCaculator_Btn.Click += new System.EventHandler(this.TrainEarlyCaculator_Btn_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1016, 513);
+            this.Controls.Add(this.TrainEarlyCaculator_Btn);
             this.Controls.Add(this.buildLBL);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.wrongTB);
@@ -423,7 +423,6 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.filePath_lbl);
-            this.Controls.Add(this.command_rTb);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
