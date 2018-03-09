@@ -452,7 +452,7 @@ namespace TimeTableAutoCompleteTool
         private void SelectPath()
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
-            openFileDialog1.Filter = "Excel 2007 文件 (*.xlsx)|*.xlsx|Excel 2003 文件 (*.xls)|*.xls";
+            openFileDialog1.Filter = "Excel 文件 |*.xlsx;*.xls";
             openFileDialog1.InitialDirectory = Application.StartupPath + "\\时刻表\\";
             //openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
             openFileDialog1.FilterIndex = 2;
