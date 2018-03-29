@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NPOI.SS.UserModel;
 //2003
@@ -104,10 +102,10 @@ namespace TimeTableAutoCompleteTool
                    command = AllCommand[i].Split('：');
                     if (command.Length > 1)
                     {//非常规情况找车次
-                        if(!command[1].Contains('G') &&
-                        !command[1].Contains('D') &&
-                        !command[1].Contains('C') &&
-                        !command[1].Contains('J') )
+                        if(!command[1].Contains("G") &&
+                        !command[1].Contains("D") &&
+                        !command[1].Contains("C") &&
+                        !command[1].Contains("J") )
                         {                //特殊数据
                                      //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
                                      //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
@@ -391,6 +389,8 @@ namespace TimeTableAutoCompleteTool
             //中括号/大括号转小括号 减少后期识别代码数量
             if (standardCommand.Contains("["))
                 standardCommand = standardCommand.Replace("[", "（");
+            if (standardCommand.Contains("—"))
+                standardCommand = standardCommand.Replace("—", "-");
             if (standardCommand.Contains("]"))
                 standardCommand = standardCommand.Replace("]", "）");
             if(standardCommand.Contains("【"))
@@ -528,10 +528,10 @@ namespace TimeTableAutoCompleteTool
                         workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
                     }catch(Exception e)
                     {
-                        if(File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1]))
+                        if(File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//要复制的文件路径
+                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
                             fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -554,10 +554,10 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch(Exception e)
                     {
-                        if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1]))
+                        if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//要复制的文件路径
+                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
                             fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -575,7 +575,7 @@ namespace TimeTableAutoCompleteTool
                 if (workbook != null && !ExcelFile.FileName.Contains("自动备份-"))
                 {
                     string pLocalFilePath = ExcelFile.FileName.ToString();//要复制的文件路径
-                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//指定存储的路径
+                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//指定存储的路径
                     File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                 }
@@ -798,7 +798,7 @@ namespace TimeTableAutoCompleteTool
                 if (workbook != null)
                 {
                     string pLocalFilePath = ExcelFile.FileName.ToString();//要复制的文件路径
-                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Count() - 1];//指定存储的路径
+                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//指定存储的路径
                     File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                 }

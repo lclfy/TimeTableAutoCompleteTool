@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -23,7 +22,7 @@ namespace TimeTableAutoCompleteTool
             trainsInformation_lv.View = View.Details;
             string[] informationTitle = new string[] { "序号", "车次", "图定到", "实际到", "图定发", "实际发", "赶点" };
             this.trainsInformation_lv.BeginUpdate();
-            for (int i = 0; i < informationTitle.Count(); i++)
+            for (int i = 0; i < informationTitle.Length; i++)
             {
                 ColumnHeader ch = new ColumnHeader();
                 ch.Text = informationTitle[i];   //设置列标题 
