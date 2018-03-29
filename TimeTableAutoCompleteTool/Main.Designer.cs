@@ -76,9 +76,9 @@
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(34, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(327, 21);
+            this.label1.Size = new System.Drawing.Size(497, 21);
             this.label1.TabIndex = 0;
-            this.label1.Text = "1.将当日开行车次客调命令复制于下方文本框";
+            this.label1.Text = "1.将当日开行车次客调命令全部复制于下方文本框(无需删除多余内容)";
             // 
             // command_rTb
             // 
@@ -155,11 +155,12 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label5.Location = new System.Drawing.Point(357, 29);
+            this.label5.Location = new System.Drawing.Point(535, 29);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(200, 17);
             this.label5.TabIndex = 8;
             this.label5.Text = "（请注意客调令其他部分中的列车）";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // outputTB
             // 
@@ -441,7 +442,7 @@
             this.groupBox4.Controls.Add(this.radioButton1);
             this.groupBox4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox4.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.groupBox4.Location = new System.Drawing.Point(648, 12);
+            this.groupBox4.Location = new System.Drawing.Point(754, 12);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(230, 35);
             this.groupBox4.TabIndex = 25;
@@ -455,6 +456,7 @@
             this.ClientSize = new System.Drawing.Size(1027, 529);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.TrainEarlyCaculator_Btn);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.buildLBL);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.wrongTB);
@@ -464,7 +466,6 @@
             this.Controls.Add(this.hint_label);
             this.Controls.Add(this.outputTB);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.filePath_lbl);
             this.Controls.Add(this.label1);

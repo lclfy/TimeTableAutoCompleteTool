@@ -35,7 +35,7 @@ namespace TimeTableAutoCompleteTool
 
         private void Main_Load(object sender, EventArgs e)
         {
-            this.Text = "TrainTimetableAutoCompleteTool-时刻表辅助工具";
+            this.Text = "客调命令辅助工具";
             buildLBL.Text = "180329";
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
@@ -44,10 +44,25 @@ namespace TimeTableAutoCompleteTool
             if (radioButton1.Checked)
             {
                 startPath = "时刻表";
+                secondStepText_lbl.Text = "2.选择时刻表文件";
+                start_Btn.Text = "处理时刻表";
+                filePathLBL.Text = "已选择：";
+                Size _size = new Size(210, 283);
+                outputTB.Size = _size;
+                wrongTB.Size = _size;
+                hint_label.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注";
             }
             else
             {
                 startPath = "基本图";
+                secondStepText_lbl.Text = "2.选择基本图文件";
+                start_Btn.Text = "生成班计划";
+                filePathLBL.Text = "已选择：";
+                Size _size = new Size(210, 393);
+                outputTB.Size = _size;
+                wrongTB.Size = _size;
+                hint_label.Text = "无序号白色为客调令多出车次，红色标注为客调停开车次。请检查客调令包含内容的行是否符合规范";
+
             }
         }
 
@@ -104,6 +119,7 @@ namespace TimeTableAutoCompleteTool
         private void analyseCommand()
         {   //分析客调命令
             //删除不需要的标点符号-字符
+            string wrongNumber = "";
             String[] AllCommand = removeUnuseableWord().Split('。');
             List<CommandModel> AllModels = new List<CommandModel>();
             for (int i = 0; i < AllCommand.Length; i++)
@@ -197,7 +213,14 @@ namespace TimeTableAutoCompleteTool
                                     List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), 1, trainType, trainModel);
                                     foreach (CommandModel model in tempModels)
                                     {
-                                        AllModels.Add(model);
+                                        if (!model.trainNumber.Contains("未识别"))
+                                        {
+                                            AllModels.Add(model);
+                                        }
+                                        else
+                                        {
+                                            wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                        }
                                     }
                                 }
                                 isNormal = false;
@@ -221,7 +244,14 @@ namespace TimeTableAutoCompleteTool
                                         List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel);
                                         foreach (CommandModel model in tempModels)
                                         {
-                                            AllModels.Add(model);
+                                            if (!model.trainNumber.Contains("未识别"))
+                                            {
+                                                AllModels.Add(model);
+                                            }
+                                            else
+                                            {
+                                                wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                            }
                                         }
                                     }
                                     else if (stopped == false)
@@ -229,7 +259,14 @@ namespace TimeTableAutoCompleteTool
                                         List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel);
                                         foreach (CommandModel model in tempModels)
                                         {
-                                            AllModels.Add(model);
+                                            if (!model.trainNumber.Contains("未识别"))
+                                            {
+                                                AllModels.Add(model);
+                                            }
+                                            else
+                                            {
+                                                wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                            }
                                         }
                                     }
                                 }
@@ -255,7 +292,14 @@ namespace TimeTableAutoCompleteTool
                                 List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel);
                                 foreach (CommandModel model in tempModels)
                                 {
-                                    AllModels.Add(model);
+                                    if (!model.trainNumber.Contains("未识别"))
+                                    {
+                                        AllModels.Add(model);
+                                    }
+                                    else
+                                    {
+                                        wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                    }
                                 }
                             }
                             else
@@ -263,7 +307,14 @@ namespace TimeTableAutoCompleteTool
                                 List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel);
                                 foreach (CommandModel model in tempModels)
                                 {
-                                    AllModels.Add(model);
+                                    if (!model.trainNumber.Contains("未识别"))
+                                    {
+                                        AllModels.Add(model);
+                                    }
+                                    else
+                                    {
+                                        wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                    }
                                 }
                             }
                         }
@@ -288,7 +339,14 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 foreach (CommandModel model in tempModels)
                                 {
-                                    AllModels.Add(model);
+                                    if (!model.trainNumber.Contains("未识别"))
+                                    {
+                                        AllModels.Add(model);
+                                    }
+                                    else
+                                    {
+                                        wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                    }
                                 }
                             }
                             else
@@ -296,7 +354,14 @@ namespace TimeTableAutoCompleteTool
                                 List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType, trainModel);
                                 foreach (CommandModel model in tempModels)
                                 {
-                                    AllModels.Add(model);
+                                    if (!model.trainNumber.Contains("未识别"))
+                                    {
+                                        AllModels.Add(model);
+                                    }
+                                    else
+                                    {
+                                        wrongNumber = wrongNumber + model.trainNumber + "\n";
+                                    }
                                 }
                             }
                         }
@@ -309,14 +374,16 @@ namespace TimeTableAutoCompleteTool
                         List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel);
                         foreach (CommandModel model in tempModels)
                         {
-                            AllModels.Add(model);
+                            if (!model.trainNumber.Equals("null"))
+                            {
+                                AllModels.Add(model);
+                            }
                         }
                     }
                 }
             }
             //右方显示框内容
             String commands = "";
-            String wrongCommands = "";
             foreach (CommandModel model in AllModels)
             {
                 String streamStatus = "";
@@ -344,18 +411,9 @@ namespace TimeTableAutoCompleteTool
                         trainType = "周末";
                         break;
                 }
-                if (!IsTrainNumber(model.trainNumber))
-                {//筛选不合规车次
-                    wrongCommands = wrongCommands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
-                }
-                else
-                {
-                    commands = commands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
-                }
-
+                commands = commands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
             }
             outputTB.Text = "共" + AllModels.Count.ToString() + "趟" + "\r\n" + commands;
-            wrongTB.Text = wrongCommands;
             commandModel = AllModels;
 
         }
@@ -439,7 +497,6 @@ namespace TimeTableAutoCompleteTool
                     trainConnectType = 1;
                 } else if (trainModel.Contains("+"))
                 {
-                    trainModel = trainModel + "+";
                     trainConnectType = 2;
                 }
                 else
@@ -448,6 +505,15 @@ namespace TimeTableAutoCompleteTool
                 }
 
             }
+            if (!trainModel.Contains("+"))
+            {
+                trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim();
+            }
+            else
+            {
+                trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "+";
+            }
+            
             for (int k = 0; k < AllTrainNumberInOneRaw.Length; k++)
             {
                 if (AllTrainNumberInOneRaw[k].Contains("G") ||
@@ -466,8 +532,11 @@ namespace TimeTableAutoCompleteTool
                         m1.trainType = trainType;
                         m1.trainModel = trainModel;
                         m1.trainConnectType = trainConnectType;
-                        AllModels.Add(m1);
-
+                        if (!IsTrainNumber(m1.trainNumber))
+                        {
+                            m1.trainNumber = "未识别-(" + m1.trainNumber + ")";
+                            return AllModels;
+                        }
                         Char[] firstTrainWord = trainWithDoubleNumber[0].ToCharArray();
                         String secondTrainWord = "";
                         for (int q = 0; q < firstTrainWord.Length; q++)
@@ -480,13 +549,8 @@ namespace TimeTableAutoCompleteTool
                             {
                                 secondTrainWord = secondTrainWord + trainWithDoubleNumber[1];
                                 //添加第二个车次
-                                CommandModel m2 = new CommandModel();
-                                m2.trainNumber = secondTrainWord.Trim();
-                                m2.streamStatus = streamStatus;
-                                m2.trainType = trainType;
-                                m2.trainModel = trainModel;
-                                m2.trainConnectType = trainConnectType;
-                                AllModels.Add(m2);
+                                m1.secondTrainNumber = secondTrainWord.Trim();
+                                AllModels.Add(m1);
                                 break;
                             }
                         }
@@ -495,6 +559,12 @@ namespace TimeTableAutoCompleteTool
                     {
                         CommandModel model = new CommandModel();
                         model.trainNumber = AllTrainNumberInOneRaw[k].Trim();
+                        if (!IsTrainNumber(model.trainNumber))
+                        {
+                            model.trainNumber = "未识别-(" + model.trainNumber + ")";
+                            return AllModels;
+                        }
+                        model.secondTrainNumber = "null";
                         model.streamStatus = streamStatus;
                         model.trainType = trainType;
                         model.trainModel = trainModel;
@@ -611,6 +681,11 @@ namespace TimeTableAutoCompleteTool
                 stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
                 stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                 stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                HSSFFont font = (HSSFFont)workbook.CreateFont();
+                font.FontName = "宋体";//字体  
+                font.FontHeightInPoints = 12;//字号  
+                font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+                stoppedTrainStyle.SetFont(font);
 
                 ICellStyle normalTrainStyle = workbook.CreateCellStyle();
                 normalTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightGreen.Index;
@@ -674,7 +749,8 @@ namespace TimeTableAutoCompleteTool
                                     bool ContainsTrainNumber = false;
                                     foreach (CommandModel model in commandModel)
                                     {//根据客调命令刷单元格颜色
-                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber))
+                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
+                                            row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
                                         {
                                             ContainsTrainNumber = true;
                                             //车次统计+1
@@ -762,21 +838,31 @@ namespace TimeTableAutoCompleteTool
         {//失去焦点-综控/获得焦点-行车
             if (radioButton1.Checked)
             {
+                startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件";
                 start_Btn.Text = "处理时刻表";
                 ExcelFile = new OpenFileDialog();
                 start_Btn.Enabled = false;
                 filePath = "";
                 filePathLBL.Text = "已选择：";
+                Size _size = new Size(210, 283);
+                outputTB.Size = _size;
+                wrongTB.Size = _size;
+                hint_label.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注";
             }
             else
             {
+                startPath = "基本图";
                 secondStepText_lbl.Text = "2.选择基本图文件";
                 start_Btn.Text = "创建班计划";
                 ExcelFile = new OpenFileDialog();
                 start_Btn.Enabled = false;
                 filePath = "";
                 filePathLBL.Text = "已选择：";
+                Size _size = new Size(210, 393);
+                outputTB.Size = _size;
+                wrongTB.Size = _size;
+                hint_label.Text = "无序号白色为客调令多出车次，红色标注为客调停开车次。请检查客调令包含内容的行是否符合规范";
             }
         }
 
@@ -1053,9 +1139,8 @@ namespace TimeTableAutoCompleteTool
                         }
                     }
                 }
-                allDailyScheduleModel = _dailyScheduleModel;
-                //下一步-创建班计划
-                createDailySchedule();
+                //下一步-处理数据
+                analyzeDailyScheduleData(_dailyScheduleModel);
             }
             catch (IOException e)
             {
@@ -1065,6 +1150,209 @@ namespace TimeTableAutoCompleteTool
 
         }
 
+        //核对客调令，处理班计划顺序
+        private void analyzeDailyScheduleData(List<DailySchedule> dailyScheduleModel)
+        {
+            int counter = 1;
+            List<DailySchedule> _dailyScheduleModel = new List<DailySchedule>();
+
+                for (int j = 0; j < commandModel.Count; j++)
+                {
+                bool hasGotOne = false;
+                    for (int i = 0; i < dailyScheduleModel.Count; i++)
+                    {
+                    if (dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(commandModel[j].trainNumber.Trim())||
+                        dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(commandModel[j].secondTrainNumber.Trim()))
+                    {//对比车次
+                        hasGotOne = true;
+                        DailySchedule _ds = new DailySchedule();
+                        _ds.id = counter;
+                        _ds.streamStatus = commandModel[j].streamStatus;
+                        _ds.trainType = commandModel[j].trainType;
+                        
+                        switch (commandModel[j].trainConnectType)
+                        {
+                            case 0:
+                                if (dailyScheduleModel[i].trainConnectType != null)
+                                    if (!dailyScheduleModel[i].trainConnectType.Equals("8"))
+                                {
+                                    _ds.hasDifferentPart = true;
+                                }
+                                _ds.trainConnectType = "8";
+                                break;
+                            case 1:
+                                if (dailyScheduleModel[i].trainConnectType != null)
+                                    if (!dailyScheduleModel[i].trainConnectType.Equals("16"))
+                                {
+                                    _ds.hasDifferentPart = true;
+                                }
+                                _ds.trainConnectType = "16";
+                                break;
+                            case 2:
+                                if (dailyScheduleModel[i].trainConnectType != null)
+                                    if (!dailyScheduleModel[i].trainConnectType.Equals("8+"))
+                                {
+                                    _ds.hasDifferentPart = true;
+                                }
+                                _ds.trainConnectType = "8+8";
+                                break;
+                        }
+                        string trainModel = "";
+                        if (dailyScheduleModel[i].trainModel != null)
+                        {
+                            trainModel = dailyScheduleModel[i].trainModel.Trim();
+                        }           
+                        if (trainModel.Contains("统型"))
+                        {
+                            trainModel = trainModel.Replace("统型", "");
+                        }
+                        if (!trainModel.Equals(commandModel[j]))
+                        {
+                            _ds.hasDifferentPart = true;
+                        }
+                        if (!commandModel[j].trainModel.Equals("null"))
+                        {
+                            _ds.trainModel = commandModel[j].trainModel;
+                        }
+                        //后面的和原来对象一样
+                        if(dailyScheduleModel[i].trainNumber != null)
+                            _ds.trainNumber = dailyScheduleModel[i].trainNumber.Trim();
+                        if (dailyScheduleModel[i].stopStation != null)
+                            _ds.stopStation = dailyScheduleModel[i].stopStation.Trim();
+                        if (dailyScheduleModel[i].startStation != null)
+                            _ds.startStation = dailyScheduleModel[i].startStation.Trim();
+                        if (dailyScheduleModel[i].stopTime != null)
+                            _ds.stopTime = dailyScheduleModel[i].stopTime.Trim();
+                        if (dailyScheduleModel[i].startTime != null)
+                            _ds.startTime = dailyScheduleModel[i].startTime.Trim();
+                        if (dailyScheduleModel[i].stopToStartTime != null)
+                            _ds.stopToStartTime = dailyScheduleModel[i].stopToStartTime.Trim();
+                        if (dailyScheduleModel[i].trainBelongsTo != null)
+                            _ds.trainBelongsTo = dailyScheduleModel[i].trainBelongsTo.Trim();
+                        if (dailyScheduleModel[i].trackNum != null)
+                            _ds.trackNum = dailyScheduleModel[i].trackNum.Trim();
+                        if (dailyScheduleModel[i].ratedSeats != null)
+                            _ds.ratedSeats = dailyScheduleModel[i].ratedSeats.Trim();
+                        if (dailyScheduleModel[i].extraText != null)
+                            _ds.extraText = dailyScheduleModel[i].extraText.Trim();
+                        if (dailyScheduleModel[i].tipsText != null)
+                            _ds.tipsText = dailyScheduleModel[i].tipsText.Trim();
+
+                        _dailyScheduleModel.Add(_ds);
+                    }
+                    if (hasGotOne)
+                    {
+                        break;
+                    }
+                    if(i == dailyScheduleModel.Count - 1)
+                    {
+                        if (!hasGotOne)
+                        {
+                            if(!commandModel[j].trainNumber.Contains("0G")&&
+                                !commandModel[j].trainNumber.Contains("0J")&&
+                                !commandModel[j].trainNumber.Contains("DJ")&&
+                                !commandModel[j].trainNumber.Contains("0D")&&
+                                !commandModel[j].trainNumber.Contains("0C"))
+                            {
+                                DailySchedule _ds = new DailySchedule();
+                                _ds.id = counter;
+                                _ds.streamStatus = commandModel[j].streamStatus;
+                                _ds.trainType = commandModel[j].trainType;
+                                if (commandModel[j].secondTrainNumber.Equals("null"))
+                                {
+                                    _ds.trainNumber = commandModel[j].trainNumber;
+                                }
+                                else
+                                {
+                                    _ds.trainNumber = commandModel[j].trainNumber + "/" + commandModel[j].secondTrainNumber;
+                                }
+
+                                switch (commandModel[j].trainConnectType)
+                                {
+                                    case 0:
+                                        _ds.trainConnectType = "8";
+                                        break;
+                                    case 1:
+                                        _ds.trainConnectType = "16";
+                                        break;
+                                    case 2:
+                                        _ds.trainConnectType = "8+8";
+                                        break;
+                                }
+                                if (!commandModel[j].trainModel.Equals("null"))
+                                {
+                                    _ds.trainModel = commandModel[j].trainModel;
+                                }
+                                if (_ds.streamStatus != 0)
+                                {
+                                    _ds.extraText = "人工核对-客调令多出";
+                                    _ds.hasDifferentPart = true;
+                                    counter++;
+                                    _dailyScheduleModel.Add(_ds);
+                                }
+                            }
+                        }
+                    }
+                }
+                 
+            }
+            _dailyScheduleModel.Sort();
+            int _counter = 1;
+            for(int j = 0; j< _dailyScheduleModel.Count;j++)
+            {
+                if(_dailyScheduleModel[j].startTime != null)
+                {//预售时间
+                    if (_dailyScheduleModel[j].startTime.Contains(":"))
+                    {
+                        int presaleTime = 0;
+                        int.TryParse(_dailyScheduleModel[j].startTime.Split(':')[0], out presaleTime);
+                        _dailyScheduleModel[j].presaleTime = presaleTime;
+                    }
+                }
+                else if (_dailyScheduleModel[j].stopTime != null)
+                {
+                    if (_dailyScheduleModel[j].stopTime.Contains(":"))
+                    {
+                        int presaleTime = 0;
+                        int.TryParse(_dailyScheduleModel[j].stopTime.Split(':')[0], out presaleTime);
+                        _dailyScheduleModel[j].presaleTime = presaleTime;
+                    }
+                }
+                if (_dailyScheduleModel[j].extraText != null)
+                {//id
+                    if (_dailyScheduleModel[j].extraText.Contains("客调"))
+                    {
+                        _dailyScheduleModel[j].id = 0;
+                        continue;
+                    }
+                    if(_dailyScheduleModel[j].streamStatus != 0)
+                    {
+                        _dailyScheduleModel[j].id = _counter;
+                        _counter++;
+                    }
+                    else
+                    {
+                        _dailyScheduleModel[j].id = 0;
+                    }
+
+                }
+                else
+                {
+                    if (_dailyScheduleModel[j].streamStatus != 0)
+                    {
+                        _dailyScheduleModel[j].id = _counter;
+                        _counter++;
+                    }
+                    else
+                    {
+                        _dailyScheduleModel[j].id = 0;
+                    }
+                }
+            }
+            allDailyScheduleModel = _dailyScheduleModel;
+            //最后一步 打印
+            createDailySchedule();
+        }
         //创建班计划
         private void createDailySchedule()
         {
@@ -1087,6 +1375,23 @@ namespace TimeTableAutoCompleteTool
             fontBold.IsBold = true;//加粗  
             boldStyle.SetFont(fontBold);
 
+            //表格样式
+            ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
+            stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+            stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
+            stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+            stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            HSSFFont font = (HSSFFont)workbook.CreateFont();
+            font.FontName = "宋体";//字体  
+            font.FontHeightInPoints = 10;//字号  
+            font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+            stoppedTrainStyle.SetFont(font);
+
             ICellStyle normalStyle = workbook.CreateCellStyle();
             normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
             normalStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
@@ -1102,8 +1407,10 @@ namespace TimeTableAutoCompleteTool
 
             //创建sheet
             ISheet sheet = workbook.CreateSheet("sheet0");
-             //创建表头
-             for (int i = 0; i < 2 + allDailyScheduleModel.Count; i++)
+            //标注预售
+            int presaleHour = 0;
+            int startPresaleRow = 0;
+            for (int i = 0; i < 2 + allDailyScheduleModel.Count; i++)
              {
                  IRow row = sheet.CreateRow(i);
                 if (i == 0)
@@ -1118,7 +1425,6 @@ namespace TimeTableAutoCompleteTool
                     row.Height = 15 * 20;
                     row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日班计划");
                     row.GetCell(0).CellStyle = boldStyle;
-
                 }
                 else if (i == 1)
                 {
@@ -1181,7 +1487,7 @@ namespace TimeTableAutoCompleteTool
                                 break;
                             case 13:
                                 row.CreateCell(count).SetCellValue("车型");
-                                sheet.SetColumnWidth(count, 6 * 256);
+                                sheet.SetColumnWidth(count, 7 * 256);
                                 break;
                             case 14:
                                 row.CreateCell(count).SetCellValue("担当");
@@ -1203,10 +1509,45 @@ namespace TimeTableAutoCompleteTool
                         switch (column)
                         {
                             case 0:
-                                row.CreateCell(column);
+                                if(presaleHour != allDailyScheduleModel[i - 2].presaleTime&&
+                                    allDailyScheduleModel[i - 2].presaleTime!=0&&
+                                    allDailyScheduleModel[i-2].streamStatus != 0)
+                                {
+                                    //先把上一个合并一下
+                                    if(startPresaleRow != 0)
+                                    {//第一个必须还是要有的
+                                     //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                                        sheet.AddMergedRegion(new CellRangeAddress(startPresaleRow, i-1 , 0, 0));
+                                        if(presaleHour >= 6)
+                                        {
+                                            sheet.GetRow(startPresaleRow).GetCell(0).SetCellValue(presaleHour + "点列车预售");
+                                        }   
+                                    }
+                                    if(allDailyScheduleModel[i - 2].presaleTime >= 6)
+                                    {
+                                        startPresaleRow = i;
+                                        row.CreateCell(column);
+                                        presaleHour = allDailyScheduleModel[i - 2].presaleTime;
+                                    }
+                                    else
+                                    {
+                                        row.CreateCell(column);
+                                    }
+                                }
+                                else
+                                {
+                                        row.CreateCell(column);
+                                }
                                 break;
                             case 1:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].id);
+                                if(allDailyScheduleModel[i - 2].id != 0)
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].id);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue(" ");
+                                }
                                 break;
                             case 2:
                                 string trainNumber = allDailyScheduleModel[i - 2].trainNumber;
@@ -1253,16 +1594,28 @@ namespace TimeTableAutoCompleteTool
                                 row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo);
                                 break;
                             case 15:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
+                                if(allDailyScheduleModel[i - 2].streamStatus != 0)
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue("停运");
+                                }
+                                
                                 break;
                         }
                         if(column > 1)
                         {
                             row.GetCell(column).CellStyle = normalStyle;
                         }
-                        else if(column == 1)
+                        else if(column == 1 || column == 0)
                         {
                             row.GetCell(column).CellStyle = boldStyle;
+                        }
+                        if(allDailyScheduleModel[i-2].streamStatus == 0 && column != 0)
+                        {
+                            row.GetCell(column).CellStyle = stoppedTrainStyle;
                         }
                         
                     }
@@ -1389,7 +1742,8 @@ namespace TimeTableAutoCompleteTool
                                     bool GotTheTrain = false;
                                     foreach (CommandModel model in commandModel)
                                     {//找到了-判断是否符合计入赶点统计
-                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber))
+                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber)||
+                                            row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
                                         {
                                             ContainsTrainNumber = true;
                                             //车次统计+1
@@ -1522,6 +1876,9 @@ namespace TimeTableAutoCompleteTool
             return _caculatorModel;
         }
 
+        private void label5_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
