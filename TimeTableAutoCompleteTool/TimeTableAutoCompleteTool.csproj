@@ -72,8 +72,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="basicTrainGraphTitle.cs" />
     <Compile Include="CaculatorModel.cs" />
     <Compile Include="CommandModel.cs" />
+    <Compile Include="DailySchedule.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
