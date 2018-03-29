@@ -160,7 +160,6 @@
             this.label5.Size = new System.Drawing.Size(200, 17);
             this.label5.TabIndex = 8;
             this.label5.Text = "（请注意客调令其他部分中的列车）";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // outputTB
             // 

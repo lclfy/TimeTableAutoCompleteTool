@@ -40,7 +40,7 @@ namespace TimeTableAutoCompleteTool
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
             //1行车 2综控
-            radioButton2.Select();
+            radioButton1.Select();
             if (radioButton1.Checked)
             {
                 startPath = "时刻表";
@@ -1625,6 +1625,19 @@ namespace TimeTableAutoCompleteTool
              //向excel文件中写入数据并保保存
              workbook.Write(fs);
              fs.Close();
+            System.Diagnostics.ProcessStartInfo info1 = new System.Diagnostics.ProcessStartInfo();
+            //info.WorkingDirectory = Application.StartupPath;
+            info1.FileName = Application.StartupPath + "\\" + startPath + "\\";
+            info1.Arguments = "";
+            try
+            {
+                System.Diagnostics.Process.Start(info1);
+            }
+            catch (System.ComponentModel.Win32Exception we)
+            {
+                MessageBox.Show(this, we.Message);
+                return;
+            }
             System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
             //info.WorkingDirectory = Application.StartupPath;
             info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls";
@@ -1638,6 +1651,7 @@ namespace TimeTableAutoCompleteTool
                 MessageBox.Show(this, we.Message);
                 return;
             }
+
         }
 
         //赶点计算器
@@ -1874,11 +1888,6 @@ namespace TimeTableAutoCompleteTool
                 return _caculatorModel;
             }
             return _caculatorModel;
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
