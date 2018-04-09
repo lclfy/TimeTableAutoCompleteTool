@@ -26,6 +26,8 @@ namespace TimeTableAutoCompleteTool
         OpenFileDialog ExcelFile;
         private string startPath = "";
         string filePath = "";
+        //行车0，综控1；
+        int modeSelect = 1;
 
         public Main()
         {
@@ -36,11 +38,17 @@ namespace TimeTableAutoCompleteTool
         private void Main_Load(object sender, EventArgs e)
         {
             this.Text = "客调命令辅助工具";
-            buildLBL.Text = "180329";
+            buildLBL.Text = "180408";
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
-            //1行车 2综控
-            radioButton1.Select();
+            if(modeSelect == 0)
+            {
+                radioButton1.Select();
+            }
+            else
+            {
+                radioButton2.Select();
+            }
             if (radioButton1.Checked)
             {
                 startPath = "时刻表";
@@ -366,6 +374,26 @@ namespace TimeTableAutoCompleteTool
                             }
                         }
                     }
+                    else if (command[1].Contains("站") ||
+                        (command[1].Contains("道") ||
+                        command[1].Contains("到")||
+                        command[1].Contains("开")))
+                    {//221、2018年03月20日，CRH380AL-2619：0J5901-DJ5902-G6718(石家庄～北京西)-G801/4（商丘站变更为26道）-0093(商丘站14:25开，郑州东徐兰场15:20到)-0094(郑州东徐兰场16:05开，郑州东动车所16.25到)。
+                        //101、2018年03月20日，CRH380B-3763+3758：G1922/19（商丘站变更为27道）。
+                        //把车次单独分离-去中文-去横杠-去括号内数字-在此处去除小括号
+                        //去括号内数字方法-把括号前半部分换成空格，会变成G801/4 26，G1922/19 27
+                        //识别时取空格前数字即可
+                        AllTrainNumberInOneRaw = Regex.Replace(command[1], @"[\u4e00-\u9fa5]", "").Replace("（", " ").Replace("）", "").Split('-');
+                        //把车次添加模型
+                        List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel);
+                        foreach (CommandModel model in tempModels)
+                        {
+                            if (!model.trainNumber.Equals("null"))
+                            {
+                                AllModels.Add(model);
+                            }
+                        }
+                    }
                     else if (isNormal)
                     {//如果一切正常 则
                         //把车次单独分离-去中文-去横杠-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
@@ -411,8 +439,16 @@ namespace TimeTableAutoCompleteTool
                         trainType = "周末";
                         break;
                 }
-                commands = commands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                if (model.secondTrainNumber.Equals("null"))
+                {
+                    commands = commands + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                }
+                else
+                {
+                    commands = commands + model.trainNumber + "-" + model.secondTrainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                }
             }
+                
             outputTB.Text = "共" + AllModels.Count.ToString() + "趟" + "\r\n" + commands;
             commandModel = AllModels;
 
@@ -524,7 +560,16 @@ namespace TimeTableAutoCompleteTool
                 {
                     if (AllTrainNumberInOneRaw[k].Contains("/"))
                     {
-                        String[] trainWithDoubleNumber = AllTrainNumberInOneRaw[k].Split('/');
+                        string _trainNumber = "";
+                        if(AllTrainNumberInOneRaw[k].Contains(" "))
+                        {
+                            _trainNumber = AllTrainNumberInOneRaw[k].Split(' ')[0];
+                        }
+                        else
+                        {
+                            _trainNumber = AllTrainNumberInOneRaw[k];
+                        }
+                        String[] trainWithDoubleNumber = _trainNumber.Split('/');
                         //先添加第一个车次
                         CommandModel m1 = new CommandModel();
                         m1.trainNumber = trainWithDoubleNumber[0].Trim();
@@ -557,8 +602,17 @@ namespace TimeTableAutoCompleteTool
                     }
                     else if (AllTrainNumberInOneRaw[k].Length != 0)
                     {
+                        string _trainNumber = "";
+                        if (AllTrainNumberInOneRaw[k].Contains(" "))
+                        {
+                            _trainNumber = AllTrainNumberInOneRaw[k].Split(' ')[0];
+                        }
+                        else
+                        {
+                            _trainNumber = AllTrainNumberInOneRaw[k];
+                        }
                         CommandModel model = new CommandModel();
-                        model.trainNumber = AllTrainNumberInOneRaw[k].Trim();
+                        model.trainNumber = _trainNumber;
                         if (!IsTrainNumber(model.trainNumber))
                         {
                             model.trainNumber = "未识别-(" + model.trainNumber + ")";
@@ -957,11 +1011,11 @@ namespace TimeTableAutoCompleteTool
                                         {
                                             titleInfo.trainNumColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("始发"))
+                                        else if (row.GetCell(j).ToString().Contains("始发站"))
                                         {
                                             titleInfo.startStationColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("终到"))
+                                        else if (row.GetCell(j).ToString().Contains("终到站"))
                                         {
                                             titleInfo.stopStationColumn = j;
                                         }
