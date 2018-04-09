@@ -28,6 +28,7 @@ namespace TimeTableAutoCompleteTool
         string filePath = "";
         //行车0，综控1；
         int modeSelect = 1;
+        string build = "180409";
 
         public Main()
         {
@@ -38,7 +39,7 @@ namespace TimeTableAutoCompleteTool
         private void Main_Load(object sender, EventArgs e)
         {
             this.Text = "客调命令辅助工具";
-            buildLBL.Text = "180408";
+            buildLBL.Text = build;
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
             if(modeSelect == 0)
@@ -138,7 +139,6 @@ namespace TimeTableAutoCompleteTool
                 int streamStatus = 1;
                 //用于某些情况下标记不正常车次避免重复添加
                 Boolean isNormal = true;
-
                 int trainType = 0;
                 command = AllCommand[i].Split('：');
                 if (command.Length > 1)
@@ -516,7 +516,9 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("{", "）");
             if (standardCommand.Contains("}"))
                 standardCommand = standardCommand.Replace("}", "）");
-            return standardCommand;
+            if (standardCommand.Contains(" "))
+                standardCommand = standardCommand.Replace(" ", "");
+            return standardCommand.Trim();
         }
 
         private List<CommandModel> trainModelAddFunc(String[] AllTrainNumberInOneRaw, int streamStatus, int trainType, string trainModel)
@@ -770,12 +772,12 @@ namespace TimeTableAutoCompleteTool
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
-                for (int i = 0; i < sheet.LastRowNum; i++)  //对工作表每一行  
+                for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                 {
                     row = sheet.GetRow(i);   //row读入第i行数据  
                     if (row != null)
                     {
-                        for (int j = 0; j < row.LastCellNum; j++)  //对工作表每一列  
+                        for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
                         {
                             if (row.GetCell(j) != null)
                             {
@@ -1092,6 +1094,10 @@ namespace TimeTableAutoCompleteTool
                             }
                             if (_readingRow.GetCell(titleInfo.trainNumColumn) != null && titleInfo.trainNumColumn != 0)
                             {//车次
+                                if (_readingRow.GetCell(titleInfo.trainNumColumn).ToString().Contains("G2626"))
+                                {
+                                    string iss = _readingRow.GetCell(titleInfo.trainNumColumn).ToString();
+                                }
                                     if (_readingRow.GetCell(titleInfo.trainNumColumn).ToString().Length != 0)
                                     {
                                         tempModel.trainNumber = _readingRow.GetCell(titleInfo.trainNumColumn).ToString();
@@ -1607,7 +1613,7 @@ namespace TimeTableAutoCompleteTool
                                 string trainNumber = allDailyScheduleModel[i - 2].trainNumber;
                                 if (trainNumber.Split('/').Length > 2)
                                 {
-                                    trainNumber = trainNumber.Split('/')[0] + trainNumber.Split('/')[1];
+                                    trainNumber = trainNumber.Split('/')[0] +"/" + trainNumber.Split('/')[1];
                                 }
                                 row.CreateCell(column).SetCellValue(trainNumber);
                                 break;
