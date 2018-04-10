@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.label1 = new System.Windows.Forms.Label();
             this.command_rTb = new System.Windows.Forms.RichTextBox();
@@ -42,9 +43,9 @@
             this.label6 = new System.Windows.Forms.Label();
             this.hint_label = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.developerLabel = new System.Windows.Forms.Label();
             this.secondListTitle_lbl = new System.Windows.Forms.Label();
-            this.wrongTB = new System.Windows.Forms.RichTextBox();
+            this.searchResult_tb = new System.Windows.Forms.RichTextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.buildLBL = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -64,10 +65,18 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.search_tb = new System.Windows.Forms.TextBox();
+            this.contentOfDeveloper = new System.Windows.Forms.ToolTip(this.components);
+            this.updateReadMe = new System.Windows.Forms.ToolTip(this.components);
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -82,6 +91,7 @@
             // 
             // command_rTb
             // 
+            this.command_rTb.ContextMenuStrip = this.contextMenuStrip1;
             this.command_rTb.Location = new System.Drawing.Point(9, 32);
             this.command_rTb.Name = "command_rTb";
             this.command_rTb.Size = new System.Drawing.Size(465, 274);
@@ -201,16 +211,16 @@
             this.label8.TabIndex = 11;
             this.label8.Text = "客调命令中提取出的车次";
             // 
-            // label9
+            // developerLabel
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label9.Location = new System.Drawing.Point(682, 493);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(233, 17);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "意见反馈/Bug反馈请联系运转车间-罗思聪";
+            this.developerLabel.AutoSize = true;
+            this.developerLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.developerLabel.ForeColor = System.Drawing.Color.DarkOrange;
+            this.developerLabel.Location = new System.Drawing.Point(602, 493);
+            this.developerLabel.Name = "developerLabel";
+            this.developerLabel.Size = new System.Drawing.Size(229, 17);
+            this.developerLabel.TabIndex = 12;
+            this.developerLabel.Text = "反馈请联系运转车间-罗思聪（或技术科）";
             // 
             // secondListTitle_lbl
             // 
@@ -218,18 +228,18 @@
             this.secondListTitle_lbl.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.secondListTitle_lbl.Location = new System.Drawing.Point(750, 50);
             this.secondListTitle_lbl.Name = "secondListTitle_lbl";
-            this.secondListTitle_lbl.Size = new System.Drawing.Size(212, 21);
+            this.secondListTitle_lbl.Size = new System.Drawing.Size(74, 21);
             this.secondListTitle_lbl.TabIndex = 13;
-            this.secondListTitle_lbl.Text = "部分未识别车次(检查对应行)";
+            this.secondListTitle_lbl.Text = "搜索车次";
             // 
-            // wrongTB
+            // searchResult_tb
             // 
-            this.wrongTB.Location = new System.Drawing.Point(754, 81);
-            this.wrongTB.Name = "wrongTB";
-            this.wrongTB.ReadOnly = true;
-            this.wrongTB.Size = new System.Drawing.Size(210, 283);
-            this.wrongTB.TabIndex = 14;
-            this.wrongTB.Text = "";
+            this.searchResult_tb.Location = new System.Drawing.Point(754, 81);
+            this.searchResult_tb.Name = "searchResult_tb";
+            this.searchResult_tb.ReadOnly = true;
+            this.searchResult_tb.Size = new System.Drawing.Size(210, 283);
+            this.searchResult_tb.TabIndex = 14;
+            this.searchResult_tb.Text = "";
             // 
             // label11
             // 
@@ -245,8 +255,8 @@
             // 
             this.buildLBL.AutoSize = true;
             this.buildLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buildLBL.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.buildLBL.Location = new System.Drawing.Point(946, 493);
+            this.buildLBL.ForeColor = System.Drawing.Color.Tomato;
+            this.buildLBL.Location = new System.Drawing.Point(867, 493);
             this.buildLBL.Name = "buildLBL";
             this.buildLBL.Size = new System.Drawing.Size(56, 17);
             this.buildLBL.TabIndex = 16;
@@ -268,7 +278,7 @@
             // TrainEarlyCaculator_Btn
             // 
             this.TrainEarlyCaculator_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TrainEarlyCaculator_Btn.Location = new System.Drawing.Point(-1, -2);
+            this.TrainEarlyCaculator_Btn.Location = new System.Drawing.Point(219, 8);
             this.TrainEarlyCaculator_Btn.Name = "TrainEarlyCaculator_Btn";
             this.TrainEarlyCaculator_Btn.Size = new System.Drawing.Size(10, 10);
             this.TrainEarlyCaculator_Btn.TabIndex = 21;
@@ -277,7 +287,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.search_tb);
             this.groupBox2.Controls.Add(this.groupBox3);
+            this.groupBox2.Controls.Add(this.TrainEarlyCaculator_Btn);
             this.groupBox2.Location = new System.Drawing.Point(519, 49);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(464, 435);
@@ -440,7 +452,7 @@
             this.groupBox4.Controls.Add(this.radioButton2);
             this.groupBox4.Controls.Add(this.radioButton1);
             this.groupBox4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox4.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.groupBox4.ForeColor = System.Drawing.Color.DarkOrange;
             this.groupBox4.Location = new System.Drawing.Point(754, 12);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(230, 35);
@@ -448,19 +460,60 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "应用范围";
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.粘贴ToolStripMenuItem,
+            this.清空ToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+            // 
+            // 粘贴ToolStripMenuItem
+            // 
+            this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.粘贴ToolStripMenuItem.Text = "粘贴";
+            this.粘贴ToolStripMenuItem.Click += new System.EventHandler(this.粘贴ToolStripMenuItem_Click);
+            // 
+            // 清空ToolStripMenuItem
+            // 
+            this.清空ToolStripMenuItem.Name = "清空ToolStripMenuItem";
+            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.清空ToolStripMenuItem.Text = "清空";
+            this.清空ToolStripMenuItem.Click += new System.EventHandler(this.清空ToolStripMenuItem_Click);
+            // 
+            // search_tb
+            // 
+            this.search_tb.Location = new System.Drawing.Point(311, 2);
+            this.search_tb.Name = "search_tb";
+            this.search_tb.Size = new System.Drawing.Size(133, 21);
+            this.search_tb.TabIndex = 27;
+            this.search_tb.TextChanged += new System.EventHandler(this.search_tb_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.ForeColor = System.Drawing.Color.Tomato;
+            this.label2.Location = new System.Drawing.Point(808, 510);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(176, 17);
+            this.label2.TabIndex = 27;
+            this.label2.Text = "鼠标移动至版本号查看更新内容";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 529);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.TrainEarlyCaculator_Btn);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.buildLBL);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.wrongTB);
+            this.Controls.Add(this.searchResult_tb);
             this.Controls.Add(this.secondListTitle_lbl);
-            this.Controls.Add(this.label9);
+            this.Controls.Add(this.developerLabel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.hint_label);
             this.Controls.Add(this.outputTB);
@@ -477,10 +530,12 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -501,9 +556,9 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label hint_label;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label developerLabel;
         private System.Windows.Forms.Label secondListTitle_lbl;
-        private System.Windows.Forms.RichTextBox wrongTB;
+        private System.Windows.Forms.RichTextBox searchResult_tb;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label buildLBL;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -523,6 +578,13 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 清空ToolStripMenuItem;
+        private System.Windows.Forms.TextBox search_tb;
+        private System.Windows.Forms.ToolTip contentOfDeveloper;
+        private System.Windows.Forms.ToolTip updateReadMe;
+        private System.Windows.Forms.Label label2;
     }
 }
 

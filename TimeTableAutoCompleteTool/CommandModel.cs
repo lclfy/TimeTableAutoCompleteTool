@@ -5,7 +5,10 @@ using System.Text;
 namespace TimeTableAutoCompleteTool
 {
     class CommandModel
-    {//车次号，停运状态(0停开，1开行，2次日)，高峰临客
+    {
+        //第几行
+        public string trainIndex { get; set; }
+        //车次号，停运状态(0停开，1开行，2次日)，高峰临客
         public string trainNumber { get; set; }
         public string secondTrainNumber { get; set; }
         public int streamStatus { get; set; }
