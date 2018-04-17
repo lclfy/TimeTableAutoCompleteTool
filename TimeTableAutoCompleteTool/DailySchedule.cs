@@ -33,6 +33,9 @@ namespace TimeTableAutoCompleteTool
         public bool hasDifferentPart = false;
         //列车预售时间
         public int presaleTime { get; set; }
+        //南1-北0
+        public int upOrDown { get; set; }
+
 
         public int CompareTo(DailySchedule other)
         {
@@ -64,14 +67,14 @@ namespace TimeTableAutoCompleteTool
             int StartedTimeInt = 0;
             int.TryParse(thisStartedTime, out StartedTimeInt);
             if(StartedTimeInt != 0 &&
-                StartedTimeInt < 600)
+                StartedTimeInt < 500)
             {
                 StartedTimeInt = StartedTimeInt + 2400;
                 thisStartedTime = StartedTimeInt.ToString();
             }
             int.TryParse(otherStartedTime, out StartedTimeInt);
             if (StartedTimeInt != 0 &&
-                StartedTimeInt < 600)
+                StartedTimeInt < 500)
             {
                 StartedTimeInt = StartedTimeInt + 2400;
                 otherStartedTime = StartedTimeInt.ToString();
