@@ -36,10 +36,8 @@
             this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.secondStepText_lbl = new System.Windows.Forms.Label();
-            this.importTimeTable_Btn = new System.Windows.Forms.Button();
             this.filePathLBL = new System.Windows.Forms.Label();
             this.filePath_lbl = new System.Windows.Forms.Label();
-            this.start_Btn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.outputTB = new System.Windows.Forms.RichTextBox();
@@ -69,10 +67,12 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.contentOfDeveloper = new System.Windows.Forms.ToolTip(this.components);
             this.updateReadMe = new System.Windows.Forms.ToolTip(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
+            this.start_Btn = new CCWin.SkinControl.SkinButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -84,7 +84,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(34, 25);
+            this.label1.Location = new System.Drawing.Point(36, 53);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(497, 21);
             this.label1.TabIndex = 0;
@@ -132,17 +132,6 @@
             this.secondStepText_lbl.TabIndex = 2;
             this.secondStepText_lbl.Text = "2.选择时刻表文件/基本图文件";
             // 
-            // importTimeTable_Btn
-            // 
-            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(382, 312);
-            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
-            this.importTimeTable_Btn.TabIndex = 3;
-            this.importTimeTable_Btn.Text = "导入";
-            this.importTimeTable_Btn.UseVisualStyleBackColor = true;
-            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
-            // 
             // filePathLBL
             // 
             this.filePathLBL.AutoSize = true;
@@ -157,27 +146,16 @@
             // 
             this.filePath_lbl.AutoSize = true;
             this.filePath_lbl.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePath_lbl.Location = new System.Drawing.Point(110, 376);
+            this.filePath_lbl.Location = new System.Drawing.Point(112, 404);
             this.filePath_lbl.Name = "filePath_lbl";
             this.filePath_lbl.Size = new System.Drawing.Size(0, 17);
             this.filePath_lbl.TabIndex = 5;
-            // 
-            // start_Btn
-            // 
-            this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.start_Btn.Location = new System.Drawing.Point(9, 379);
-            this.start_Btn.Name = "start_Btn";
-            this.start_Btn.Size = new System.Drawing.Size(465, 44);
-            this.start_Btn.TabIndex = 6;
-            this.start_Btn.Text = "生成时刻表/班计划";
-            this.start_Btn.UseVisualStyleBackColor = true;
-            this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.Location = new System.Drawing.Point(39, 54);
+            this.label4.Location = new System.Drawing.Point(41, 82);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(399, 17);
             this.label4.TabIndex = 7;
@@ -188,7 +166,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label5.Location = new System.Drawing.Point(535, 29);
+            this.label5.Location = new System.Drawing.Point(537, 57);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(200, 17);
             this.label5.TabIndex = 8;
@@ -196,7 +174,7 @@
             // 
             // outputTB
             // 
-            this.outputTB.Location = new System.Drawing.Point(538, 81);
+            this.outputTB.Location = new System.Drawing.Point(540, 109);
             this.outputTB.Name = "outputTB";
             this.outputTB.ReadOnly = true;
             this.outputTB.Size = new System.Drawing.Size(210, 283);
@@ -208,7 +186,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label6.Location = new System.Drawing.Point(166, 347);
+            this.label6.Location = new System.Drawing.Point(168, 375);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 17);
             this.label6.TabIndex = 8;
@@ -218,7 +196,7 @@
             this.hint_label.AutoSize = true;
             this.hint_label.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.hint_label.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.hint_label.Location = new System.Drawing.Point(26, 493);
+            this.hint_label.Location = new System.Drawing.Point(28, 521);
             this.hint_label.Name = "hint_label";
             this.hint_label.Size = new System.Drawing.Size(570, 17);
             this.hint_label.TabIndex = 10;
@@ -228,7 +206,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.Location = new System.Drawing.Point(534, 50);
+            this.label8.Location = new System.Drawing.Point(536, 78);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(186, 21);
             this.label8.TabIndex = 11;
@@ -239,7 +217,7 @@
             this.developerLabel.AutoSize = true;
             this.developerLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.developerLabel.ForeColor = System.Drawing.Color.DarkOrange;
-            this.developerLabel.Location = new System.Drawing.Point(602, 493);
+            this.developerLabel.Location = new System.Drawing.Point(604, 521);
             this.developerLabel.Name = "developerLabel";
             this.developerLabel.Size = new System.Drawing.Size(229, 17);
             this.developerLabel.TabIndex = 12;
@@ -249,7 +227,7 @@
             // 
             this.secondListTitle_lbl.AutoSize = true;
             this.secondListTitle_lbl.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.secondListTitle_lbl.Location = new System.Drawing.Point(750, 50);
+            this.secondListTitle_lbl.Location = new System.Drawing.Point(752, 78);
             this.secondListTitle_lbl.Name = "secondListTitle_lbl";
             this.secondListTitle_lbl.Size = new System.Drawing.Size(74, 21);
             this.secondListTitle_lbl.TabIndex = 13;
@@ -257,7 +235,7 @@
             // 
             // searchResult_tb
             // 
-            this.searchResult_tb.Location = new System.Drawing.Point(754, 81);
+            this.searchResult_tb.Location = new System.Drawing.Point(756, 109);
             this.searchResult_tb.Name = "searchResult_tb";
             this.searchResult_tb.ReadOnly = true;
             this.searchResult_tb.Size = new System.Drawing.Size(210, 283);
@@ -269,7 +247,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label11.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label11.Location = new System.Drawing.Point(774, 478);
+            this.label11.Location = new System.Drawing.Point(776, 506);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(0, 17);
             this.label11.TabIndex = 15;
@@ -279,7 +257,7 @@
             this.buildLBL.AutoSize = true;
             this.buildLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buildLBL.ForeColor = System.Drawing.Color.Tomato;
-            this.buildLBL.Location = new System.Drawing.Point(867, 493);
+            this.buildLBL.Location = new System.Drawing.Point(869, 521);
             this.buildLBL.Name = "buildLBL";
             this.buildLBL.Size = new System.Drawing.Size(56, 17);
             this.buildLBL.TabIndex = 16;
@@ -290,9 +268,9 @@
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.secondStepText_lbl);
-            this.groupBox1.Controls.Add(this.start_Btn);
             this.groupBox1.Controls.Add(this.command_rTb);
-            this.groupBox1.Location = new System.Drawing.Point(29, 49);
+            this.groupBox1.Controls.Add(this.start_Btn);
+            this.groupBox1.Location = new System.Drawing.Point(31, 77);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(483, 435);
             this.groupBox1.TabIndex = 19;
@@ -313,7 +291,7 @@
             this.groupBox2.Controls.Add(this.search_tb);
             this.groupBox2.Controls.Add(this.groupBox3);
             this.groupBox2.Controls.Add(this.TrainEarlyCaculator_Btn);
-            this.groupBox2.Location = new System.Drawing.Point(519, 49);
+            this.groupBox2.Location = new System.Drawing.Point(521, 77);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(464, 435);
             this.groupBox2.TabIndex = 20;
@@ -480,29 +458,18 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.BackColor = System.Drawing.SystemColors.Menu;
+            this.groupBox4.BackColor = System.Drawing.Color.WhiteSmoke;
             this.groupBox4.Controls.Add(this.radioButton3);
             this.groupBox4.Controls.Add(this.radioButton2);
             this.groupBox4.Controls.Add(this.radioButton1);
             this.groupBox4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox4.ForeColor = System.Drawing.Color.DarkOrange;
-            this.groupBox4.Location = new System.Drawing.Point(754, 7);
+            this.groupBox4.Location = new System.Drawing.Point(756, 35);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(230, 40);
             this.groupBox4.TabIndex = 25;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "应用范围";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.ForeColor = System.Drawing.Color.Tomato;
-            this.label2.Location = new System.Drawing.Point(808, 510);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(176, 17);
-            this.label2.TabIndex = 27;
-            this.label2.Text = "鼠标移动至版本号查看更新内容";
             // 
             // radioButton3
             // 
@@ -517,11 +484,63 @@
             this.radioButton3.UseVisualStyleBackColor = true;
             this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.ForeColor = System.Drawing.Color.Tomato;
+            this.label2.Location = new System.Drawing.Point(810, 538);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(176, 17);
+            this.label2.TabIndex = 27;
+            this.label2.Text = "鼠标移动至版本号查看更新内容";
+            // 
+            // importTimeTable_Btn
+            // 
+            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
+            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.importTimeTable_Btn.DownBack = null;
+            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 312);
+            this.importTimeTable_Btn.MouseBack = null;
+            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
+            this.importTimeTable_Btn.NormlBack = null;
+            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
+            this.importTimeTable_Btn.TabIndex = 7;
+            this.importTimeTable_Btn.Text = "导入";
+            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
+            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
+            // 
+            // start_Btn
+            // 
+            this.start_Btn.BackColor = System.Drawing.Color.Transparent;
+            this.start_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.start_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.start_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.start_Btn.DownBack = null;
+            this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.start_Btn.ForeColor = System.Drawing.Color.White;
+            this.start_Btn.Location = new System.Drawing.Point(10, 379);
+            this.start_Btn.MouseBack = null;
+            this.start_Btn.Name = "start_Btn";
+            this.start_Btn.NormlBack = null;
+            this.start_Btn.Size = new System.Drawing.Size(465, 43);
+            this.start_Btn.TabIndex = 8;
+            this.start_Btn.Text = "生成时刻表/班计划";
+            this.start_Btn.UseVisualStyleBackColor = false;
+            this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1027, 529);
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.CaptionBackColorBottom = System.Drawing.Color.WhiteSmoke;
+            this.CaptionBackColorTop = System.Drawing.Color.WhiteSmoke;
+            this.ClientSize = new System.Drawing.Size(1027, 566);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.label5);
@@ -539,6 +558,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "Form1";
@@ -562,10 +582,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RichTextBox command_rTb;
         private System.Windows.Forms.Label secondStepText_lbl;
-        private System.Windows.Forms.Button importTimeTable_Btn;
         private System.Windows.Forms.Label filePathLBL;
         private System.Windows.Forms.Label filePath_lbl;
-        private System.Windows.Forms.Button start_Btn;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox outputTB;
@@ -602,6 +620,8 @@
         private System.Windows.Forms.ToolTip updateReadMe;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RadioButton radioButton3;
+        private CCWin.SkinControl.SkinButton importTimeTable_Btn;
+        private CCWin.SkinControl.SkinButton start_Btn;
     }
 }
 

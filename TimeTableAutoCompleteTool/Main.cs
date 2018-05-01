@@ -13,10 +13,12 @@ using NPOI.XSSF.UserModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using NPOI.SS.Util;
+using CCWin;
+using System.Configuration;
 
 namespace TimeTableAutoCompleteTool
 {
-    public partial class Main : Form
+    public partial class Main : Skin_Mac
     {
         private Boolean hasText = false;
         private Boolean hasFilePath = false;
@@ -28,12 +30,12 @@ namespace TimeTableAutoCompleteTool
         private string wrongTrain = "";
         string filePath = "";
         //行车0，综控1，动车所2；
-        int modeSelect = 1;
+        int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 27 - v180417";
-        string readMe = "build27更新内容:\n " +
-            "综控室增加针对短编车智能识别停车方向（南-北）";
+        string build = "build 28 - v180501";
+        string readMe = "build28更新内容:\n " +
+            "综控室增加针对短编车智能识别停车方向（南-北），修改部分界面元素，增加自动保存应用范围";
 
         public Main()
         {
@@ -47,6 +49,7 @@ namespace TimeTableAutoCompleteTool
             buildLBL.Text = build;
             start_Btn.Enabled = false;
             TrainEarlyCaculator_Btn.Enabled = false;
+            load();
             if(modeSelect == 0)
             {
                 radioButton1.Select();
@@ -63,6 +66,36 @@ namespace TimeTableAutoCompleteTool
             contentOfDeveloper.SetToolTip(this.developerLabel, "联系方式：17638570597");
             updateReadMe.IsBalloon = true;
             updateReadMe.SetToolTip(this.buildLBL, readMe);
+        }
+
+        private void load()
+        {
+            int _modeSelect = 0;
+            int.TryParse(ConfigurationManager.AppSettings["modeSelect"], out _modeSelect);
+            modeSelect = _modeSelect;
+        }
+
+        private void save()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            config.Save();
+            if (config.AppSettings.Settings["modeSelect"] == null)
+            {
+                KeyValueConfigurationElement _k = new KeyValueConfigurationElement("modeSelect", modeSelect.ToString());
+                config.AppSettings.Settings.Add(_k);
+            }
+            else
+            {
+                config.AppSettings.Settings["modeSelect"].Value = modeSelect.ToString();
+            }
+            config.Save();
+            ConfigurationManager.RefreshSection("modeSelect");
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            save();
+            base.OnClosing(e);
         }
 
         private void command_rTb_TextChanged(object sender, EventArgs e)
@@ -920,7 +953,6 @@ namespace TimeTableAutoCompleteTool
                 FileStream fs1 = File.OpenWrite(ExcelFile.FileName);
                 workbook.Write(fs1);
                 fs1.Close();
-                Console.ReadLine();
                 fileStream.Close();
                 workbook.Close();
                 //显示车次总数
@@ -969,6 +1001,7 @@ namespace TimeTableAutoCompleteTool
         {
             if (radioButton1.Checked)
             {
+                modeSelect = 0;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件";
                 start_Btn.Text = "处理时刻表";
@@ -983,6 +1016,7 @@ namespace TimeTableAutoCompleteTool
             }
             else if (radioButton2.Checked)
             {
+                modeSelect = 1;
                 startPath = "基本图";
                 secondStepText_lbl.Text = "2.选择基本图文件";
                 start_Btn.Text = "创建班计划";
@@ -997,6 +1031,7 @@ namespace TimeTableAutoCompleteTool
             }
             else if (radioButton3.Checked)
             {
+                modeSelect = 2;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
                 start_Btn.Text = "补全车辆编组";
@@ -2345,7 +2380,5 @@ namespace TimeTableAutoCompleteTool
             }
             searchResult_tb.Text = "共" + _allModels.Count.ToString() + "趟" + "\r\n" + commands;
         }
-
-
     }
 }
