@@ -33,9 +33,9 @@ namespace TimeTableAutoCompleteTool
         int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 28 - v180501";
-        string readMe = "build28更新内容:\n " +
-            "综控室增加针对短编车智能识别停车方向（南-北），修改部分界面元素，增加自动保存应用范围";
+        string build = "build 29 - v180511";
+        string readMe = "build29更新内容:\n" +
+            "修复了可能导致行数识别错误的问题;\n修改班计划单元格样式为文本;\n班计划中，双车号将进行判断 经过本站时的车次放前面";
 
         public Main()
         {
@@ -155,99 +155,180 @@ namespace TimeTableAutoCompleteTool
         private void analyseCommand()
         {   //分析客调命令
             //删除不需要的标点符号-字符
-            string wrongNumber = "";
-            String[] AllCommand = removeUnuseableWord().Split('。');
-            List<CommandModel> AllModels = new List<CommandModel>();
-            for (int i = 0; i < AllCommand.Length; i++)
+            try
             {
-                //取行号，便于查找
-                string index = AllCommand[i].Split('、')[0].Trim().Replace("\n","");
-                String[] command;
-                String[] AllTrainNumberInOneRaw;
-                string trainModel = "null";
-                int streamStatus = 1;
-                //用于某些情况下标记不正常车次避免重复添加
-                Boolean isNormal = true;
-                int trainType = 0;
-                command = AllCommand[i].Split('：');
-                if (command.Length > 1)
-                {//非常规情况找车次
-                    if (!command[1].Contains("G") &&
-                    !command[1].Contains("D") &&
-                    !command[1].Contains("C") &&
-                    !command[1].Contains("J"))
-                    {                //特殊数据
-                                     //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
-                                     //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
-                        for (int r = 0; r < command.Length; r++)
-                        {//从后往前开始找车次
-                            if (command[command.Length - r - 1].Contains("G") ||
-                                command[command.Length - r - 1].Contains("D") ||
-                                command[command.Length - r - 1].Contains("C") ||
-                                command[command.Length - r - 1].Contains("J"))
-                            {//找到了就用该项作为车次
-                                command[1] = command[command.Length - r - 1];
-                                break;
-                            }
-                        }
-                    }
-                    if (command[1].Contains("，"))
-                    {//有逗号-逗号换横杠
-                        command[1] = command[1].Replace('，', '-');
-                    }
-                    if (command[1].Contains("高峰"))
-                    {
-                        trainType = 1;
-                    }
-                    else if (command[1].Contains("临客"))
-                    {
-                        trainType = 2;
-                    }
-                    else if (command[1].Contains("周末"))
-                    {
-                        trainType = 3;
-                    }
-
-                    for (int timeCount = 0; timeCount < command.Length; timeCount++)
-                    {
-                        if (command[timeCount].Contains("CR"))
-                        {
-                            for (int word = 0; word < command[timeCount].Split('，').Length; word++)
-                            {
-                                if (command[timeCount].Split('，')[word].Contains("CR") ||
-                                    command[timeCount].Split('，')[word].Contains("cr"))
-                                {
-                                    trainModel = command[timeCount].Split('，')[word];
+                string wrongNumber = "";
+                String[] AllCommand = removeUnuseableWord().Split('。');
+                List<CommandModel> AllModels = new List<CommandModel>();
+                for (int i = 0; i < AllCommand.Length; i++)
+                {
+                    //取行号，便于查找
+                    string index = AllCommand[i].Split('、')[0].Trim().Replace("\n", "");
+                    String[] command;
+                    String[] AllTrainNumberInOneRaw;
+                    string trainModel = "null";
+                    int streamStatus = 1;
+                    //用于某些情况下标记不正常车次避免重复添加
+                    Boolean isNormal = true;
+                    int trainType = 0;
+                    command = AllCommand[i].Split('：');
+                    if (command.Length > 1)
+                    {//非常规情况找车次
+                        if (!command[1].Contains("G") &&
+                        !command[1].Contains("D") &&
+                        !command[1].Contains("C") &&
+                        !command[1].Contains("J"))
+                        {                //特殊数据
+                                         //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
+                                         //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
+                            for (int r = 0; r < command.Length; r++)
+                            {//从后往前开始找车次
+                                if (command[command.Length - r - 1].Contains("G") ||
+                                    command[command.Length - r - 1].Contains("D") ||
+                                    command[command.Length - r - 1].Contains("C") ||
+                                    command[command.Length - r - 1].Contains("J"))
+                                {//找到了就用该项作为车次
+                                    command[1] = command[command.Length - r - 1];
+                                    break;
                                 }
                             }
-
                         }
-                    }
+                        if (command[1].Contains("，"))
+                        {//有逗号-逗号换横杠
+                            command[1] = command[1].Replace('，', '-');
+                        }
+                        if (command[1].Contains("高峰"))
+                        {
+                            trainType = 1;
+                        }
+                        else if (command[1].Contains("临客"))
+                        {
+                            trainType = 2;
+                        }
+                        else if (command[1].Contains("周末"))
+                        {
+                            trainType = 3;
+                        }
 
-
-                    //找停运标记-特殊标记则直接加入模型
-                    for (int n = 0; n < command.Length; n++)
-                    {//从后往前开始找停运状态
-                        if ((command[command.Length - n - 1].Contains("停运") &&
-                            !command[command.Length - n - 1].Contains("G") &&
-                            !command[command.Length - n - 1].Contains("D") &&
-                            !command[command.Length - n - 1].Contains("C") &&
-                            !command[command.Length - n - 1].Contains("J") &&
-                            !command[command.Length - n - 1].Contains("00")) ||
-                             (command.Length > 2 && command[command.Length - n - 1].Contains("停运）")))
-                        {//如果有-则继续判断是否全部停运
-                         //特殊情况-部分停运，但停运部分使用括号标记
-                         //76、2018年02月15日，CRH380AL-2590：DJ5732-G2001-(G662-G669：停运)。
-                         //221、2018年02月22日，CRH380AL-2600：【0J5901-DJ5902-G6718(石家庄～北京西):停运】，0G4909-G4910-G801/4-G6611-G1559/8-G807-0G808。
-                            if (command[command.Length - n - 1].Contains("停运）"))
+                        for (int timeCount = 0; timeCount < command.Length; timeCount++)
+                        {
+                            if (command[timeCount].Contains("CR"))
                             {
-                                if (command[command.Length - n - 1].Contains("G") ||
-                                    command[command.Length - n - 1].Contains("D") ||
-                                    command[command.Length - n - 1].Contains("C") ||
-                                    command[command.Length - n - 1].Contains("J") ||
-                                    command[command.Length - n - 1].Contains("0"))
-                                {//如果停运标记后面还有车的话
-                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), 1, trainType, trainModel, index);
+                                for (int word = 0; word < command[timeCount].Split('，').Length; word++)
+                                {
+                                    if (command[timeCount].Split('，')[word].Contains("CR") ||
+                                        command[timeCount].Split('，')[word].Contains("cr"))
+                                    {
+                                        trainModel = command[timeCount].Split('，')[word];
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                        //找停运标记-特殊标记则直接加入模型
+                        for (int n = 0; n < command.Length; n++)
+                        {//从后往前开始找停运状态
+                            if ((command[command.Length - n - 1].Contains("停运") &&
+                                !command[command.Length - n - 1].Contains("G") &&
+                                !command[command.Length - n - 1].Contains("D") &&
+                                !command[command.Length - n - 1].Contains("C") &&
+                                !command[command.Length - n - 1].Contains("J") &&
+                                !command[command.Length - n - 1].Contains("00")) ||
+                                 (command.Length > 2 && command[command.Length - n - 1].Contains("停运）")))
+                            {//如果有-则继续判断是否全部停运
+                             //特殊情况-部分停运，但停运部分使用括号标记
+                             //76、2018年02月15日，CRH380AL-2590：DJ5732-G2001-(G662-G669：停运)。
+                             //221、2018年02月22日，CRH380AL-2600：【0J5901-DJ5902-G6718(石家庄～北京西):停运】，0G4909-G4910-G801/4-G6611-G1559/8-G807-0G808。
+                                if (command[command.Length - n - 1].Contains("停运）"))
+                                {
+                                    if (command[command.Length - n - 1].Contains("G") ||
+                                        command[command.Length - n - 1].Contains("D") ||
+                                        command[command.Length - n - 1].Contains("C") ||
+                                        command[command.Length - n - 1].Contains("J") ||
+                                        command[command.Length - n - 1].Contains("0"))
+                                    {//如果停运标记后面还有车的话
+                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), 1, trainType, trainModel, index);
+                                        foreach (CommandModel model in tempModels)
+                                        {
+                                            if (!model.trainNumber.Contains("未识别"))
+                                            {
+                                                AllModels.Add(model);
+                                            }
+                                            else
+                                            {
+                                                wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                            }
+                                        }
+                                    }
+                                    isNormal = false;
+                                    AllTrainNumberInOneRaw = command[1].Split('-');
+                                    //寻找车次中的括号左半部分
+                                    //从前往后找，找到标记后的车次为停开
+                                    bool stopped = false;
+                                    for (int m = 0; m < AllTrainNumberInOneRaw.Length; m++)
+                                    {
+                                        if (AllTrainNumberInOneRaw[m].Contains("（G") ||
+                                            AllTrainNumberInOneRaw[m].Contains("（D") ||
+                                            AllTrainNumberInOneRaw[m].Contains("（C") ||
+                                            AllTrainNumberInOneRaw[m].Contains("（J") ||
+                                            AllTrainNumberInOneRaw[m].Contains("（0"))
+                                        {//找到标记
+                                            stopped = true;
+                                        }
+                                        //停开与开行分开进行建模
+                                        if (stopped == true)
+                                        {//不开
+                                            List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel, index);
+                                            foreach (CommandModel model in tempModels)
+                                            {
+                                                if (!model.trainNumber.Contains("未识别"))
+                                                {
+                                                    AllModels.Add(model);
+                                                }
+                                                else
+                                                {
+                                                    wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                                }
+                                            }
+                                        }
+                                        else if (stopped == false)
+                                        {//开
+                                            List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel, index);
+                                            foreach (CommandModel model in tempModels)
+                                            {
+                                                if (!model.trainNumber.Contains("未识别"))
+                                                {
+                                                    AllModels.Add(model);
+                                                }
+                                                else
+                                                {
+                                                    wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    //正常情况-则默认所有车次停开
+                                    streamStatus = 0;
+                                }
+                            }
+                            break;
+                        }
+                        //判断某车底中仅停运一部分，且停运标记在车次中的特殊停运车次
+                        //示例：236、2018年02月12日，CRH380AL-2607：0D5699(停运)-D5700(停运)-0G75-G75(郑州东始发)。
+                        if (command[1].Contains("停"))
+                        {
+                            AllTrainNumberInOneRaw = command[1].Split('-');
+                            //如果部分停开-则停开与开行分开进行建模
+                            for (int h = 0; h < AllTrainNumberInOneRaw.Length; h++)
+                            {
+                                if (AllTrainNumberInOneRaw[h].Contains("停"))
+                                {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
+                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel, index);
                                     foreach (CommandModel model in tempModels)
                                     {
                                         if (!model.trainNumber.Contains("未识别"))
@@ -260,241 +341,167 @@ namespace TimeTableAutoCompleteTool
                                         }
                                     }
                                 }
-                                isNormal = false;
-                                AllTrainNumberInOneRaw = command[1].Split('-');
-                                //寻找车次中的括号左半部分
-                                //从前往后找，找到标记后的车次为停开
-                                bool stopped = false;
-                                for (int m = 0; m < AllTrainNumberInOneRaw.Length; m++)
+                                else
                                 {
-                                    if (AllTrainNumberInOneRaw[m].Contains("（G") ||
-                                        AllTrainNumberInOneRaw[m].Contains("（D") ||
-                                        AllTrainNumberInOneRaw[m].Contains("（C") ||
-                                        AllTrainNumberInOneRaw[m].Contains("（J") ||
-                                        AllTrainNumberInOneRaw[m].Contains("（0"))
-                                    {//找到标记
-                                        stopped = true;
-                                    }
-                                    //停开与开行分开进行建模
-                                    if (stopped == true)
-                                    {//不开
-                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel, index);
-                                        foreach (CommandModel model in tempModels)
+                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel, index);
+                                    foreach (CommandModel model in tempModels)
+                                    {
+                                        if (!model.trainNumber.Contains("未识别"))
                                         {
-                                            if (!model.trainNumber.Contains("未识别"))
-                                            {
-                                                AllModels.Add(model);
-                                            }
-                                            else
-                                            {
-                                                wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                            }
+                                            AllModels.Add(model);
                                         }
-                                    }
-                                    else if (stopped == false)
-                                    {//开
-                                        List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[m], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel, index);
-                                        foreach (CommandModel model in tempModels)
+                                        else
                                         {
-                                            if (!model.trainNumber.Contains("未识别"))
-                                            {
-                                                AllModels.Add(model);
-                                            }
-                                            else
-                                            {
-                                                wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                            }
+                                            wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
                                         }
                                     }
                                 }
                             }
-                            else
-                            {
-                                //正常情况-则默认所有车次停开
-                                streamStatus = 0;
-                            }
                         }
-                        break;
-                    }
-                    //判断某车底中仅停运一部分，且停运标记在车次中的特殊停运车次
-                    //示例：236、2018年02月12日，CRH380AL-2607：0D5699(停运)-D5700(停运)-0G75-G75(郑州东始发)。
-                    if (command[1].Contains("停"))
-                    {
-                        AllTrainNumberInOneRaw = command[1].Split('-');
-                        //如果部分停开-则停开与开行分开进行建模
-                        for (int h = 0; h < AllTrainNumberInOneRaw.Length; h++)
+                        else if (command[1].Contains("次日"))
                         {
-                            if (AllTrainNumberInOneRaw[h].Contains("停"))
-                            {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
-                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 0, trainType, trainModel, index);
-                                foreach (CommandModel model in tempModels)
-                                {
-                                    if (!model.trainNumber.Contains("未识别"))
-                                    {
-                                        AllModels.Add(model);
-                                    }
-                                    else
-                                    {
-                                        wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 1, trainType, trainModel, index);
-                                foreach (CommandModel model in tempModels)
-                                {
-                                    if (!model.trainNumber.Contains("未识别"))
-                                    {
-                                        AllModels.Add(model);
-                                    }
-                                    else
-                                    {
-                                        wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (command[1].Contains("次日"))
-                    {
 
-                        AllTrainNumberInOneRaw = command[1].Split('-');
-                        //同理-部分次日-则次日与当日分开进行建模
-                        for (int h = 0; h < AllTrainNumberInOneRaw.Length; h++)
-                        {
-                            if (AllTrainNumberInOneRaw[h].Contains("次日"))
-                            {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
-                                List<CommandModel> tempModels;
-                                if (streamStatus != 0)
-                                {
-                                    tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 2, trainType, trainModel, index);
+                            AllTrainNumberInOneRaw = command[1].Split('-');
+                            //同理-部分次日-则次日与当日分开进行建模
+                            for (int h = 0; h < AllTrainNumberInOneRaw.Length; h++)
+                            {
+                                if (AllTrainNumberInOneRaw[h].Contains("次日"))
+                                {//去中文添加-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
+                                    List<CommandModel> tempModels;
+                                    if (streamStatus != 0)
+                                    {
+                                        tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), 2, trainType, trainModel, index);
+                                    }
+                                    else
+                                    {
+                                        tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType, trainModel, index);
+                                    }
+                                    foreach (CommandModel model in tempModels)
+                                    {
+                                        if (!model.trainNumber.Contains("未识别"))
+                                        {
+                                            AllModels.Add(model);
+                                        }
+                                        else
+                                        {
+                                            wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType, trainModel, index);
+                                    List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType, trainModel, index);
+                                    foreach (CommandModel model in tempModels)
+                                    {
+                                        if (!model.trainNumber.Contains("未识别"))
+                                        {
+                                            AllModels.Add(model);
+                                        }
+                                        else
+                                        {
+                                            wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                        }
+                                    }
                                 }
-                                foreach (CommandModel model in tempModels)
+                            }
+                        }
+                        else if (command[1].Contains("站") ||
+                            (command[1].Contains("道") ||
+                            command[1].Contains("到") ||
+                            command[1].Contains("开")))
+                        {//221、2018年03月20日，CRH380AL-2619：0J5901-DJ5902-G6718(石家庄～北京西)-G801/4（商丘站变更为26道）-0093(商丘站14:25开，郑州东徐兰场15:20到)-0094(郑州东徐兰场16:05开，郑州东动车所16.25到)。
+                         //101、2018年03月20日，CRH380B-3763+3758：G1922/19（商丘站变更为27道）。
+                         //把车次单独分离-去中文-去横杠-去括号内数字-在此处去除小括号
+                         //去括号内数字方法-把括号前半部分换成空格，会变成G801/4 26，G1922/19 27
+                         //识别时取空格前数字即可
+                            AllTrainNumberInOneRaw = Regex.Replace(command[1], @"[\u4e00-\u9fa5]", "").Replace("（", " ").Replace("）", "").Split('-');
+                            //把车次添加模型
+                            List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel, index);
+                            foreach (CommandModel model in tempModels)
+                            {
+                                if (!model.trainNumber.Contains("未识别"))
                                 {
-                                    if (!model.trainNumber.Contains("未识别"))
-                                    {
-                                        AllModels.Add(model);
-                                    }
-                                    else
-                                    {
-                                        wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                    }
+                                    AllModels.Add(model);
                                 }
-                            }
-                            else
-                            {
-                                List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(AllTrainNumberInOneRaw[h], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-'), streamStatus, trainType, trainModel, index);
-                                foreach (CommandModel model in tempModels)
+                                else
                                 {
-                                    if (!model.trainNumber.Contains("未识别"))
-                                    {
-                                        AllModels.Add(model);
-                                    }
-                                    else
-                                    {
-                                        wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                                    }
+                                    wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
+                                }
+                            }
+                        }
+                        else if (isNormal)
+                        {//如果一切正常 则
+                         //把车次单独分离-去中文-去横杠-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
+                            AllTrainNumberInOneRaw = Regex.Replace(command[1], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-');
+                            //把车次添加模型
+                            List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel, index);
+                            foreach (CommandModel model in tempModels)
+                            {
+                                if (!model.trainNumber.Contains("未识别"))
+                                {
+                                    AllModels.Add(model);
+                                }
+                                else
+                                {
+                                    wrongNumber = wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
                                 }
                             }
                         }
                     }
-                    else if (command[1].Contains("站") ||
-                        (command[1].Contains("道") ||
-                        command[1].Contains("到")||
-                        command[1].Contains("开")))
-                    {//221、2018年03月20日，CRH380AL-2619：0J5901-DJ5902-G6718(石家庄～北京西)-G801/4（商丘站变更为26道）-0093(商丘站14:25开，郑州东徐兰场15:20到)-0094(郑州东徐兰场16:05开，郑州东动车所16.25到)。
-                        //101、2018年03月20日，CRH380B-3763+3758：G1922/19（商丘站变更为27道）。
-                        //把车次单独分离-去中文-去横杠-去括号内数字-在此处去除小括号
-                        //去括号内数字方法-把括号前半部分换成空格，会变成G801/4 26，G1922/19 27
-                        //识别时取空格前数字即可
-                        AllTrainNumberInOneRaw = Regex.Replace(command[1], @"[\u4e00-\u9fa5]", "").Replace("（", " ").Replace("）", "").Split('-');
-                        //把车次添加模型
-                        List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel, index);
-                        foreach (CommandModel model in tempModels)
-                        {
-                            if (!model.trainNumber.Contains("未识别"))
-                            {
-                                AllModels.Add(model);
-                            }
-                            else
-                            {
-                                wrongNumber =  wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                            }
-                        }
+                }
+                //右方显示框内容
+                String commands = "";
+                foreach (CommandModel model in AllModels)
+                {
+                    String streamStatus = "";
+                    String trainType = "";
+                    if (model.streamStatus == 1)
+                    {
+                        streamStatus = "开行";
                     }
-                    else if (isNormal)
-                    {//如果一切正常 则
-                        //把车次单独分离-去中文-去横杠-由于部分情况下无法辨认小括号-因此必须在此处去除小括号
-                        AllTrainNumberInOneRaw = Regex.Replace(command[1], @"[\u4e00-\u9fa5]", "").Replace("（", "").Replace("）", "").Split('-');
-                        //把车次添加模型
-                        List<CommandModel> tempModels = trainModelAddFunc(AllTrainNumberInOneRaw, streamStatus, trainType, trainModel, index);
-                        foreach (CommandModel model in tempModels)
-                        {
-                            if (!model.trainNumber.Contains("未识别"))
-                            {
-                                AllModels.Add(model);
-                            }
-                            else
-                            {
-                                wrongNumber =  wrongNumber + "第" + index + "行" + "-" + model.trainNumber + "\r\n";
-                            }
-                        }
+                    else
+                    {
+                        streamStatus = "停运";
+                    }
+                    switch (model.trainType)
+                    {
+                        case 0:
+                            trainType = "普通";
+                            break;
+                        case 1:
+                            trainType = "高峰";
+                            break;
+                        case 2:
+                            trainType = "临客";
+                            break;
+                        case 3:
+                            trainType = "周末";
+                            break;
+                    }
+                    if (model.secondTrainNumber.Equals("null"))
+                    {
+                        commands = commands + "第" + model.trainIndex.Trim() + "行-" + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                    }
+                    else
+                    {
+                        commands = commands + "第" + model.trainIndex.Trim() + "行-" + model.trainNumber + "-" + model.secondTrainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
                     }
                 }
-            }
-            //右方显示框内容
-            String commands = "";
-            foreach (CommandModel model in AllModels)
+                wrongTrain = wrongNumber;
+                if (wrongTrain != null)
+                {
+                    if (wrongTrain.Length != 0)
+                    {
+                        searchResult_tb.Text = "识别错误车辆：" + "\r\n" + wrongTrain;
+                    }
+                }
+                outputTB.Text = "共" + AllModels.Count.ToString() + "趟" + "\r\n" + commands;
+                commandModel = AllModels;
+            }catch (Exception e)
             {
-                String streamStatus = "";
-                String trainType = "";
-                if (model.streamStatus == 1)
-                {
-                    streamStatus = "开行";
-                }
-                else
-                {
-                    streamStatus = "停运";
-                }
-                switch (model.trainType)
-                {
-                    case 0:
-                        trainType = "普通";
-                        break;
-                    case 1:
-                        trainType = "高峰";
-                        break;
-                    case 2:
-                        trainType = "临客";
-                        break;
-                    case 3:
-                        trainType = "周末";
-                        break;
-                }
-                if (model.secondTrainNumber.Equals("null"))
-                {
-                    commands = commands +"第" + model.trainIndex.Trim() + "行-" + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
-                }
-                else
-                {
-                    commands = commands + "第" + model.trainIndex.Trim() + "行-" + model.trainNumber + "-" + model.secondTrainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
-                }
+                MessageBox.Show("出现错误："+e.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            wrongTrain = wrongNumber;
-            if(wrongTrain != null)
-            {
-                if(wrongTrain.Length != 0)
-                {
-                    searchResult_tb.Text = "识别错误车辆：" + "\r\n" + wrongTrain;
-                }
-            }
-            outputTB.Text = "共" + AllModels.Count.ToString() + "趟" + "\r\n" + commands;
-            commandModel = AllModels;
+          
 
         }
 
@@ -574,7 +581,9 @@ namespace TimeTableAutoCompleteTool
             if (!trainModel.Equals("null"))
             {//0短编 1长编 2重联
                 if (trainModel.Contains("L") ||
-                    trainModel.Contains("2B")
+                    trainModel.Contains("2B")||
+                    trainModel.Contains("2E")||
+                    trainModel.Contains("1E")
                     )
                 {
                     trainConnectType = 1;
@@ -589,13 +598,13 @@ namespace TimeTableAutoCompleteTool
             }
             if (trainConnectType == 2)
             {//重联，考虑不同型号重联情况
-                Regex regexOnlyNum = new Regex(@"^[0-9]+$");
+                Regex _regexOnlyNum = new Regex(@"^[0-9]+$");
                 string[] trainIds = trainModel.Split('+');
                 for (int i = 0; i < trainIds.Length; i++)
                 {
                     for (int j = 0; j < trainIds[i].Split('-').Length; j++)
                     {
-                        if (regexOnlyNum.IsMatch(trainIds[i].Split('-')[j]))
+                        if (_regexOnlyNum.IsMatch(trainIds[i].Split('-')[j]))
                         {
                             if (!trainId.Contains("/"))
                             {
@@ -630,7 +639,32 @@ namespace TimeTableAutoCompleteTool
             {
                 trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "+";
             }
-            
+            //判断index是否为纯数字
+            Regex regexOnlyNum = new Regex(@"^[0-9]+$");
+            if (!regexOnlyNum.IsMatch(index))
+            {
+                char[] _indexChar = index.ToCharArray();
+                string _tempIndexString = "";
+                for (int i = 0; i < _indexChar.Length; i++)
+                {
+                    if (regexOnlyNum.IsMatch(_indexChar[i].ToString()))
+                    {
+                        _tempIndexString = _tempIndexString + _indexChar[i];
+                    }
+                    else
+                    {
+                        if (i == 0)
+                        {//如果第一个字符就不是数字
+                            index = "?";
+                        }
+                        else
+                        {
+                            index = _tempIndexString;
+                            break;
+                        }
+                    }
+                }
+            }
             for (int k = 0; k < AllTrainNumberInOneRaw.Length; k++)
             {
                 if (AllTrainNumberInOneRaw[k].Contains("G") ||
@@ -1027,7 +1061,7 @@ namespace TimeTableAutoCompleteTool
                 Size _size = new Size(210, 393);
                 outputTB.Size = _size;
                 searchResult_tb.Size = _size;
-                hint_label.Text = "无序号白色为客调令多出车次，红色标注为客调停开车次。请检查客调令包含内容的行是否符合规范";
+                hint_label.Text = "基本图中没有的车次不会显示！无序号白色为客调令多出车次，红色标注为客调停开车次。请进行人工核对。";
             }
             else if (radioButton3.Checked)
             {
@@ -1215,10 +1249,6 @@ namespace TimeTableAutoCompleteTool
                             }
                             if (_readingRow.GetCell(titleInfo.trainNumColumn) != null && titleInfo.trainNumColumn != 0)
                             {//车次
-                                if (_readingRow.GetCell(titleInfo.trainNumColumn).ToString().Contains("G2626"))
-                                {
-                                    string iss = _readingRow.GetCell(titleInfo.trainNumColumn).ToString();
-                                }
                                     if (_readingRow.GetCell(titleInfo.trainNumColumn).ToString().Length != 0)
                                     {
                                         tempModel.trainNumber = _readingRow.GetCell(titleInfo.trainNumColumn).ToString();
@@ -1331,6 +1361,49 @@ namespace TimeTableAutoCompleteTool
 
         }
 
+        //处理经过本站时列车车次问题
+        private string correctDualNumber(DailySchedule dailyScheduleModel, string[] trainWithDoubleNumber, int upOrDown)
+        {
+            Char[] firstTrainWord = trainWithDoubleNumber[0].ToCharArray();
+            String secondTrainWord = "";
+            String tempFirstTrainWord = "";
+            bool _hasGotIt = false;
+            int outNumber = -1;
+            int.TryParse(firstTrainWord[firstTrainWord.Length - 1].ToString(), out outNumber);
+            if(upOrDown == 1)
+            {
+                if ((outNumber >= 0) && (outNumber % 2 != 0))
+                {//是单号车
+                    return dailyScheduleModel.trainNumber.Trim();
+                }
+            }
+            else
+            {
+                if ((outNumber >= 0) && (outNumber % 2 == 0))
+                {//是单号车
+                    return dailyScheduleModel.trainNumber.Trim();
+                }
+            }
+            for (int q = 0; q < firstTrainWord.Length; q++)
+            {
+                if (q < firstTrainWord.Length - trainWithDoubleNumber[1].Length)
+                {
+                    secondTrainWord = secondTrainWord + firstTrainWord[q];
+                }
+                else
+                {
+                    tempFirstTrainWord = tempFirstTrainWord + firstTrainWord[q].ToString();
+                    if (_hasGotIt != true)
+                    {
+                        secondTrainWord = secondTrainWord + trainWithDoubleNumber[1];
+                        _hasGotIt = true;
+                    }
+                }
+            }
+            return secondTrainWord + "/" + tempFirstTrainWord;
+
+        }
+
         //核对客调令，处理班计划顺序
         private void analyzeDailyScheduleData(List<DailySchedule> dailyScheduleModel)
         {
@@ -1367,9 +1440,32 @@ namespace TimeTableAutoCompleteTool
                                 _ds.upOrDown = 0;
                             }
                         }
-                        //后面的和原来对象一样
+                        //通过上下行判断经过本站时双车次列车的车次号（直接截取为经过本站的车次号）
                         if(dailyScheduleModel[i].trainNumber != null)
-                            _ds.trainNumber = dailyScheduleModel[i].trainNumber.Trim();
+                        {
+                            if (dailyScheduleModel[i].trainNumber.Contains("/"))
+                            {
+                                string[] trainWithDoubleNumber = dailyScheduleModel[i].trainNumber.Split('/');
+                                if (_ds.upOrDown == 1)
+                                {
+                                    _ds.trainNumber = correctDualNumber(dailyScheduleModel[i], trainWithDoubleNumber, 1);
+                                }
+                                else if (_ds.upOrDown == 0)
+                                {
+                                    _ds.trainNumber = correctDualNumber(dailyScheduleModel[i], trainWithDoubleNumber, 0);
+                                }
+                                else
+                                {
+                                    _ds.trainNumber = dailyScheduleModel[i].trainNumber.Trim();
+                                }
+                            }
+                            else
+                            {
+                                _ds.trainNumber = dailyScheduleModel[i].trainNumber.Trim();
+                            }
+                        }
+
+                        //后面的和原来对象一样
                         if (dailyScheduleModel[i].stopStation != null)
                             _ds.stopStation = dailyScheduleModel[i].stopStation.Trim();
                         if (dailyScheduleModel[i].startStation != null)
@@ -1626,6 +1722,7 @@ namespace TimeTableAutoCompleteTool
             boldStyle.WrapText = true;
             boldStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             boldStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            boldStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
             HSSFFont fontBold = (HSSFFont)workbook.CreateFont();
             fontBold.FontName = "宋体";//字体  
             fontBold.FontHeightInPoints = 10;//字号  
@@ -1643,6 +1740,7 @@ namespace TimeTableAutoCompleteTool
             stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
             stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            stoppedTrainStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
             HSSFFont font = (HSSFFont)workbook.CreateFont();
             font.FontName = "宋体";//字体  
             font.FontHeightInPoints = 10;//字号  
@@ -1657,6 +1755,7 @@ namespace TimeTableAutoCompleteTool
             normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
             normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            normalStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
             HSSFFont fontNormal = (HSSFFont)workbook.CreateFont();
             fontNormal.FontName = "宋体";//字体  
             fontNormal.FontHeightInPoints = 10;//字号  
