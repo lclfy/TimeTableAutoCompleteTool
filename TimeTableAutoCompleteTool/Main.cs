@@ -28,6 +28,7 @@ namespace TimeTableAutoCompleteTool
         OpenFileDialog ExcelFile;
         private string startPath = "";
         private string wrongTrain = "";
+        private string commandText = "";
         string filePath = "";
         //行车0，综控1，动车所2；
         int modeSelect;
@@ -793,6 +794,7 @@ namespace TimeTableAutoCompleteTool
             int allPsngerTrainsCount = 0;
             int stoppedTrainsCount = 0;
             int allTrainsInTimeTable = 0;
+            string checkedText = "";
 
             try
             {
@@ -802,7 +804,8 @@ namespace TimeTableAutoCompleteTool
                     try
                     {
                         workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
                         {
@@ -879,6 +882,11 @@ namespace TimeTableAutoCompleteTool
                 normalTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
                 normalTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                 normalTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                HSSFFont normalFont = (HSSFFont)workbook.CreateFont();
+                normalFont.FontName = "宋体";//字体  
+                normalFont.FontHeightInPoints = 12;//字号  
+                normalFont.IsBold = true;
+                normalTrainStyle.SetFont(normalFont);
 
                 ICellStyle tomorrowlTrainStyle = workbook.CreateCellStyle();
                 tomorrowlTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
@@ -888,6 +896,7 @@ namespace TimeTableAutoCompleteTool
                 tomorrowlTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
                 tomorrowlTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                 tomorrowlTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.SetFont(normalFont);
 
                 ICellStyle removeColors = workbook.CreateCellStyle();
                 removeColors.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
@@ -900,6 +909,25 @@ namespace TimeTableAutoCompleteTool
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                if (sheet.GetRow(0).GetCell(0) != null)
+                {
+                    if (sheet.GetRow(0).GetCell(0).ToString().Contains("徐兰"))
+                    {
+                        normalFont.FontHeightInPoints = 17;//字号 
+                        font.FontHeightInPoints = 17;//字号
+                        normalTrainStyle.SetFont(normalFont);
+                        tomorrowlTrainStyle.SetFont(normalFont);
+                        stoppedTrainStyle.SetFont(font);
+                    }
+                }
+                else if (ExcelFile.FileName.Contains("徐兰"))
+                {
+                    normalFont.FontHeightInPoints = 17;//字号 
+                    font.FontHeightInPoints = 17;//字号
+                    normalTrainStyle.SetFont(normalFont);
+                    tomorrowlTrainStyle.SetFont(normalFont);
+                    stoppedTrainStyle.SetFont(font);
+                }
                 for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                 {
                     row = sheet.GetRow(i);   //row读入第i行数据  
@@ -922,7 +950,7 @@ namespace TimeTableAutoCompleteTool
                                         allTrainsInTimeTable++;
                                         //去中文后再找-去掉高峰-周末-临客等字
                                         row.GetCell(j).CellStyle = removeColors;
-                                        row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString(), @"[\u4e00-\u9fa5]", ""));
+                                        row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString().Replace("√", "").Replace("×", "").Replace("(", "").Replace(")", ""), @"[\u4e00-\u9fa5]", ""));
                                     }
                                     else
                                     {
@@ -948,34 +976,46 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 allPsngerTrainsCount++;
                                             }
+                                            if (model.trainType == 1)
+                                            {
+                                                row.GetCell(j).SetCellValue("高峰" + row.GetCell(j).ToString().Trim());
+                                            }
+                                            else if (model.trainType == 2)
+                                            {
+                                                row.GetCell(j).SetCellValue("临客" + row.GetCell(j).ToString().Trim());
+                                            }
+                                            else if (model.trainType == 3)
+                                            {
+                                                row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString().Trim());
+                                            }
                                             if (model.streamStatus == 1)
                                             {
+                                                row.GetCell(j).SetCellValue("√" + row.GetCell(j).ToString().Trim());
                                                 row.GetCell(j).CellStyle = normalTrainStyle;
                                             }
                                             else if (model.streamStatus == 0)
                                             {
+                                                row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                 stoppedTrainsCount++;
                                                 row.GetCell(j).CellStyle = stoppedTrainStyle;
-                                            } else if (model.streamStatus == 2)
+                                            }
+                                            else if (model.streamStatus == 2)
                                             {
+                                                row.GetCell(j).SetCellValue("√" + row.GetCell(j).ToString().Trim());
                                                 row.GetCell(j).CellStyle = tomorrowlTrainStyle;
                                             }
-                                            if (model.trainType == 1)
-                                            {
-                                                row.GetCell(j).SetCellValue("高峰" + row.GetCell(j).ToString());
-                                            }
-                                            else if (model.trainType == 2)
-                                            {
-                                                row.GetCell(j).SetCellValue("临客" + row.GetCell(j).ToString());
-                                            }
-                                            else if (model.trainType == 3)
-                                            {
-                                                row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString());
-                                            }
+
                                         }
                                     }
                                     if (!ContainsTrainNumber)
                                     {
+                                        if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                        {
+                                            checkedText = checkedText + " " + row.GetCell(j).ToString().Trim();
+                                            row.GetCell(j).SetCellValue("(核对)" + row.GetCell(j).ToString().Trim());
+                                        }
+                                        row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
+                                        row.GetCell(j).CellStyle = stoppedTrainStyle;
                                         stoppedTrainsCount++;
                                     }
                                 }
@@ -998,6 +1038,10 @@ namespace TimeTableAutoCompleteTool
                 //info.WorkingDirectory = Application.StartupPath;
                 info.FileName = ExcelFile.FileName;
                 info.Arguments = "";
+                if (checkedText.Length != 0)
+                {
+                    MessageBox.Show("请人工核对以下车次（时刻表内有标注）：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
                 try
                 {
                     System.Diagnostics.Process.Start(info);

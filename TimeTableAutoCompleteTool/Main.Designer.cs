@@ -50,6 +50,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.buildLBL = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
+            this.start_Btn = new CCWin.SkinControl.SkinButton();
             this.TrainEarlyCaculator_Btn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.search_tb = new System.Windows.Forms.TextBox();
@@ -71,8 +73,6 @@
             this.contentOfDeveloper = new System.Windows.Forms.ToolTip(this.components);
             this.updateReadMe = new System.Windows.Forms.ToolTip(this.components);
             this.label2 = new System.Windows.Forms.Label();
-            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
-            this.start_Btn = new CCWin.SkinControl.SkinButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -276,6 +276,44 @@
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
+            // importTimeTable_Btn
+            // 
+            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
+            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.importTimeTable_Btn.DownBack = null;
+            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 312);
+            this.importTimeTable_Btn.MouseBack = null;
+            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
+            this.importTimeTable_Btn.NormlBack = null;
+            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
+            this.importTimeTable_Btn.TabIndex = 7;
+            this.importTimeTable_Btn.Text = "导入";
+            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
+            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
+            // 
+            // start_Btn
+            // 
+            this.start_Btn.BackColor = System.Drawing.Color.Transparent;
+            this.start_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.start_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.start_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.start_Btn.DownBack = null;
+            this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.start_Btn.ForeColor = System.Drawing.Color.White;
+            this.start_Btn.Location = new System.Drawing.Point(10, 379);
+            this.start_Btn.MouseBack = null;
+            this.start_Btn.Name = "start_Btn";
+            this.start_Btn.NormlBack = null;
+            this.start_Btn.Size = new System.Drawing.Size(465, 43);
+            this.start_Btn.TabIndex = 8;
+            this.start_Btn.Text = "生成时刻表/班计划";
+            this.start_Btn.UseVisualStyleBackColor = false;
+            this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
+            // 
             // TrainEarlyCaculator_Btn
             // 
             this.TrainEarlyCaculator_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -458,7 +496,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.groupBox4.BackColor = System.Drawing.Color.White;
             this.groupBox4.Controls.Add(this.radioButton3);
             this.groupBox4.Controls.Add(this.radioButton2);
             this.groupBox4.Controls.Add(this.radioButton1);
@@ -495,51 +533,13 @@
             this.label2.TabIndex = 27;
             this.label2.Text = "鼠标移动至版本号查看更新内容";
             // 
-            // importTimeTable_Btn
-            // 
-            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
-            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.importTimeTable_Btn.DownBack = null;
-            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(379, 312);
-            this.importTimeTable_Btn.MouseBack = null;
-            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
-            this.importTimeTable_Btn.NormlBack = null;
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
-            this.importTimeTable_Btn.TabIndex = 7;
-            this.importTimeTable_Btn.Text = "导入";
-            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
-            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
-            // 
-            // start_Btn
-            // 
-            this.start_Btn.BackColor = System.Drawing.Color.Transparent;
-            this.start_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
-            this.start_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.start_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.start_Btn.DownBack = null;
-            this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.start_Btn.ForeColor = System.Drawing.Color.White;
-            this.start_Btn.Location = new System.Drawing.Point(10, 379);
-            this.start_Btn.MouseBack = null;
-            this.start_Btn.Name = "start_Btn";
-            this.start_Btn.NormlBack = null;
-            this.start_Btn.Size = new System.Drawing.Size(465, 43);
-            this.start_Btn.TabIndex = 8;
-            this.start_Btn.Text = "生成时刻表/班计划";
-            this.start_Btn.UseVisualStyleBackColor = false;
-            this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.CaptionBackColorBottom = System.Drawing.Color.WhiteSmoke;
-            this.CaptionBackColorTop = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = System.Drawing.Color.White;
+            this.CaptionBackColorBottom = System.Drawing.Color.White;
+            this.CaptionBackColorTop = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1027, 566);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox4);
