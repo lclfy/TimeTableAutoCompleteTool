@@ -95,7 +95,7 @@
             this.command_rTb.ContextMenuStrip = this.contextMenuStrip1;
             this.command_rTb.Location = new System.Drawing.Point(9, 32);
             this.command_rTb.Name = "command_rTb";
-            this.command_rTb.Size = new System.Drawing.Size(465, 274);
+            this.command_rTb.Size = new System.Drawing.Size(465, 263);
             this.command_rTb.TabIndex = 1;
             this.command_rTb.Text = "";
             this.command_rTb.TextChanged += new System.EventHandler(this.command_rTb_TextChanged);

@@ -34,9 +34,9 @@ namespace TimeTableAutoCompleteTool
         int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 29 - v180511";
-        string readMe = "build29更新内容:\n" +
-            "修复了可能导致行数识别错误的问题;\n修改班计划单元格样式为文本;\n班计划中，双车号将进行判断 经过本站时的车次放前面";
+        string build = "build 31 - v180518";
+        string readMe = "build31更新内容:\n" +
+            "综控室对比优化，动车所单独分出来，动车所增加排错";
 
         public Main()
         {
@@ -159,7 +159,9 @@ namespace TimeTableAutoCompleteTool
             try
             {
                 string wrongNumber = "";
-                String[] AllCommand = removeUnuseableWord().Split('。');
+                List<string> _commands = removeUnuseableWord();
+                String[] AllCommand = _commands[0].Split('。');
+                
                 List<CommandModel> AllModels = new List<CommandModel>();
                 for (int i = 0; i < AllCommand.Length; i++)
                 {
@@ -525,9 +527,17 @@ namespace TimeTableAutoCompleteTool
             return _isTrainNumber;
         }
 
-        private String removeUnuseableWord()
+        private List<string> removeUnuseableWord()
         {//字符转换
             String standardCommand = command_rTb.Text.ToString();
+            List<string> commands = new List<string>();
+            standardCommand = removing(standardCommand.Trim());
+            commands.Add(standardCommand.Trim());
+            return commands;
+        }
+
+        private string removing(string standardCommand)
+        {
             if (standardCommand.Contains(":"))
                 standardCommand = standardCommand.Replace(":", "：");
             if (standardCommand.Contains("~"))
@@ -570,7 +580,7 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("}", "）");
             if (standardCommand.Contains(" "))
                 standardCommand = standardCommand.Replace(" ", "");
-            return standardCommand.Trim();
+            return standardCommand;
         }
 
         private List<CommandModel> trainModelAddFunc(String[] AllTrainNumberInOneRaw, int streamStatus, int trainType, string trainModel, string index)
@@ -795,6 +805,7 @@ namespace TimeTableAutoCompleteTool
             int stoppedTrainsCount = 0;
             int allTrainsInTimeTable = 0;
             string checkedText = "";
+            commandText = command_rTb.Text;
 
             try
             {
@@ -909,21 +920,42 @@ namespace TimeTableAutoCompleteTool
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
-                if (sheet.GetRow(0).GetCell(0) != null)
+                if(sheet.GetRow(0) == null)
                 {
-                    if (sheet.GetRow(0).GetCell(0).ToString().Contains("徐兰"))
-                    {
-                        normalFont.FontHeightInPoints = 17;//字号 
-                        font.FontHeightInPoints = 17;//字号
-                        normalTrainStyle.SetFont(normalFont);
-                        tomorrowlTrainStyle.SetFont(normalFont);
-                        stoppedTrainStyle.SetFont(font);
-                    }
+                    sheet.CreateRow(0);
+                }
+                if (sheet.GetRow(0).GetCell(0) == null)
+                {
+                    sheet.GetRow(0).CreateCell(0);
+                }
+                string title = sheet.GetRow(0).GetCell(0).ToString().Trim();
+                if (title.Contains("-"))
+                {
+                    title = title.Split('-')[1];
+                }
+                int hour = -1;
+                int.TryParse(DateTime.Now.ToString("HH"), out hour);
+                if (hour >= 0 && hour <= 6)
+                {
+                    title = DateTime.Now.ToString("yyyy年MM月dd日-") + title;
+                }
+                else
+                {
+                    title = DateTime.Now.AddDays(1).ToString("yyyy年MM月dd日-") + title;
+                }
+                sheet.GetRow(0).GetCell(0).SetCellValue(title);
+                if (sheet.GetRow(0).GetCell(0).ToString().Contains("徐兰"))
+                {
+                    normalFont.FontHeightInPoints = 19;//字号 
+                    font.FontHeightInPoints = 19;//字号
+                    normalTrainStyle.SetFont(normalFont);
+                    tomorrowlTrainStyle.SetFont(normalFont);
+                    stoppedTrainStyle.SetFont(font);
                 }
                 else if (ExcelFile.FileName.Contains("徐兰"))
                 {
-                    normalFont.FontHeightInPoints = 17;//字号 
-                    font.FontHeightInPoints = 17;//字号
+                    normalFont.FontHeightInPoints = 19;//字号 
+                    font.FontHeightInPoints = 19;//字号
                     normalTrainStyle.SetFont(normalFont);
                     tomorrowlTrainStyle.SetFont(normalFont);
                     stoppedTrainStyle.SetFont(font);
@@ -1040,7 +1072,20 @@ namespace TimeTableAutoCompleteTool
                 info.Arguments = "";
                 if (checkedText.Length != 0)
                 {
-                    MessageBox.Show("请人工核对以下车次（时刻表内有标注）：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("请人工核对以下车次（时刻表内有标注），并向车间报告有未识别情况：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    try
+                    {
+                        FileStream file = new FileStream(Application.StartupPath + "\\" + "ErrorLog-" + DateTime.Now.ToString("yyyyMMdd") + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter writer = new StreamWriter(file);
+                        writer.WriteLine("车次：" + checkedText + "\n\n" + command_rTb.Text);
+                        writer.Close();
+                        file.Close();
+                    }
+                    catch (Exception _e)
+                    {
+
+                    }
+
                 }
                 try
                 {
@@ -1757,6 +1802,7 @@ namespace TimeTableAutoCompleteTool
              FileStream fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
              //创建工作薄
              IWorkbook workbook = new HSSFWorkbook();
+
             //表格样式
             ICellStyle boldStyle = workbook.CreateCellStyle();
             boldStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
@@ -1806,7 +1852,7 @@ namespace TimeTableAutoCompleteTool
             normalStyle.SetFont(fontNormal);
 
             //创建sheet
-            ISheet sheet = workbook.CreateSheet("sheet0");
+            ISheet sheet = workbook.CreateSheet("基本图");
             //标注预售
             int presaleHour = 0;
             int startPresaleRow = 0;
@@ -1982,10 +2028,29 @@ namespace TimeTableAutoCompleteTool
                                 row.CreateCell(column);
                                 break;
                             case 11:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum);
+                                int outTrackNum = 0;
+                                int.TryParse(allDailyScheduleModel[i - 2].trackNum, out outTrackNum);
+                                if (outTrackNum == 0)
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue(outTrackNum);
+                                }
                                 break;
                             case 12:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType);
+                                int outConnectType = 0;
+                                int.TryParse(allDailyScheduleModel[i - 2].trainConnectType, out outConnectType);
+                                if (outConnectType == 0)
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue(outConnectType);
+                                }
+                                
                                 break;
                             case 13:
                                 row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel);
@@ -2089,10 +2154,10 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
-                        if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
+                        if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
+                            string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
                             fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -2101,7 +2166,7 @@ namespace TimeTableAutoCompleteTool
                         else
                         {
                             MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
                             return;
                         }
                     }
@@ -2115,10 +2180,10 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
-                        if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
+                        if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
+                            string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = ExcelFile.FileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
                             fileStream = new FileStream(ExcelFile.FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -2127,7 +2192,7 @@ namespace TimeTableAutoCompleteTool
                         else
                         {
                             MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
+                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
                             return;
                         }
                     }
@@ -2136,7 +2201,7 @@ namespace TimeTableAutoCompleteTool
                 if (workbook != null && !ExcelFile.FileName.Contains("自动备份-"))
                 {
                     string pLocalFilePath = ExcelFile.FileName.ToString();//要复制的文件路径
-                    string pSaveFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//指定存储的路径
+                    string pSaveFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + ExcelFile.FileName.ToString().Split('\\')[ExcelFile.FileName.ToString().Split('\\').Length - 1];//指定存储的路径
                     File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                 }
@@ -2157,11 +2222,13 @@ namespace TimeTableAutoCompleteTool
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                string failedLoadingTrain = "";
                 for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                 {
                     row = sheet.GetRow(i);   //row读入第i行数据  
                     if (row != null)
                     {
+                        
                         for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
                         {
                             if (row.GetCell(j) != null)
@@ -2171,11 +2238,13 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("C") ||
                                     row.GetCell(j).ToString().Contains("J"))
                                 {
+                                    bool hasGotIt = false;
                                     foreach (CommandModel model in commandModel)
                                     {
                                         if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
                                             row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
                                         {
+                                            hasGotIt = true;
                                             if(row.GetCell(j+1) == null)
                                             {
                                                 row.CreateCell(j + 1);
@@ -2191,10 +2260,21 @@ namespace TimeTableAutoCompleteTool
                                             row.GetCell(j + 1).CellStyle = normalStyle;
                                         }
                                     }
+                                    if (!hasGotIt)
+                                    {
+                                        if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                        {
+                                            failedLoadingTrain = failedLoadingTrain + " " + row.GetCell(j).ToString().Trim();
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                }
+                if(failedLoadingTrain.Length != 0)
+                {
+                    MessageBox.Show("请人工检查以下车次是否未填写：\n" + failedLoadingTrain,"提示",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                 }
                 /*重新修改文件指定单元格样式*/
                 FileStream fs1 = File.OpenWrite(ExcelFile.FileName);
