@@ -16,3 +16,16 @@ D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoComplete
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrainEarlyCaculator.resources
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\CSkin.dll
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\CSkin.xml
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.pdb
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\bin\Debug\CSkin.xml
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\bin\Debug\NPOI.xml
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csprojResolveAssemblyReference.cache
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Main.resources
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Properties.Resources.resources
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrainEarlyCaculator.resources
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
+D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
