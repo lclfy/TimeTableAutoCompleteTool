@@ -29,3 +29,4 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrainEarlyCaculator.resources
 D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
 D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
