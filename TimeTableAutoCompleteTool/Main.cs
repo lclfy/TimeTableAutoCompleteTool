@@ -29,15 +29,16 @@ namespace TimeTableAutoCompleteTool
         private string startPath = "";
         private string wrongTrain = "";
         private string commandText = "";
+        int fontSize = 12;
         string filePath = "";
         string addedTrainText = "";
         //行车1，综控2，动车所3；
         public int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
-        string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 35 - v180624";
-        string readMe = "build35更新内容:\n" +
-            "Bug Fixes";
+        string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
+        string build = "build 36 - v180707";
+        string readMe = "build36更新内容:\n" +
+            "增加复兴号长编车型，增加行车室打印字体调节，综控部分修改，可以使用班计划进行对比";
 
         public Main()
         {
@@ -56,13 +57,16 @@ namespace TimeTableAutoCompleteTool
             contentOfDeveloper.SetToolTip(this.developerLabel, "联系方式：17638570597");
             updateReadMe.IsBalloon = true;
             updateReadMe.SetToolTip(this.buildLBL, readMe);
+            FontSize_tb.Text = fontSize.ToString();
         }
 
         private void load()
         {
             int _modeSelect = 0;
             int.TryParse(ConfigurationManager.AppSettings["modeSelect"], out _modeSelect);
-            if(_modeSelect == 0)
+            int _fontSize = 0;
+            int.TryParse(ConfigurationManager.AppSettings["fontSize"], out _fontSize);
+            if (_modeSelect == 0)
             {
                 Welcome form = new Welcome(this);
                 form.ShowDialog();
@@ -71,6 +75,10 @@ namespace TimeTableAutoCompleteTool
             {
                 modeSelect = _modeSelect;
                 ModeSelect();
+            }
+            if(_fontSize != 0)
+            {
+                fontSize = _fontSize;
             }
         }
 
@@ -103,7 +111,17 @@ namespace TimeTableAutoCompleteTool
             {
                 config.AppSettings.Settings["modeSelect"].Value = modeSelect.ToString();
             }
+            if (config.AppSettings.Settings["fontSize"] == null)
+            {
+                KeyValueConfigurationElement _k = new KeyValueConfigurationElement("fontSize", fontSize.ToString());
+                config.AppSettings.Settings.Add(_k);
+            }
+            else
+            {
+                config.AppSettings.Settings["fontSize"].Value = fontSize.ToString();
+            }
             config.Save();
+            ConfigurationManager.RefreshSection("fontSize");
             ConfigurationManager.RefreshSection("modeSelect");
         }
 
@@ -151,6 +169,10 @@ namespace TimeTableAutoCompleteTool
         {
             if (commandModel.Count != 0 && radioButton1.Checked)
             {
+                if(FontSize_tb.Text.Length == 0)
+                {
+                    FontSize_tb.Text = "12";
+                }
                 updateTimeTable();
             }
             else if(commandModel.Count != 0 && radioButton2.Checked)
@@ -632,8 +654,9 @@ namespace TimeTableAutoCompleteTool
                 if (trainModel.Contains("L") ||
                     trainModel.Contains("2B")||
                     trainModel.Contains("2E")||
-                    trainModel.Contains("1E")
-                    )
+                    trainModel.Contains("1E")||
+                    trainModel.Contains("AF-A")||
+                    trainModel.Contains("BF-A"))
                 {
                     trainConnectType = 1;
                 } else if (trainModel.Contains("+"))
@@ -943,7 +966,7 @@ namespace TimeTableAutoCompleteTool
                     stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
                     HSSFFont font = (HSSFFont)workbook.CreateFont();
                     font.FontName = "宋体";//字体  
-                    font.FontHeightInPoints = 12;//字号  
+                    font.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
                     font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
                     stoppedTrainStyle.SetFont(font);
 
@@ -957,7 +980,7 @@ namespace TimeTableAutoCompleteTool
                     normalTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
                     HSSFFont normalFont = (HSSFFont)workbook.CreateFont();
                     normalFont.FontName = "宋体";//字体  
-                    normalFont.FontHeightInPoints = 12;//字号  
+                    normalFont.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
                     normalFont.IsBold = true;
                     normalTrainStyle.SetFont(normalFont);
 
@@ -989,7 +1012,7 @@ namespace TimeTableAutoCompleteTool
 
                     HSSFFont addFont = (HSSFFont)workbook.CreateFont();
                     addFont.FontName = "宋体";//字体  
-                    addFont.FontHeightInPoints = 13;//字号  
+                    addFont.FontHeightInPoints = 12;//字号  
                     addFont.IsBold = false;
                     addedTrainStyle.SetFont(addFont);
 
@@ -1019,24 +1042,6 @@ namespace TimeTableAutoCompleteTool
                         title = DateTime.Now.AddDays(1).ToString("yyyy年MM月dd日-") + title;
                     }
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
-                    if (sheet.GetRow(0).GetCell(0).ToString().Contains("徐兰"))
-                    {
-                        normalFont.FontHeightInPoints = 19;//字号 
-                        font.FontHeightInPoints = 19;//字号
-                        addFont.FontHeightInPoints = 16;
-                        normalTrainStyle.SetFont(normalFont);
-                        tomorrowlTrainStyle.SetFont(normalFont);
-                        stoppedTrainStyle.SetFont(font);
-                        addedTrainStyle.SetFont(addFont);
-                    }
-                    else if (fileName.Contains("徐兰"))
-                    {
-                        normalFont.FontHeightInPoints = 19;//字号 
-                        font.FontHeightInPoints = 19;//字号
-                        normalTrainStyle.SetFont(normalFont);
-                        tomorrowlTrainStyle.SetFont(normalFont);
-                        stoppedTrainStyle.SetFont(font);
-                    }
                     for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                     {
                         row = sheet.GetRow(i);   //row读入第i行数据  
@@ -1131,11 +1136,11 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j).SetCellValue("√" + row.GetCell(j).ToString().Trim());
                                                     row.GetCell(j).CellStyle = tomorrowlTrainStyle;
                                                 }
-
+                                                
                                             }
                                         }
                                         if (!ContainsTrainNumber)
-                                        {
+                                        {//查错
                                             string trainNum = row.GetCell(j).ToString().Trim();
                                             //单车号
                                             bool gotIt = false;
@@ -1241,7 +1246,7 @@ namespace TimeTableAutoCompleteTool
                     info.Arguments = "";
                     if (checkedText.Length != 0)
                     {
-                        MessageBox.Show("请人工核对以下车次（时刻表内有标注），并向车间报告有未识别情况：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("请人工核对以下车次（时刻表内有标注）：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         try
                         {
                             FileStream file = new FileStream(Application.StartupPath + "\\" + "ErrorLog-" + DateTime.Now.ToString("yyyyMMdd") + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -1294,6 +1299,9 @@ namespace TimeTableAutoCompleteTool
         {
             if (radioButton1.Checked)
             {
+                label111.Visible = true;
+                label222.Visible = true;
+                FontSize_tb.Visible = true;
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件（----支持多选----）";
@@ -1309,6 +1317,10 @@ namespace TimeTableAutoCompleteTool
             }
             else if (radioButton2.Checked)
             {
+                label111.Visible = false;
+                label222.Visible = false;
+                FontSize_tb.Visible = false;
+
                 modeSelect = 2;
                 startPath = "基本图";
                 secondStepText_lbl.Text = "2.选择基本图文件";
@@ -1324,6 +1336,10 @@ namespace TimeTableAutoCompleteTool
             }
             else if (radioButton3.Checked)
             {
+                label111.Visible = false;
+                label222.Visible = false;
+                FontSize_tb.Visible = false;
+
                 modeSelect = 3;
                 startPath = "动车所时刻表";
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
@@ -1417,62 +1433,69 @@ namespace TimeTableAutoCompleteTool
                     {
                         if (row.GetCell(0) != null)
                         {
-                            if (row.GetCell(0).ToString().Contains("序号"))
+                            if (row.GetCell(0).ToString().Contains("序号") ||
+                                row.GetCell(0).ToString().Contains("预售"))
                             {
                                 titleRow.Add(i);
                                 for(int j = 0; j <= row.LastCellNum; j++)
                                 {
+                                    
                                     if(row.GetCell(j)!= null)
                                     {
-                                        if (row.GetCell(j).ToString().Contains("车次"))
+                                        string titleText = row.GetCell(j).ToString();
+                                        if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("序号"))
+                                        {
+                                            titleInfo.idColumn = j;
+                                        }
+                                        if (row.GetCell(j).ToString().Trim().Replace("\n","").Contains("车次"))
                                         {
                                             titleInfo.trainNumColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("始发站"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("始发站"))
                                         {
                                             titleInfo.startStationColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("终到站"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("终到站"))
                                         {
                                             titleInfo.stopStationColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("到时"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("到时"))
                                         {
                                             titleInfo.stopTimeColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("开时"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("开时"))
                                         {
                                             titleInfo.startTimeColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("停时"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("停时"))
                                         {
                                             titleInfo.stopToStartTimeCountColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("股道"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("股道"))
                                         {
                                             titleInfo.trackNumColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("编组"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("编组"))
                                         {
                                             titleInfo.trainConnectTypeColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("车型"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("车型"))
                                         {
                                             titleInfo.trainModelColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("担当"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("担当"))
                                         {
                                             titleInfo.trainBelongsToColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("新旧"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("新旧"))
                                         {
                                             titleInfo.tipsColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("定员"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("定员"))
                                         {
                                             titleInfo.ratedSeatsColumn = j;
                                         }
-                                        else if (row.GetCell(j).ToString().Contains("备注"))
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("备注"))
                                         {
                                             titleInfo.extraTextColumn = j;
                                         }
@@ -2776,6 +2799,21 @@ namespace TimeTableAutoCompleteTool
                 }
             }
             searchResult_tb.Text = "共" + _allModels.Count.ToString() + "趟" + "\r\n" + commands;
+        }
+
+        private void FontSize_tb_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void FontSize_tb_TextChanged(object sender, EventArgs e)
+        {
+            int _fontSize = 0;
+            int.TryParse(FontSize_tb.Text, out _fontSize);
+            if(_fontSize != 0)
+            {
+                fontSize = _fontSize;
+            }
         }
     }
 }
