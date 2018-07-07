@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using NPOI.SS.Util;
 using CCWin;
 using System.Configuration;
+using System.Globalization;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -38,7 +39,7 @@ namespace TimeTableAutoCompleteTool
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
         string build = "build 36 - v180707";
         string readMe = "build36更新内容:\n" +
-            "增加复兴号长编车型，增加行车室打印字体调节，综控部分修改，可以使用班计划进行对比";
+            "增加复兴号长编车型，增加行车室打印字体调节，综控到发时间改为时间格式，并可以使用班计划进行对比";
 
         public Main()
         {
@@ -691,25 +692,48 @@ namespace TimeTableAutoCompleteTool
                 }
             } else if (trainConnectType == 1)
             {//长编
-                if (trainModel.Split('-').Length > 1)
+                if (trainModel.Split('-').Length == 2)
                 {
                     trainId = trainModel.Split('-')[1] + "L";
+                }
+                else if (trainModel.Split('-').Length == 3)
+                {
+                    trainId = trainModel.Split('-')[2] + "L";
                 }
             }
             else
             {
-                if (trainModel.Split('-').Length > 1)
+                if (trainModel.Split('-').Length == 2)
                 {
                     trainId = trainModel.Split('-')[1];
+                }
+                else if (trainModel.Split('-').Length == 3)
+                {
+                    trainId = trainModel.Split('-')[2];
                 }
             }
             if (!trainModel.Contains("+"))
             {
-                trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim();
+                if (!trainModel.Contains("-A"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim();
+                }
+                else
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim()+"-A";
+                }
             }
             else
             {
-                trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "+";
+                if (!trainModel.Contains("-A"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "+";
+                }
+                else
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-A+";
+                }
+
             }
             //判断index是否为纯数字
             Regex regexOnlyNum = new Regex(@"^[0-9]+$");
@@ -1429,7 +1453,8 @@ namespace TimeTableAutoCompleteTool
                 for(int i = 0; i <= sheet1.LastRowNum; i++)
                 {
                     IRow row = sheet1.GetRow(i);
-                    if(row != null)
+                    //short format = row.GetCell(0).CellStyle.DataFormat;
+                    if (row != null)
                     {
                         if (row.GetCell(0) != null)
                         {
@@ -2025,10 +2050,24 @@ namespace TimeTableAutoCompleteTool
             stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
             stoppedTrainStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+            ICellStyle stoppedTimeStyle = workbook.CreateCellStyle();
+            stoppedTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+            stoppedTimeStyle.FillPattern = FillPattern.SolidForeground;
+            stoppedTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+            stoppedTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            stoppedTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            stoppedTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            stoppedTimeStyle.DataFormat = 20;
+
             HSSFFont font = (HSSFFont)workbook.CreateFont();
             font.FontName = "宋体";//字体  
             font.FontHeightInPoints = 10;//字号  
             font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+            stoppedTimeStyle.SetFont(font);
             stoppedTrainStyle.SetFont(font);
 
             ICellStyle normalStyle = workbook.CreateCellStyle();
@@ -2040,10 +2079,27 @@ namespace TimeTableAutoCompleteTool
             normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
             normalStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+            
+            //IDataFormat dataformat = workbook.CreateDataFormat();
+            ICellStyle normalTimeStyle = workbook.CreateCellStyle();
+            normalTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTimeStyle.WrapText = true;
+            normalTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            normalTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            //176是综控用于时间的格式
+            normalTimeStyle.DataFormat = 20;
+            //normalTimeStyle.DataFormat = dataformat.GetFormat("HH:mm");
+
             HSSFFont fontNormal = (HSSFFont)workbook.CreateFont();
             fontNormal.FontName = "宋体";//字体  
             fontNormal.FontHeightInPoints = 10;//字号  
             normalStyle.SetFont(fontNormal);
+            normalTimeStyle.SetFont(fontNormal);
+
 
             //创建sheet
             ISheet sheet = workbook.CreateSheet("基本图");
@@ -2204,10 +2260,34 @@ namespace TimeTableAutoCompleteTool
                                 row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation);
                                 break;
                             case 5:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                DateTime dtStop;
+                                DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+                                dtFormat.ShortDatePattern = "HH:mm";
+                                if(allDailyScheduleModel[i - 2].stopTime != null)
+                                {
+                                    dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime, dtFormat);
+                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                    row.CreateCell(column).SetCellValue(dtStop);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                }
                                 break;
                             case 6:
-                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                DateTime dtStart;
+                                DateTimeFormatInfo dtFormat1 = new DateTimeFormatInfo();
+                                dtFormat1.ShortDatePattern = "HH:mm";
+                                if (allDailyScheduleModel[i - 2].startTime != null)
+                                {
+                                    dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime, dtFormat1);
+                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                    row.CreateCell(column).SetCellValue(dtStart);
+                                }
+                                else
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                }
                                 break;
                             case 7:
                                 row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime);
@@ -2272,11 +2352,22 @@ namespace TimeTableAutoCompleteTool
                         {
                             row.GetCell(column).CellStyle = boldStyle;
                         }
-                        if(allDailyScheduleModel[i-2].streamStatus == 0 && column != 0)
+                        if (column == 5 || column == 6)
                         {
-                            row.GetCell(column).CellStyle = stoppedTrainStyle;
+                            row.GetCell(column).CellStyle = normalTimeStyle;
                         }
-                        
+                        if (allDailyScheduleModel[i-2].streamStatus == 0 && column != 0)
+                        {
+                            if (column == 5 || column == 6)
+                            {
+                                row.GetCell(column).CellStyle = stoppedTimeStyle;
+                            }
+                            else
+                            {
+                                row.GetCell(column).CellStyle = stoppedTrainStyle;
+                            }
+                        }
+
                     }
                 }
              }
