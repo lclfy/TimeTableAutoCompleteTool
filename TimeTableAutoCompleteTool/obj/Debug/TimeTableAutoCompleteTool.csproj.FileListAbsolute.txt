@@ -30,3 +30,8 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
 D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.manifest
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.application
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
+D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application

@@ -51,7 +51,7 @@ namespace TimeTableAutoCompleteTool
             this.Text = "客调命令辅助工具";
             buildLBL.Text = build;
             start_Btn.Enabled = false;
-            TrainEarlyCaculator_Btn.Enabled = false;
+            //TrainEarlyCaculator_Btn.Enabled = false;
             load();
             checkedChanged();
             contentOfDeveloper.IsBalloon = true;
@@ -157,12 +157,12 @@ namespace TimeTableAutoCompleteTool
             if (hasFilePath && hasText)
             {
                 start_Btn.Enabled = true;
-                TrainEarlyCaculator_Btn.Enabled = true;
+                //TrainEarlyCaculator_Btn.Enabled = true;
             }
             else
             {
                 start_Btn.Enabled = false;
-                TrainEarlyCaculator_Btn.Enabled = false;
+                //TrainEarlyCaculator_Btn.Enabled = false;
             }
         }
 

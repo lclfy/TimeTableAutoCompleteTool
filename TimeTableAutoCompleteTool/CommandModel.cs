@@ -20,7 +20,7 @@ namespace TimeTableAutoCompleteTool
         public string trainId { get; set; }
         //短-长-8+8（0,1,2）
         public int trainConnectType { get; set; }
-        //上0-下1行
+        //上-下行
         public int upOrDown { get; set; }
         
     }
