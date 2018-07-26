@@ -24,6 +24,7 @@ namespace TimeTableAutoCompleteTool
         private Boolean hasText = false;
         private Boolean hasFilePath = false;
         private List<CommandModel> commandModel;
+        private List<CommandModel> yesterdayCommandModel;
         private List<CaculatorModel> caculatorModel;
         private List<DailySchedule> allDailyScheduleModel;
         List<string> ExcelFile = new List<string>();
@@ -37,9 +38,9 @@ namespace TimeTableAutoCompleteTool
         public int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 37 - v180723";
-        string readMe = "build37更新内容:\n" +
-            "现在可以判断旅客列车有无出库车（停车方向），班计划增加“重联”备注。";
+        string build = "build 38 - v180726";
+        string readMe = "build38更新内容:\n" +
+            "现在可以判断旅客列车有无出库车（停车方向），班计划增加“重联”备注，综控室增加两日客调对比。";
 
         public Main()
         {
@@ -55,7 +56,6 @@ namespace TimeTableAutoCompleteTool
             load();
             checkedChanged();
             contentOfDeveloper.IsBalloon = true;
-            contentOfDeveloper.SetToolTip(this.developerLabel, "联系方式：17638570597");
             updateReadMe.IsBalloon = true;
             updateReadMe.SetToolTip(this.buildLBL, readMe);
             FontSize_tb.Text = fontSize.ToString();
@@ -190,15 +190,14 @@ namespace TimeTableAutoCompleteTool
             }
         }
 
-        private void analyseCommand()
+        private void analyseCommand(bool isYesterday = false)
         {   //分析客调命令
             //删除不需要的标点符号-字符
             int addedTrainCount = 0;
-
             try
             {
                 string wrongNumber = "";
-                List<string> _commands = removeUnuseableWord();
+                List<string> _commands = removeUnuseableWord(isYesterday);
                 String[] AllCommand = _commands[0].Split('。');
                 List<CommandModel> AllModels = new List<CommandModel>();
                 addedTrainText = "";
@@ -557,7 +556,15 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
                 outputTB.Text = "共" + AllModels.Count.ToString() + "趟" + "\r\n" + commands;
-                commandModel = AllModels;
+                if (!isYesterday)
+                {
+                    commandModel = AllModels;
+                }
+                else
+                {
+                    yesterdayCommandModel = AllModels;
+                }
+
 
             }
             catch (Exception e)
@@ -588,9 +595,18 @@ namespace TimeTableAutoCompleteTool
             return _isTrainNumber;
         }
 
-        private List<string> removeUnuseableWord()
+        private List<string> removeUnuseableWord(bool isYesterday = false)
         {//字符转换
-            String standardCommand = command_rTb.Text.ToString();
+            String standardCommand = "";
+            if (!isYesterday)
+            {
+                standardCommand = command_rTb.Text.ToString();
+            }
+            else
+            {
+                standardCommand = yesterdayCommand_rtb.Text.ToString();
+            }
+
             List<string> commands = new List<string>();
             standardCommand = removing(standardCommand.Trim());
             commands.Add(standardCommand.Trim());
@@ -1326,6 +1342,8 @@ namespace TimeTableAutoCompleteTool
             {
                 label111.Visible = true;
                 label222.Visible = true;
+                rightGroupBox.Visible = true;
+                rightGroupBox_Compare.Visible = false;
                 FontSize_tb.Visible = true;
                 modeSelect = 1;
                 startPath = "时刻表";
@@ -1345,7 +1363,8 @@ namespace TimeTableAutoCompleteTool
                 label111.Visible = false;
                 label222.Visible = false;
                 FontSize_tb.Visible = false;
-
+                rightGroupBox.Visible = false;
+                rightGroupBox_Compare.Visible = true;
                 modeSelect = 2;
                 startPath = "基本图";
                 secondStepText_lbl.Text = "2.选择基本图文件";
@@ -1364,7 +1383,8 @@ namespace TimeTableAutoCompleteTool
                 label111.Visible = false;
                 label222.Visible = false;
                 FontSize_tb.Visible = false;
-
+                rightGroupBox.Visible = true;
+                rightGroupBox_Compare.Visible = false;
                 modeSelect = 3;
                 startPath = "动车所时刻表";
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
@@ -1379,7 +1399,7 @@ namespace TimeTableAutoCompleteTool
         }
 
         //读基本图-存模型
-        private void readBasicTrainTable()
+        private void readBasicTrainTable(bool isComparing = false)
         {
             string fileName = ExcelFile[0];
             IWorkbook workbook = null;  //新建IWorkbook对象  
@@ -1660,7 +1680,15 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
                 //下一步-处理数据
-                analyzeDailyScheduleData(_dailyScheduleModel);
+                if (!isComparing)
+                {
+                    analyzeDailyScheduleData(_dailyScheduleModel);
+                }
+                else
+                {
+                    compareWithYesterday(_dailyScheduleModel);
+                }
+
             }
             catch (IOException e)
             {
@@ -1668,6 +1696,201 @@ namespace TimeTableAutoCompleteTool
                 return;
             }
 
+        }
+
+        private void compareWithYesterday(List<DailySchedule> dailyScheduleModel)
+        {
+            //先两天命令比一下,找到不同的再去基本图里找找有没有这趟车
+            //保存对比文字
+            List<string> comparedText = new List<string>();
+            List<CommandModel> addedTodayCM = new List<CommandModel>();
+            List<CommandModel> addedYesterdayCM = new List<CommandModel>();
+            int count = 1;
+            for(int j = 0; j< commandModel.Count; j++)
+            {//先过滤基本图
+                CommandModel _cm = commandModel[j];
+                bool hasGotIt = false;
+                for (int i = 0; i < dailyScheduleModel.Count; i++)
+                {
+                    if (dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(commandModel[j].trainNumber.Trim()) ||
+                    dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(commandModel[j].secondTrainNumber.Trim()))
+                    {
+                        addedTodayCM.Add(_cm);
+                        hasGotIt = true;
+                    }
+                    if (hasGotIt)
+                    {
+                        break;
+                    }
+                }
+            }
+            for (int j = 0; j < yesterdayCommandModel.Count; j++)
+            {//(前日)先过滤基本图
+                CommandModel _cm = yesterdayCommandModel[j];
+                bool hasGotIt = false;
+                for (int i = 0; i < dailyScheduleModel.Count; i++)
+                {
+                    if (dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(yesterdayCommandModel[j].trainNumber.Trim()) ||
+                    dailyScheduleModel[i].trainNumber.Split('/')[0].Trim().Equals(yesterdayCommandModel[j].secondTrainNumber.Trim()))
+                    {
+                        addedYesterdayCM.Add(_cm);
+                        hasGotIt = true;
+                    }
+                    if (hasGotIt)
+                    {
+                        break;
+                    }
+                }
+            }
+            foreach (CommandModel _cm in addedTodayCM)
+            {//找两个共同的-和今天有昨天没有的
+                bool hasGotIt = false;
+                foreach(CommandModel _yesterdayCM in addedYesterdayCM)
+                {//再从昨天里找不一样的
+                    if (_cm.secondTrainNumber.Equals(_yesterdayCM.secondTrainNumber))
+                    {//要么都有两个车次，要么都没有 才可能一样
+                        if (_cm.secondTrainNumber.Equals("null"))
+                        {//只比第一个车次
+                            if (_cm.trainNumber.Equals(_yesterdayCM.trainNumber))
+                            {//车次相同,开始对比
+                                string result = detailsCompareWithYesterday(_cm, _yesterdayCM);
+                                if (result.Length != 0)
+                                {
+                                    comparedText.Add(count.ToString() + "、" + result);
+                                    count++;
+                                }
+                                hasGotIt = true;
+                            }
+                        }
+                        else
+                        {
+                            if(_cm.trainNumber.Equals(_yesterdayCM.trainNumber)|| _cm.trainNumber.Equals(_yesterdayCM.secondTrainNumber))
+                            {
+                                string result = detailsCompareWithYesterday(_cm, _yesterdayCM);
+                                if (result.Length != 0)
+                                {
+                                    comparedText.Add(count.ToString() + "、" + result);
+                                    count++;
+                                }
+                                hasGotIt = true;
+                            }
+                        }
+
+                    }
+                    if (hasGotIt)
+                    {
+                        break;
+                    }
+                }
+                //出来没找到 那就是今天加开的
+                if (!hasGotIt)
+                {
+
+                    comparedText.Add(count.ToString() + "、" + "今日(←)加开" + _cm.trainNumber + "次，车型" + _cm.trainModel + "，编组" + returnConnectType(_cm.trainConnectType) + "节，位于今日(←)命令第" + _cm.trainIndex + "行。");
+                    count++;
+                }
+            }
+            foreach(CommandModel _yesterdayCM in addedYesterdayCM)
+            {//找昨天有今天没有的
+                bool hasGotIt = false;
+                foreach(CommandModel _cm in addedTodayCM)
+                {
+                    if (_cm.secondTrainNumber.Equals(_yesterdayCM.secondTrainNumber))
+                    {//要么都有两个车次，要么都没有 才可能一样
+                        if (_cm.secondTrainNumber.Equals("null"))
+                        {//只比第一个车次
+                            if (_cm.trainNumber.Equals(_yesterdayCM.trainNumber))
+                            {//车次相同
+                                hasGotIt = true;
+                            }
+                        }
+                        else
+                        {
+                            if (_cm.trainNumber.Equals(_yesterdayCM.trainNumber) || _cm.trainNumber.Equals(_yesterdayCM.secondTrainNumber))
+                            {
+                                hasGotIt = true;
+                            }
+                        }
+                    }
+                    if (hasGotIt)
+                    {
+                        break;
+                    }
+                }
+                if (!hasGotIt)
+                {//昨天开的
+                    comparedText.Add(count.ToString() + "、" + "今日(←)停运" + _yesterdayCM.trainNumber + "次，位于昨日(↑)命令第"+_yesterdayCM.trainIndex+"行。");
+                    count++;
+                }
+            }
+            //显示对比结果
+            string allResults = "";
+            foreach(string _str in comparedText)
+            {
+                allResults = allResults + _str + "\n";
+            }
+            comparedResult_rtb.Text = allResults;
+            
+        }
+
+        private string returnConnectType(int connectType)
+        {
+            switch (connectType)
+            {
+                case 0:
+                    {
+                        return "8";
+                        break;
+                    }
+                case 1:
+                    {
+                        return "16";
+                        break;
+                    }
+                case 2:
+                    {
+                        return "8+8";
+                        break;
+                    }
+                    
+            }
+            return "";
+        }
+
+        private string detailsCompareWithYesterday(CommandModel today, CommandModel yesterday)
+        {
+            string compareText = "";
+            if (!today.trainModel.Equals(yesterday.trainModel) ||
+                !today.trainConnectType.Equals(yesterday.trainConnectType)||
+                !today.streamStatus.Equals(yesterday.streamStatus))
+            {
+                compareText = today.trainNumber + "次；";
+                if (!today.streamStatus.Equals(yesterday.streamStatus))
+                {
+                    //(0停开，1开行，2次日)
+                    if(today.streamStatus == 0 && (yesterday.streamStatus == 1 || yesterday.streamStatus == 2))
+                    {//今日停运
+                        compareText = compareText + "今日(←)停运；";
+                    }
+                    else if((today.streamStatus == 1||today.streamStatus == 2) && yesterday.streamStatus == 0)
+                    {//昨日停运
+                        compareText = compareText + "今日(←)恢复开行；";
+                    }
+                }
+                if (!today.trainModel.Equals(yesterday.trainModel))
+                {
+                    if(returnConnectType(yesterday.trainConnectType).Length != 0)
+                    {
+                        compareText = compareText + "昨日(↑)车型:" + yesterday.trainModel + ",编组" + returnConnectType(yesterday.trainConnectType) + "；";
+                    }
+                    if(returnConnectType(today.trainConnectType).Length != 0)
+                    {
+                        compareText = compareText + "今日(←)车型:" + today.trainModel + ",编组" + returnConnectType(today.trainConnectType) + "；";
+                    }
+                }
+                compareText = compareText + "位于昨日(↑)命令第" + yesterday.trainIndex + "行，今日(←)第" + today.trainIndex + "行。";
+            }
+            return compareText;
         }
 
         //处理经过本站时列车车次问题
@@ -2901,12 +3124,32 @@ namespace TimeTableAutoCompleteTool
 
         private void 粘贴ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            command_rTb.Paste(); //粘贴
+            if (Clipboard.ContainsText())
+            {
+                粘贴ToolStripMenuItem.Enabled = true;
+            }
+            else
+                粘贴ToolStripMenuItem.Enabled = false;
+
+            ((RichTextBox)contextMenuStrip1.SourceControl).Paste();
+            //command_rTb.Paste(); //粘贴
         }
+
+
 
         private void 清空ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            command_rTb.Clear(); //清空
+            ((RichTextBox)contextMenuStrip1.SourceControl).Clear();
+            //command_rTb.Clear(); //清空
+        }
+
+        private void 复制toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            string selectText = ((RichTextBox)contextMenuStrip1.SourceControl).SelectedText;
+            if (selectText != "")
+            {
+                Clipboard.SetText(selectText);
+            }
         }
 
         private void search_tb_TextChanged(object sender, EventArgs e)
@@ -2990,5 +3233,33 @@ namespace TimeTableAutoCompleteTool
                 fontSize = _fontSize;
             }
         }
+
+        private void yesterdayCommand_rtb_TextChanged(object sender, EventArgs e)
+        {
+            if(yesterdayCommand_rtb.Text.Length != 0 )
+            {
+                compare_btn.Enabled = true;
+                analyseCommand(true);
+            }
+            else
+            {
+                compare_btn.Enabled = false;
+            }
+        }
+
+        private void compare_btn_Click(object sender, EventArgs e)
+        {
+            if(commandModel.Count != 0 && yesterdayCommandModel.Count != 0 && hasFilePath && hasText && ExcelFile.Count > 0)
+            {//对比
+                readBasicTrainTable(true);
+            }
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+
     }
 }

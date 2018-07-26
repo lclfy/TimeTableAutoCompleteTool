@@ -4,14 +4,14 @@
   <description asmv2:publisher="TimeTableAutoCompleteTool" asmv2:product="TimeTableAutoCompleteTool" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" />
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="TimeTableAutoCompleteTool.exe.manifest" size="9745">
+    <dependentAssembly dependencyType="install" codebase="TimeTableAutoCompleteTool.exe.manifest" size="9746">
       <assemblyIdentity name="TimeTableAutoCompleteTool.exe" version="1.0.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>R3+TayaTf+JYIGWQhjblK2kK4c0=</dsig:DigestValue>
+        <dsig:DigestValue>80cjl/QB2j6g8gOhQZ7vCVD5TEY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
