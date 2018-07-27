@@ -52,6 +52,7 @@ namespace TimeTableAutoCompleteTool
             this.Text = "客调命令辅助工具";
             buildLBL.Text = build;
             start_Btn.Enabled = false;
+            compare_btn.Enabled = false;
             //TrainEarlyCaculator_Btn.Enabled = false;
             load();
             checkedChanged();
@@ -163,6 +164,14 @@ namespace TimeTableAutoCompleteTool
             {
                 start_Btn.Enabled = false;
                 //TrainEarlyCaculator_Btn.Enabled = false;
+            }
+            if (yesterdayCommandModel != null &&yesterdayCommandModel.Count != 0 && hasFilePath && hasText && ExcelFile.Count > 0)
+            {
+                compare_btn.Enabled = true;
+            }
+            else
+            {
+                compare_btn.Enabled = false ;
             }
         }
 
@@ -1786,7 +1795,7 @@ namespace TimeTableAutoCompleteTool
                 if (!hasGotIt)
                 {
 
-                    comparedText.Add(count.ToString() + "、" + "今日(←)加开" + _cm.trainNumber + "次，车型" + _cm.trainModel + "，编组" + returnConnectType(_cm.trainConnectType) + "节，位于今日(←)命令第" + _cm.trainIndex + "行。");
+                    comparedText.Add(count.ToString() + "、" + "今日(←)加开" + _cm.trainNumber + "次，车型" + _cm.trainModel + "，编组" + returnConnectType(_cm.trainConnectType) + "节，位于今日(←)命令第" + _cm.trainIndex + "条。");
                     count++;
                 }
             }
@@ -1819,7 +1828,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 if (!hasGotIt)
                 {//昨天开的
-                    comparedText.Add(count.ToString() + "、" + "今日(←)停运" + _yesterdayCM.trainNumber + "次，位于昨日(↑)命令第"+_yesterdayCM.trainIndex+"行。");
+                    comparedText.Add(count.ToString() + "、" + "今日(←)停运" + _yesterdayCM.trainNumber + "次，位于昨日(↑)命令第"+_yesterdayCM.trainIndex+"条。");
                     count++;
                 }
             }
@@ -1888,7 +1897,7 @@ namespace TimeTableAutoCompleteTool
                         compareText = compareText + "今日(←)车型:" + today.trainModel + ",编组" + returnConnectType(today.trainConnectType) + "；";
                     }
                 }
-                compareText = compareText + "位于昨日(↑)命令第" + yesterday.trainIndex + "行，今日(←)第" + today.trainIndex + "行。";
+                compareText = compareText + "位于昨日(↑)命令第" + yesterday.trainIndex + "条，今日(←)第" + today.trainIndex + "条。";
             }
             return compareText;
         }
@@ -3207,11 +3216,11 @@ namespace TimeTableAutoCompleteTool
                     }
                     if (model.secondTrainNumber.Equals("null"))
                     {
-                        commands = commands + "第" + model.trainIndex + "行-" + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                        commands = commands + "第" + model.trainIndex + "条-" + model.trainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
                     }
                     else
                     {
-                        commands = commands + "第" + model.trainIndex + "行-" + model.trainNumber + "-" + model.secondTrainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
+                        commands = commands + "第" + model.trainIndex + "条-" + model.trainNumber + "-" + model.secondTrainNumber + "-" + streamStatus + "-" + trainType + "\r\n";
                     }
                     _allModels.Add(model);
                 }
@@ -3238,12 +3247,12 @@ namespace TimeTableAutoCompleteTool
         {
             if(yesterdayCommand_rtb.Text.Length != 0 )
             {
-                compare_btn.Enabled = true;
                 analyseCommand(true);
+                startBtnCheck();
             }
             else
             {
-                compare_btn.Enabled = false;
+                startBtnCheck();
             }
         }
 
@@ -3252,6 +3261,10 @@ namespace TimeTableAutoCompleteTool
             if(commandModel.Count != 0 && yesterdayCommandModel.Count != 0 && hasFilePath && hasText && ExcelFile.Count > 0)
             {//对比
                 readBasicTrainTable(true);
+            }
+            else
+            {
+
             }
         }
 
