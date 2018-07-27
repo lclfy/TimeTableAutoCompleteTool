@@ -35,6 +35,7 @@ D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoComplete
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
+<<<<<<< HEAD
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
@@ -53,3 +54,23 @@ D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTable
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
+=======
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.manifest
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.application
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.pdb
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\CSkin.xml
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.xml
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csprojResolveAssemblyReference.cache
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Main.resources
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Properties.Resources.resources
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrainEarlyCaculator.resources
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
+C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
+>>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800

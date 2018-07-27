@@ -607,7 +607,11 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label10.ForeColor = System.Drawing.Color.Tomato;
+<<<<<<< HEAD
             this.label10.Location = new System.Drawing.Point(200, 206);
+=======
+            this.label10.Location = new System.Drawing.Point(184, 203);
+>>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(164, 17);
             this.label10.TabIndex = 29;
@@ -629,9 +633,15 @@
             this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.Location = new System.Drawing.Point(8, 199);
             this.label9.Name = "label9";
+<<<<<<< HEAD
             this.label9.Size = new System.Drawing.Size(186, 21);
             this.label9.TabIndex = 32;
             this.label9.Text = "对比结果（可复制粘贴）";
+=======
+            this.label9.Size = new System.Drawing.Size(154, 21);
+            this.label9.TabIndex = 32;
+            this.label9.Text = "对比结果（可复制）";
+>>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
             // 
             // compare_btn
             // 
@@ -679,7 +689,11 @@
             this.BackColor = System.Drawing.Color.White;
             this.CaptionBackColorBottom = System.Drawing.Color.White;
             this.CaptionBackColorTop = System.Drawing.Color.White;
+<<<<<<< HEAD
             this.ClientSize = new System.Drawing.Size(1024, 592);
+=======
+            this.ClientSize = new System.Drawing.Size(1036, 595);
+>>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
             this.Controls.Add(this.rightGroupBox_Compare);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox4);
