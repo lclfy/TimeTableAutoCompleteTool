@@ -983,7 +983,7 @@ namespace TimeTableAutoCompleteTool
                         {
                             if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
-                                MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                                 string pSaveFilePath = fileName;//指定存储的路径
                                 File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
@@ -992,7 +992,7 @@ namespace TimeTableAutoCompleteTool
                             }
                             else
                             {
-                                MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
                                 return;
                             }
@@ -1009,7 +1009,7 @@ namespace TimeTableAutoCompleteTool
                         {
                             if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
-                                MessageBox.Show("时刻表文件出现损坏【已启用热备恢复文件:)】请对本机进行病毒扫描\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 string pLocalFilePath = Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                                 string pSaveFilePath = fileName;//指定存储的路径
                                 File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
@@ -1018,7 +1018,7 @@ namespace TimeTableAutoCompleteTool
                             }
                             else
                             {
-                                MessageBox.Show("时刻表文件出现损坏（或时刻表无效），请杀毒并从车间复制时刻表文件至此\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
                                 return;
                             }
@@ -1232,13 +1232,18 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j).SetCellValue("√" + row.GetCell(j).ToString().Trim());
                                                     row.GetCell(j).CellStyle = normalTrainStyle;
                                                 }
-                                                else
+                                                else if(status == 0)
                                                 {
                                                     row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                     stoppedTrainsCount++;
                                                     row.GetCell(j).CellStyle = stoppedTrainStyle;
                                                 }
                                                 gotIt = true;
+                                                if (status == -1)
+                                                {//如果选择发现找到的都不是这个车
+                                                    gotIt = false;
+                                                }
+
                                             }
                                             //双车号
                                             if (!gotIt)
@@ -1482,7 +1487,7 @@ namespace TimeTableAutoCompleteTool
                     {
                         if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                         {
-                            MessageBox.Show("基本图文件出现损坏【已启用热备恢复文件:)】\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = fileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
@@ -1491,7 +1496,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         else
                         {
-                            MessageBox.Show("基本图文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
                             return;
                         }
@@ -1508,7 +1513,7 @@ namespace TimeTableAutoCompleteTool
                     {
                         if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                         {
-                            MessageBox.Show("基本图文件出现损坏【已启用热备恢复文件:)】\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
                             string pSaveFilePath = fileName;//指定存储的路径
                             File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
@@ -1803,7 +1808,7 @@ namespace TimeTableAutoCompleteTool
                     command_rTb.SelectionColor = Color.Red;
                     command_rTb.SelectionFont = new Font("Times New Roman", (float)12, FontStyle.Bold);
                     command_rTb.Focus();
-                    DialogResult result = MessageBox.Show("请人工核对\n" + find + "\n次是否为当前今日客调文本框标红内容？", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    DialogResult result = MessageBox.Show("请人工核对\n" + find + "次是否为当前标红内容？\n(*请注意核查同一条命令内其他车次是否正确)", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
                         if (type == 0)
@@ -1900,7 +1905,7 @@ namespace TimeTableAutoCompleteTool
                     yesterdayCommand_rtb.SelectionColor = Color.Red;
                     yesterdayCommand_rtb.SelectionFont = new Font("Times New Roman", (float)12, FontStyle.Bold);
                     yesterdayCommand_rtb.Focus();
-                    DialogResult result = MessageBox.Show("请人工核对\n" + find + "\n次是否为↑昨日客调文本框标红内容？", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    DialogResult result = MessageBox.Show("请人工核对\n" + find + "次是否为↑昨日客调文本框标红内容？\n(*请注意核查同一条命令内其他车次是否正确)", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
                         {//把命令分行，找车次所在行有没有其他车次，找对应车次车号赋给新车，然后再选择停运情况
