@@ -42,9 +42,9 @@ namespace TimeTableAutoCompleteTool
         public int modeSelect;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 41 - v180813";
+        string build = "build 41 - v180814";
         string readMe = "build41更新内容:\n" +
-            "综控室增加纠错提醒（正确率提升，智能选择），行车室纠错优化（智能选择），动车所纠错优化（标注）。";
+            "综控室增加纠错提醒（正确率提升，智能选择），行车室纠错优化（智能选择），动车所纠错优化（标注）。\n修复了客调命令中夹杂时间导致无法识别的问题，修复了行车室加开车次出现的问题";
 
         public Main()
         {
@@ -245,7 +245,7 @@ namespace TimeTableAutoCompleteTool
                         if (addedCommand.Contains("月") && addedCommand.Contains("日"))
                         {
                             addedTrainCount++;
-                            addedTrainText = addedTrainText + addedTrainCount + "、" + addedCommand.Split('：')[1].Remove(0, 3) + "\n";
+                            addedTrainText = addedTrainText + addedTrainCount + "、" + addedCommand.Split('：')[addedCommand.Split('：').Length - 1].Remove(0, 3) + "\n";
                         }
                     }
                     //取行号，便于查找
@@ -654,7 +654,12 @@ namespace TimeTableAutoCompleteTool
         private string removing(string standardCommand)
         {
             if (standardCommand.Contains(":"))
-                standardCommand = standardCommand.Replace(":", "：");
+            { standardCommand = standardCommand.Replace(":", "："); }
+            //删除客调命令中的时间
+            //standardCommand = Regex.Replace(standardCommand, @"\d+：\d", "");
+            standardCommand = Regex.Replace(standardCommand,@"[0-9]{2}(：)[0-9]{2}","");
+            standardCommand = Regex.Replace(standardCommand, @"[0-9]{1}(：)[0-9]{2}", "");
+
             if (standardCommand.Contains("~"))
                 standardCommand = standardCommand.Replace("~", "～");
             if (standardCommand.Contains("～"))
@@ -1753,7 +1758,7 @@ namespace TimeTableAutoCompleteTool
                 string unresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, commandModel, commandText);
                 if (unresolvedTrains.Length != 0)
                 {
-                    //MessageBox.Show("请人工核对以下未识别车次：\n" + unresolvedTrains + "\n位于->今日客调命令(←已标红)。\n未识别车次暂时标注为停运", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("请核对以下未识别车次：\n" + unresolvedTrains + "\n位于->今日客调命令(←已标红)。\n未识别车次暂时未添加", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 //下一步-处理数据
                 if (!isComparing)
@@ -1766,7 +1771,7 @@ namespace TimeTableAutoCompleteTool
                     string yesterdayUnresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, yesterdayCommandModel, yesterdayCommandText, true);
                     if (yesterdayUnresolvedTrains.Length != 0)
                     {
-                        //MessageBox.Show("请人工核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑已标红)。\n未识别车次暂时标注为停运", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("请核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑已标红)。\n未识别车次暂时未添加", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     compareWithYesterday(_dailyScheduleModel);
                 }
@@ -1781,7 +1786,7 @@ namespace TimeTableAutoCompleteTool
         }
 
         private int searchAndHightlightUnresolvedTrains(string find, int type,bool isYesterDay = false,string secondTrainNumber = "")
-        {//找到未识别车并高亮显示(返回0-停开，1-开行，-1-未找到)-行车，东所
+        {//找到未识别车并高亮显示(返回0-停开，1-开行，-1-未找到，2-综控-一整行车都没有23333)-行车，东所
             //在模型内添加新车-综控
             //type 0 1 2行车综控东所
             int index = 0;
@@ -1886,6 +1891,10 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 commandModel.Add(_tempCM);
                             }
+                            else
+                            {//一整行车都没有，自己去核对吧
+                                return 2;
+                            }
                             detectedCModel = new List<CommandModel>();
                         }
                     }
@@ -1957,6 +1966,10 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 yesterdayCommandModel.Add(_tempCM);
                             }
+                            else
+                            {//一整行车都没有，自己去核对吧
+                                return 2;
+                            }
                         }
                     }
                     nextIndex = yesterdayCommand_rtb.Find(find, index + find.Length, RichTextBoxFinds.WholeWord);
@@ -2017,12 +2030,15 @@ namespace TimeTableAutoCompleteTool
                     if (cmdText.Contains(firstTrainNumber) || secondTrainNumber.Length != 0 && cmdText.Contains(secondTrainNumber))
                     {
                         //先尝试找一个车次
-                        int gotit = searchAndHightlightUnresolvedTrains(firstTrainNumber,1, isYesterday,secondTrainNumber);
-                        if(gotit == -1)
+                        int result = searchAndHightlightUnresolvedTrains(firstTrainNumber,1, isYesterday,secondTrainNumber);
+                        if(result == -1 || result == 2)
                         {//再找第二个车次
-                            searchAndHightlightUnresolvedTrains(secondTrainNumber, 1, isYesterday, firstTrainNumber);
+                            int secondResult = searchAndHightlightUnresolvedTrains(secondTrainNumber, 1, isYesterday, firstTrainNumber);
+                            if(secondResult == -1 || secondResult == 2)
+                            {//加入未识别车次豪华套餐
+                                unresolvedTrains = unresolvedTrains + " " + _ds.trainNumber;
+                            }
                         }
-                        unresolvedTrains = unresolvedTrains + " " + _ds.trainNumber;
                     }
                 }
             }
