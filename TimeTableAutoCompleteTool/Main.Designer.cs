@@ -83,12 +83,16 @@
             this.compare_btn = new CCWin.SkinControl.SkinButton();
             this.label7 = new System.Windows.Forms.Label();
             this.yesterdayCommand_rtb = new System.Windows.Forms.RichTextBox();
+            this.EMUorEMUC_groupBox = new System.Windows.Forms.GroupBox();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.rightGroupBox.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.rightGroupBox_Compare.SuspendLayout();
+            this.EMUorEMUC_groupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -276,13 +280,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.command_rTb);
+            this.groupBox1.Controls.Add(this.EMUorEMUC_groupBox);
             this.groupBox1.Controls.Add(this.FontSize_tb);
             this.groupBox1.Controls.Add(this.label222);
             this.groupBox1.Controls.Add(this.label111);
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.secondStepText_lbl);
-            this.groupBox1.Controls.Add(this.command_rTb);
             this.groupBox1.Controls.Add(this.start_Btn);
             this.groupBox1.Location = new System.Drawing.Point(31, 77);
             this.groupBox1.Name = "groupBox1";
@@ -339,7 +344,7 @@
             this.importTimeTable_Btn.MouseBack = null;
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.NormlBack = null;
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 32);
+            this.importTimeTable_Btn.Size = new System.Drawing.Size(95, 41);
             this.importTimeTable_Btn.TabIndex = 7;
             this.importTimeTable_Btn.Text = "导入";
             this.importTimeTable_Btn.UseVisualStyleBackColor = false;
@@ -672,6 +677,45 @@
             this.yesterdayCommand_rtb.Text = "";
             this.yesterdayCommand_rtb.TextChanged += new System.EventHandler(this.yesterdayCommand_rtb_TextChanged);
             // 
+            // EMUorEMUC_groupBox
+            // 
+            this.EMUorEMUC_groupBox.BackColor = System.Drawing.Color.White;
+            this.EMUorEMUC_groupBox.Controls.Add(this.radioButton4);
+            this.EMUorEMUC_groupBox.Controls.Add(this.radioButton5);
+            this.EMUorEMUC_groupBox.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.EMUorEMUC_groupBox.ForeColor = System.Drawing.Color.DarkOrange;
+            this.EMUorEMUC_groupBox.Location = new System.Drawing.Point(206, 304);
+            this.EMUorEMUC_groupBox.Name = "EMUorEMUC_groupBox";
+            this.EMUorEMUC_groupBox.Size = new System.Drawing.Size(147, 50);
+            this.EMUorEMUC_groupBox.TabIndex = 26;
+            this.EMUorEMUC_groupBox.TabStop = false;
+            this.EMUorEMUC_groupBox.Text = "全图类型";
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.radioButton4.Location = new System.Drawing.Point(11, 19);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(62, 21);
+            this.radioButton4.TabIndex = 26;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "班计划";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.radioButton5.Location = new System.Drawing.Point(79, 19);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(62, 21);
+            this.radioButton5.TabIndex = 25;
+            this.radioButton5.TabStop = true;
+            this.radioButton5.Text = "动检车";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -710,6 +754,8 @@
             this.groupBox4.PerformLayout();
             this.rightGroupBox_Compare.ResumeLayout(false);
             this.rightGroupBox_Compare.PerformLayout();
+            this.EMUorEMUC_groupBox.ResumeLayout(false);
+            this.EMUorEMUC_groupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -770,6 +816,9 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ToolStripMenuItem 复制toolStripMenuItem1;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.GroupBox EMUorEMUC_groupBox;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton5;
     }
 }
 

@@ -10,7 +10,7 @@
   <trustInfo>
     <security>
       <applicationRequestMinimum>
-        <PermissionSet class="System.Security.PermissionSet" version="1" ID="Custom" SameSite="site" Unrestricted="true" />
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="LocalIntranet" Description="Default rights given to applications on the local intranet" Unrestricted="true" ID="Custom" SameSite="site" />
         <defaultAssemblyRequest permissionSetReference="Custom" />
       </applicationRequestMinimum>
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
@@ -38,12 +38,7 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="2.0.50727.0" />
-    </dependentAssembly>
-  </dependency>
-  <dependency>
-    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="WindowsBase" version="3.0.0.0" publicKeyToken="31bf3856ad364e35" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
     </dependentAssembly>
   </dependency>
   <dependency>
@@ -119,22 +114,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-<<<<<<< HEAD
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="103424">
-=======
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="103936">
->>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="119808">
       <assemblyIdentity name="TimeTableAutoCompleteTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-<<<<<<< HEAD
-        <dsig:DigestValue>0WG1C7TL54mQdG8uugxEue53T90=</dsig:DigestValue>
-=======
-        <dsig:DigestValue>O7l4vj2mE+y7fcZTfA7Bvo/gqUE=</dsig:DigestValue>
->>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
+        <dsig:DigestValue>kXxXvuD8XrU4v5v8ubi+60CWa4c=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -156,13 +143,13 @@
       <dsig:DigestValue>/cD5FgNjE7+1HTGBVwqJwM6tSd4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TimeTableAutoCompleteTool.exe.config" size="255">
+  <file name="TimeTableAutoCompleteTool.exe.config" size="279">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>xsn7Fphz3nn5tvE3XPcWJHg4oB8=</dsig:DigestValue>
+      <dsig:DigestValue>04sLpLsGBHgAR1LO1ScDOPn9P8E=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
