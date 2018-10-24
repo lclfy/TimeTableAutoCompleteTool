@@ -114,14 +114,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="120320">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="117248">
       <assemblyIdentity name="TimeTableAutoCompleteTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>mJ5vrtMqW/LHFsIUfl+hwlrQVY8=</dsig:DigestValue>
+        <dsig:DigestValue>yvrr8e5McuBmsQEV6z2VvGl15KE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -143,13 +143,13 @@
       <dsig:DigestValue>/cD5FgNjE7+1HTGBVwqJwM6tSd4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TimeTableAutoCompleteTool.exe.config" size="279">
+  <file name="TimeTableAutoCompleteTool.exe.config" size="270">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>04sLpLsGBHgAR1LO1ScDOPn9P8E=</dsig:DigestValue>
+      <dsig:DigestValue>kXY7H0xJizNUzDKmSEyxFXnfjOY=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
