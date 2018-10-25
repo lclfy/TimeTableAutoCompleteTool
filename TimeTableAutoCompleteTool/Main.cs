@@ -333,7 +333,7 @@ namespace TimeTableAutoCompleteTool
                 if(EMUGarage_YesterdayCommand_rtb.Text.Length == 0)
                 {
                     EMUGarage_hasYesterdayText = false;
-                    MessageBox.Show("新功能：复制昨天的命令至右边的对话框中，可以将两天命令制成同一张表。\n", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("新功能：复制昨天的命令至右边的对话框中，可以将两天命令制成同一张表。（前日车次为斜体下划线）\n", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 else if(yesterdayCommandModel.Count != 0)
                 {
@@ -2142,24 +2142,29 @@ namespace TimeTableAutoCompleteTool
     }
 
         //下面三个方法合并起来是班计划-动检车查错用的
-        private int searchAndHightlightUnresolvedTrains(string find, int type,bool isYesterDay = false,string secondTrainNumber = "")
+        private int searchAndHightlightUnresolvedTrains(string find, int type,int isYesterDay = 0,string secondTrainNumber = "")
         {//找到未识别车并高亮显示(返回0-停开，1-开行，-1-未找到，2-综控-一整行车都没有23333)-行车，东所
+            //isYesterday : 0今天 1综控昨天 2动车所昨天
             //在模型内添加新车-综控
             //type 0 1 2行车综控东所
             int index = 0;
-            if (!isYesterDay)
-            {
+            if (isYesterDay == 0)
+            {//不是昨天
                 index = command_rTb.Find(find, RichTextBoxFinds.WholeWord);//调用find方法，并设置区分全字匹配
             }
-            else
-            {
-                index = yesterdayCommand_rtb.Find(find, RichTextBoxFinds.WholeWord);//调用find方法，并设置区分全字匹配
+            else if(isYesterDay == 1)
+            {//综控室昨天的
+                index = yesterdayCommand_rtb.Find(find, RichTextBoxFinds.WholeWord);//
+            }
+            else if(isYesterDay == 2)
+            {//动车所昨天的
+                index = EMUGarage_YesterdayCommand_rtb.Find(find, RichTextBoxFinds.WholeWord);//
             }
             int startPos = index;
             int nextIndex = 0;
             while (nextIndex != startPos)//循环查找字符串，并用红色加粗12号Times New Roman标记之
             {
-                if (!isYesterDay)
+                if (isYesterDay == 0)
                 {
                     if (index == -1)
                     {
@@ -2260,7 +2265,7 @@ namespace TimeTableAutoCompleteTool
                         nextIndex = startPos;
                     index = nextIndex;
                 }
-                else
+                else if(isYesterDay == 1)
                 {
                     if (index == -1)
                     {
@@ -2330,6 +2335,82 @@ namespace TimeTableAutoCompleteTool
                         }
                     }
                     nextIndex = yesterdayCommand_rtb.Find(find, index + find.Length, RichTextBoxFinds.WholeWord);
+                    if (nextIndex == -1)//若查到文件末尾，则重置nextIndex为初始位置的值，使其达到初始位置，顺利结束循环，否则会有异常。
+                        nextIndex = startPos;
+                    index = nextIndex;
+                }
+                else if(isYesterDay == 2)
+                {
+                    if (index == -1)
+                    {
+                        break;
+                    }
+                    EMUGarage_YesterdayCommand_rtb.SelectionStart = index;
+                    EMUGarage_YesterdayCommand_rtb.SelectionLength = find.Length;
+                    EMUGarage_YesterdayCommand_rtb.SelectionColor = Color.Red;
+                    EMUGarage_YesterdayCommand_rtb.SelectionFont = new Font("Times New Roman", (float)12, FontStyle.Bold);
+                    EMUGarage_YesterdayCommand_rtb.Focus();
+                    DialogResult result = MessageBox.Show("(在昨天的命令中)请人工核对\n" + find + "次是否为当前标红内容？\n(*请注意核查同一条命令内其他车次是否正确)", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Yes)
+                    {
+                        {//把命令分行，找车次所在行有没有其他车次，找对应车次车号赋给新车，然后再选择停运情况
+                            string currentRow = "";
+                            string[] _aCommands = removeUnuseableWord(false)[0].Split('。');
+                            for (int i = 0; i < _aCommands.Length; i++)
+                            {//笨方法
+                                if (_aCommands[i].Contains(find) &&
+                                    !_aCommands[i].Contains(find + "0") &&
+                                    !_aCommands[i].Contains(find + "1") &&
+                                    !_aCommands[i].Contains(find + "2") &&
+                                    !_aCommands[i].Contains(find + "3") &&
+                                    !_aCommands[i].Contains(find + "4") &&
+                                    !_aCommands[i].Contains(find + "5") &&
+                                    !_aCommands[i].Contains(find + "6") &&
+                                    !_aCommands[i].Contains(find + "7") &&
+                                    !_aCommands[i].Contains(find + "8") &&
+                                    !_aCommands[i].Contains(find + "9") &&
+                                    (_aCommands[i].Contains("CR") || _aCommands[i].Contains("null")))
+                                {
+                                    currentRow = _aCommands[i];
+                                    break;
+                                }
+                            }
+                            if (currentRow.Length != 0)
+                            {
+                                analyseCommand(false, currentRow);
+                            }
+                            if (detectedCModel.Count != 0)
+                            {
+                                CommandModel _tempCM = new CommandModel();
+                                _tempCM.trainNumber = find.Split('/')[0];
+                                _tempCM.secondTrainNumber = secondTrainNumber;
+                                // _tempCM.secondTrainNumber = "null";
+                                foreach (CommandModel _cm in detectedCModel)
+                                {
+                                    _tempCM.trainIndex = _cm.trainIndex;
+                                    _tempCM.trainModel = _cm.trainModel;
+                                    _tempCM.trainId = _cm.trainId;
+                                    _tempCM.trainConnectType = _cm.trainConnectType;
+                                }
+                                DialogResult resultTrainStatus = MessageBox.Show(find + "次在客调命令中是否开行？（开行选择“是”，停运/待定等选择“否”）", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                                if (resultTrainStatus == DialogResult.Yes)
+                                {
+                                    _tempCM.streamStatus = 1;
+                                }
+                                else if (resultTrainStatus == DialogResult.No)
+                                {
+                                    _tempCM.streamStatus = 0;
+                                }
+                                yesterdayCommandModel.Add(_tempCM);
+                            }
+                            else
+                            {//一整行车都没有，自己去核对吧
+                                return 2;
+                            }
+                            detectedCModel = new List<CommandModel>();
+                        }
+                    }
+                    nextIndex = command_rTb.Find(find, index + find.Length, RichTextBoxFinds.WholeWord);
                     if (nextIndex == -1)//若查到文件末尾，则重置nextIndex为初始位置的值，使其达到初始位置，顺利结束循环，否则会有异常。
                         nextIndex = startPos;
                     index = nextIndex;
@@ -2414,10 +2495,19 @@ namespace TimeTableAutoCompleteTool
                 if (cmdText.Contains(firstTrainNumber) || secondTrainNumber.Length != 0 && cmdText.Contains(secondTrainNumber))
                 {
                     //先尝试找一个车次
-                    int result = searchAndHightlightUnresolvedTrains(firstTrainNumber, 1, isYesterday, secondTrainNumber);
+                    int intIsYesterday = 0;
+                    if (isYesterday)
+                    {
+                        intIsYesterday = 1;
+                    }
+                    else
+                    {
+                        intIsYesterday = 0;
+                    }
+                    int result = searchAndHightlightUnresolvedTrains(firstTrainNumber, 1, intIsYesterday, secondTrainNumber);
                     if (result == -1 || result == 2)
                     {//再找第二个车次
-                        int secondResult = searchAndHightlightUnresolvedTrains(secondTrainNumber, 1, isYesterday, firstTrainNumber);
+                        int secondResult = searchAndHightlightUnresolvedTrains(secondTrainNumber, 1, intIsYesterday, firstTrainNumber);
                         if (secondResult == -1 || secondResult == 2)
                         {//加入未识别车次豪华套餐
                             return " " + rawTrainNumber;
@@ -4011,6 +4101,13 @@ namespace TimeTableAutoCompleteTool
         //动车所填车型
         private void trainTypeAutoComplete()
         {
+            //白班和夜班的开始所在行
+            int nightStart = -1;
+            int morningStart = -1;
+            //如果夜班在前面的话
+            bool nightFirst = false;
+            //如果这个车是前一天的话
+            bool isYesterday = false;
             IWorkbook workbook = null;  //新建IWorkbook对象  
             string fileName = ExcelFile[0];
             try
@@ -4084,19 +4181,87 @@ namespace TimeTableAutoCompleteTool
                 normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
                 normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
                 normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                HSSFFont fontNormal = (HSSFFont)workbook.CreateFont();
-                fontNormal.FontName = "宋体";//字体  
-                fontNormal.FontHeightInPoints = 16;//字号  
-                normalStyle.SetFont(fontNormal);
+                HSSFFont fontNormalID = (HSSFFont)workbook.CreateFont();
+                fontNormalID.FontName = "宋体";//字体  
+                fontNormalID.FontHeightInPoints = 16;//字号  
+                normalStyle.SetFont(fontNormalID);
+
+                //表格样式
+                ICellStyle normalNumberStyle = workbook.CreateCellStyle();
+                normalNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalNumberStyle.WrapText = true;
+                normalNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                normalNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                HSSFFont fontNormalNumber = (HSSFFont)workbook.CreateFont();
+                fontNormalNumber.FontName = "宋体";//字体  
+                fontNormalNumber.FontHeightInPoints = 17;//字号  
+                normalNumberStyle.SetFont(fontNormalNumber);
+
+                //表格样式
+                ICellStyle yesterdayNumberStyle = workbook.CreateCellStyle();
+                yesterdayNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                yesterdayNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                yesterdayNumberStyle.WrapText = true;
+                yesterdayNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                yesterdayNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                yesterdayNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                yesterdayNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                HSSFFont fontYesterdayNumber = (HSSFFont)workbook.CreateFont();
+                fontYesterdayNumber.FontName = "宋体";//字体  
+                fontYesterdayNumber.FontHeightInPoints = 17;//字号  
+                fontYesterdayNumber.Underline = NPOI.SS.UserModel.FontUnderlineType.Double;//下划线
+                fontYesterdayNumber.IsItalic = true;//斜体
+                yesterdayNumberStyle.SetFont(fontYesterdayNumber);
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
                 string failedLoadingTrain = "";
                 for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                 {
+                    isYesterday = false;
                     row = sheet.GetRow(i);   //row读入第i行数据  
                     if (row != null)
                     {
+                        //判断当前位置是白班还是夜班
+                        if(row.GetCell(0)!= null)
+                        {
+                            if (nightStart == -1)
+                            {
+                                if (row.GetCell(0).ToString().Contains("夜班"))
+                                {
+                                    nightStart = i;
+                                }
+                            }
+                            if (morningStart == -1)
+                            {
+                                if (row.GetCell(0).ToString().Contains("白班"))
+                                {
+                                    morningStart = i;
+                                }
+                            }
+                        }
+                        if(nightStart != -1 && morningStart != -1)
+                        {//如果白班夜班都获取到了 判断一下两个的大小
+                            if(nightStart < morningStart)
+                            {
+                                nightFirst = true;
+                            }
+                            else if(nightStart > morningStart)
+                            {
+                                nightFirst = false;
+                            }
+                        }
+                        else if(nightStart != -1 && morningStart == -1)
+                        {
+                            nightFirst = true;
+                        }
+                        else if(nightStart == -1 && morningStart != -1)
+                        {
+                            nightFirst = false;
+                        }
                         Regex regexOnlyNumAndAlphabeta = new Regex(@"^[A-Za-z0-9]+$");
                         for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
                         {
@@ -4108,45 +4273,147 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("J")) &&
                                     regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim()))
                                 {
+                                    if (row.GetCell(j).ToString().Contains("0G2201"))
+                                    {
+                                        int l = 9;
+                                    }
                                     if (row.GetCell(j + 1) == null)
                                     {
                                         row.CreateCell(j + 1);
                                     }
-                                    row.GetCell(j + 1).SetCellValue("");
-                                    bool hasGotIt = false;
-                                    foreach (CommandModel model in commandModel)
+                                    //先判断这个是昨天还是今天的 昨天的在夜班里 时间范围是18:00-次日0:30
+                                    //先看是不是在夜班里
+                                    if((nightFirst && (i > nightStart && i < morningStart) || (i>nightStart && morningStart == -1)) ||
+                                        (!nightFirst && i > nightStart))
                                     {
-                                        if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
-                                            row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                        for (int timeColumn = j + 1; timeColumn <= row.LastCellNum; timeColumn++)
                                         {
-                                            hasGotIt = true;
-                                            if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
-                                            (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                            //空的直接跳过
+                                            if (row.GetCell(timeColumn) == null)
                                             {
-                                                //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
-                                                row = sheet.GetRow(i - 1);
-                                                if (row.GetCell(j + 1) == null)
+                                                continue;
+                                            }
+                                            //如果找到的是车次 说明找过头了 直接跳出
+                                            if ((row.GetCell(timeColumn).ToString().Contains("G") ||
+                                                    row.GetCell(timeColumn).ToString().Contains("D") ||
+                                                    row.GetCell(timeColumn).ToString().Contains("C") ||
+                                                    row.GetCell(timeColumn).ToString().Contains("J")) &&
+                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim()))
+                                            {
+                                                break;
+                                            }
+
+                                            if (Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(:)[0-9]{2}") ||
+                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(:)[0-9]{2}")||
+                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(：)[0-9]{2}") ||
+                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(：)[0-9]{2}"))
+                                            {//如果包含时间的话
+                                                string timeStr = row.GetCell(timeColumn).ToString().Trim();
+                                                timeStr = timeStr.Replace("：", ":");
+                                                if (timeStr.Contains(":"))
                                                 {
-                                                    row.CreateCell(j + 1);
+                                                    int hours = -1;
+                                                    int.TryParse(timeStr.Split(':')[0], out hours);
+                                                    int minutes = -1;
+                                                    int.TryParse(timeStr.Split(':')[1], out minutes);
+                                                    if (hours == -1)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    if((hours >= 18 && hours <= 23) ||
+                                                        (hours == 0 && minutes <= 30 && minutes >= 0))
+                                                    {//18-23点/0:30之前，是昨天的车
+                                                        isYesterday = true;
+                                                        break;
+                                                    }
+                                                    else
+                                                    {//不是昨天的车
+                                                        isYesterday = false;
+                                                        break;
+                                                    }
                                                 }
                                             }
-                                            if (model.streamStatus == 0)
-                                            {
-                                                row.GetCell(j + 1).SetCellValue("停开");
-                                            }
-                                            else
-                                            {
-                                                row.GetCell(j + 1).SetCellValue(model.trainId);
-                                            }
-                                            row.GetCell(j + 1).CellStyle = normalStyle;
                                         }
                                     }
-                                    if (!hasGotIt)
+                                    row.GetCell(j + 1).SetCellValue("");
+                                    row.GetCell(j).CellStyle = normalNumberStyle;
+                                    bool hasGotIt = false;
+                                    if (!isYesterday || !EMUGarage_hasYesterdayText)
                                     {
-                                        if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                        row.GetCell(j).CellStyle = normalNumberStyle;
+                                        foreach (CommandModel model in commandModel)
                                         {
-                                            failedLoadingTrain = failedLoadingTrain + " " + row.GetCell(j).ToString().Trim();
-                                            searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2);
+                                            if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
+                                                row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                            {
+                                                hasGotIt = true;
+                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                {
+                                                    //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                    row = sheet.GetRow(i - 1);
+                                                    if (row.GetCell(j + 1) == null)
+                                                    {
+                                                        row.CreateCell(j + 1);
+                                                    }
+                                                }
+                                                if (model.streamStatus == 0)
+                                                {
+                                                    row.GetCell(j + 1).SetCellValue("停开");
+                                                }
+                                                else
+                                                {
+                                                    row.GetCell(j + 1).SetCellValue(model.trainId);
+                                                }
+                                                row.GetCell(j + 1).CellStyle = normalStyle;
+                                            }
+                                        }
+                                        if (!hasGotIt)
+                                        {
+                                            if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                            {
+                                                failedLoadingTrain = failedLoadingTrain + " " + row.GetCell(j).ToString().Trim();
+                                                searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(),0, 2);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {//昨天的
+                                        row.GetCell(j).CellStyle = yesterdayNumberStyle;
+                                        foreach (CommandModel model in yesterdayCommandModel)
+                                        {
+                                            if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
+                                                row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                            {
+                                                hasGotIt = true;
+                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                {
+                                                    //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                    row = sheet.GetRow(i - 1);
+                                                    if (row.GetCell(j + 1) == null)
+                                                    {
+                                                        row.CreateCell(j + 1);
+                                                    }
+                                                }
+                                                if (model.streamStatus == 0)
+                                                {
+                                                    row.GetCell(j + 1).SetCellValue("停开");
+                                                }
+                                                else
+                                                {
+                                                    row.GetCell(j + 1).SetCellValue(model.trainId);
+                                                }
+                                                row.GetCell(j + 1).CellStyle = normalStyle;
+                                            }
+                                        }
+                                        if (!hasGotIt)
+                                        {
+                                            if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                            {
+                                                failedLoadingTrain = failedLoadingTrain + " (→昨天的)" + row.GetCell(j).ToString().Trim();
+                                                searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2,2);
+                                            }
                                         }
                                     }
                                 }
@@ -4156,7 +4423,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 if (failedLoadingTrain.Length != 0)
                 {
-                    MessageBox.Show("请人工检查以下车次是否未填写（在客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 //重新修改文件指定单元格样式
                 FileStream fs1 = File.OpenWrite(fileName);
