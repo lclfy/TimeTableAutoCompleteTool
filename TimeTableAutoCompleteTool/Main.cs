@@ -4273,7 +4273,7 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("J")) &&
                                     regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim()))
                                 {
-                                    if (row.GetCell(j).ToString().Contains("0G2201"))
+                                    if (row.GetCell(j).ToString().Contains("0G1287"))
                                     {
                                         int l = 9;
                                     }
@@ -4302,7 +4302,16 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 break;
                                             }
-
+                                            if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                            (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                            {
+                                                //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                row = sheet.GetRow(i - 1);
+                                                if (row.GetCell(j + 1) == null)
+                                                {
+                                                    row.CreateCell(j + 1);
+                                                }
+                                            }
                                             if (Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(:)[0-9]{2}") ||
                                             Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(:)[0-9]{2}")||
                                             Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(：)[0-9]{2}") ||
@@ -4335,6 +4344,7 @@ namespace TimeTableAutoCompleteTool
                                             }
                                         }
                                     }
+                                    row = sheet.GetRow(i);
                                     row.GetCell(j + 1).SetCellValue("");
                                     row.GetCell(j).CellStyle = normalNumberStyle;
                                     bool hasGotIt = false;
