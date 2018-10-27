@@ -47,9 +47,9 @@ namespace TimeTableAutoCompleteTool
         float dpiX, dpiY;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 45 - v181024";
+        string build = "build 45.1 - v181027";
         string readMe = "build45更新内容:\n" +
-            " 1、动车所现在可以一张表打两天的命令了（自动区分当日/明日）。\n 2、修复了动车所当出现共用车底的两个车次时，位于下方的车次无法显示的问题。\n 3、(行车)列车搜索增加车型车号\n 4、(综控)现在可以识别17节400AF-B/400BF-B了。";
+            " 45.1、修复了动车所昨日客调令纠错出现误报的问题，修复了不能多次做表的问题。\n 1、动车所现在可以一张表打两天的命令了（自动区分当日/明日）。\n 2、修复了动车所当出现共用车底的两个车次时，位于下方的车次无法显示的问题。\n 3、(行车)列车搜索增加车型车号\n 4、(综控)现在可以识别17节400AF-B/400BF-B了。";
 
         public Main()
         {
@@ -143,9 +143,6 @@ namespace TimeTableAutoCompleteTool
                 start_Btn.Enabled = false;
                 filePath = "";
                 filePathLBL.Text = "已选择：";
-                Size _size = new Size(210, 393);
-                outputTB.Size = _size;
-                searchResult_tb.Size = _size;
                 hint_label.Text = "基本图中没有的车次不会显示！无序号白色为客调令多出车次，红色标注为客调停开车次。请进行人工核对。";
             }
             else if (radioButton3.Checked)
@@ -169,9 +166,6 @@ namespace TimeTableAutoCompleteTool
                 start_Btn.Text = "补全车辆编组";
                 ExcelFile = new List<string>();
                 filePathLBL.Text = "已选择：";
-                Size _size = new Size(210, 393);
-                outputTB.Size = _size;
-                searchResult_tb.Size = _size;
                 hint_label.Text = "";
             }
         }
@@ -252,6 +246,7 @@ namespace TimeTableAutoCompleteTool
         private void yesterdayCommand_rtb_TextChanged(object sender, EventArgs e)
         {//综控室的昨日命令
             yesterdayCommandText = yesterdayCommand_rtb.Text;
+            yesterdayCommandModel = new List<CommandModel>();
             if (yesterdayCommand_rtb.Text.Length != 0)
             {
                 if (yesterdayCommand_rtb.Text.Length != lastYesterdayCommandLength)
@@ -268,6 +263,7 @@ namespace TimeTableAutoCompleteTool
         private void EMUGarage_YesterdayCommand_rtb_TextChanged(object sender, EventArgs e)
         {//动车所的昨日命令
             yesterdayCommandText = EMUGarage_YesterdayCommand_rtb.Text;
+            yesterdayCommandModel = new List<CommandModel>();
             if (EMUGarage_YesterdayCommand_rtb.Text.Length != 0)
             {
                 if (EMUGarage_YesterdayCommand_rtb.Text.Length != lastYesterdayCommandLength)
@@ -2141,7 +2137,7 @@ namespace TimeTableAutoCompleteTool
 
     }
 
-        //下面三个方法合并起来是班计划-动检车查错用的
+        //下面三个方法合并起来是查错用的
         private int searchAndHightlightUnresolvedTrains(string find, int type,int isYesterDay = 0,string secondTrainNumber = "")
         {//找到未识别车并高亮显示(返回0-停开，1-开行，-1-未找到，2-综控-一整行车都没有23333)-行车，东所
             //isYesterday : 0今天 1综控昨天 2动车所昨天
@@ -4419,7 +4415,7 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         if (!hasGotIt)
                                         {
-                                            if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                            if (yesterdayCommandText.Contains(row.GetCell(j).ToString().Trim()))
                                             {
                                                 failedLoadingTrain = failedLoadingTrain + " (→昨天的)" + row.GetCell(j).ToString().Trim();
                                                 searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2,2);
