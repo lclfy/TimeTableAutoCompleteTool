@@ -119,3 +119,8 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CopyComplete
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Pdf.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.xml
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.xml

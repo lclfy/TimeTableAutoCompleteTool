@@ -73,6 +73,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\AutomaticTimeTableMakingTools\AutomaticTimeTableMakingTools\NPOI\Net20\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="Spire.Doc, Version=6.3.0.41020, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Spire.Doc\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License, Version=1.3.6.20, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Spire.Doc\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=4.3.5.2020, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Spire.Doc\Spire.Pdf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -106,6 +118,8 @@
     <Compile Include="TrainEarlyCaculator.Designer.cs">
       <DependentUpon>TrainEarlyCaculator.cs</DependentUpon>
     </Compile>
+    <Compile Include="TrainProjectModel.cs" />
+    <Compile Include="TrainProjectWorking.cs" />
     <Compile Include="Welcome.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +161,11 @@
   <ItemGroup>
     <Content Include="Logo.ico" />
     <Content Include="Logo2.ico" />
+    <Content Include="Spire.Doc.dll" />
+    <Content Include="Spire.Doc.XML" />
+    <Content Include="Spire.License.dll" />
+    <Content Include="Spire.License.xml" />
+    <Content Include="Spire.Pdf.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
