@@ -5008,7 +5008,7 @@ namespace TimeTableAutoCompleteTool
                         string _cTrain = "";
                         for(int ij = 1; ij < currentTrain.Split('、').Length; ij++)
                         {
-                            _cTrain = _cTrain + currentTrain[ij];
+                            _cTrain = _cTrain + currentTrain.Split('、')[ij];
                         }
                         workFlows = _cTrain.Split('，');
                     }
@@ -5034,7 +5034,7 @@ namespace TimeTableAutoCompleteTool
                                 _currentWork.Contains("00") )&&
                                 _currentWork.Contains("次"))
                             {
-                                _pm.getInside_trainNum = _currentWork.Split('次')[0];
+                                _pm.getInside_trainNum = _currentWork.Split('次')[0].TrimStart('\r').TrimStart('\n');
                             }
                             //入库时间
                             Regex regInTime;
@@ -5063,6 +5063,7 @@ namespace TimeTableAutoCompleteTool
                                     if (value.Contains("CR") && value.Split('-').Length >1)
                                     {
                                         string trainModel = value.Split('-')[0].Trim();
+                                        string trainID = value.Split('-')[1].Trim();
                                         _pm.trainModel = trainModel;
                                         if (trainModel.Contains("L") ||
                                             trainModel.Contains("2B")||
@@ -5074,7 +5075,7 @@ namespace TimeTableAutoCompleteTool
                                             _pm.trainConnectType = 1;
                                             _pm.trainId = value.Split('-')[1].Trim();
                                         }
-                                        else if (trainModel.Contains("+"))
+                                        else if (trainID.Contains("+"))
                                         {
                                             _pm.trainConnectType = 2;
                                             _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
@@ -5104,7 +5105,7 @@ namespace TimeTableAutoCompleteTool
                             //车次
                             string _trainNum = "";
                             char[] _workToChar = _currentWork.Replace("次","").ToCharArray();
-                            for(int c = _workToChar.Length; c > 0; c--)
+                            for(int c = _workToChar.Length - 1; c > 0; c--)
                             {//从后往前找“次”前面的字符，直到碰到第一个不是数字字母的
                                 if (Regex.IsMatch(_workToChar[c].ToString(), @"^[A-Za-z0-9]+$"))
                                 {
@@ -5112,7 +5113,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 else
                                 {
-                                    if(_trainNum.Length != 0)
+                                    if (Regex.IsMatch(_trainNum, @"^[A-Za-z0-9]+$"))
                                     {
                                         if (!hasBroken)
                                         {//分为解编后和解编前
@@ -5122,10 +5123,11 @@ namespace TimeTableAutoCompleteTool
                                         {
                                             _pmBreak.getOutside_trainNum = _trainNum;
                                         }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
+
                             //时间
                             //出库时间
                             Regex regOutTime;
@@ -5225,7 +5227,7 @@ namespace TimeTableAutoCompleteTool
                                 bool hasGotIt2 = false;
                                 if (!hasBroken)
                                 {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                    for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
                                     {
                                         if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
                                         {
@@ -5238,7 +5240,7 @@ namespace TimeTableAutoCompleteTool
                                 else//解编后
                                 {
                                     bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count- 1; _t > 0; _t--)
                                     {
                                         if (_pmBreak.trainProjectWorkingModel[_t].time.Length != 0)
                                         {
@@ -5250,7 +5252,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     if (!hasGotInBreakOne)
                                     {//从前面找
-                                        for (int _t = _pm.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                        for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
                                             {
@@ -5282,7 +5284,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 if (_currentWork.Contains("JC" + tNum + "道"))
                                 {
-                                    trackNum = tNum.ToString();
+                                    trackNum = "JC" + tNum.ToString();
                                 }
                             }
                             if(trackNum.Length == 0)
@@ -5291,7 +5293,7 @@ namespace TimeTableAutoCompleteTool
                                 bool hasGotIt1 = false;
                                 if (!hasBroken)
                                 {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                    for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
                                     {
                                         if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
                                         {
@@ -5304,7 +5306,7 @@ namespace TimeTableAutoCompleteTool
                                 else//解编后
                                 {
                                     bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count-1; _t > 0; _t--)
                                     {
                                         if (_pmBreak.trainProjectWorkingModel[_t].track.Length != 0)
                                         {
@@ -5316,7 +5318,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     if (!hasGotInBreakOne)
                                     {//从前面找
-                                        for (int _t = _pm.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                        for (int _t = _pm.trainProjectWorkingModel.Count-1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
                                             {
@@ -5342,14 +5344,13 @@ namespace TimeTableAutoCompleteTool
                                 if (_currentWork.Contains("东端"))
                                 {
                                     trackNum = trackNum + "2";
-                                    _tpw.track = trackNum;
                                 }
                                 else if (_currentWork.Contains("西端"))
                                 {
                                     trackNum = trackNum + "1";
-                                    _tpw.track = trackNum;
                                 }
                             }
+                            _tpw.track = trackNum;
                             //作业内容
                             string workingInformation = "";
                             if (trackNum.Contains("G1") || trackNum.Contains("G2"))
@@ -5368,7 +5369,7 @@ namespace TimeTableAutoCompleteTool
                             //|第1钩、(CRH380A - 2876)JC2道西端停放，19:50转42道东端停放，与2645重联作业，与2645解编作业，备开10日(05:48)0G55481次。
                             if (workingInformation.Length == 0)
                             { 
-                                for (int _t = _pm.trainProjectWorkingModel.Count; _t > 0; _t--)
+                                for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                 {
                                     if (_pm.trainProjectWorkingModel[_t].workingInformation.Length != 0)
                                     {
@@ -5378,10 +5379,11 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 continue;
                             }
+                            _tpw.workingInformation = workingInformation;
                             //特殊情况：重联
                             //重联前二者的工作流不同，存入子项目，重联后工作流相同，只添加一次
                             //如果之前已经有该短编被重联后的模型
-                            if (_currentWork.Contains("重联"))
+                            if (_currentWork.Contains("重联")&& _currentWork.Contains("(CR"))
                             {
                                 //短找长合并，合并后的事件可以不用管了，自身创建的时候就弄了，自身标记为3 自动忽略
                                 bool hasGotIt = false;
@@ -5459,7 +5461,7 @@ namespace TimeTableAutoCompleteTool
                             }
                             //特殊情况：解编
                             //解编时自身前半部分模型是公用的，后半部分添加到各自的里面
-                            if (_currentWork.Contains("解编"))
+                            if (_currentWork.Contains("进行解编") && _currentWork.Contains("道"))
                             {
                                 //长找长没找到的时候(暂时还没发现短的解编的)
                                 //自身标记长变短，内容克隆给重联对象，重联对象变短编，当前标记为已解编
@@ -5495,11 +5497,11 @@ namespace TimeTableAutoCompleteTool
                                 _pmBreak.secondTrainId = "";
                             }
                             if (!hasBroken)
-                            {//解编后
+                            {
                                 _pm.trainProjectWorkingModel.Add(_tpw);
                             }
                             else
-                            {
+                            {//解编后
                                 _pmBreak.trainProjectWorkingModel.Add(_tpw);
                             }
 
