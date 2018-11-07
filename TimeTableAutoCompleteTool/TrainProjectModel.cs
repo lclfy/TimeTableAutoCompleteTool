@@ -22,7 +22,9 @@ namespace TimeTableAutoCompleteTool
         车辆状态（0短编 1长编 2重联）
         编组作业：0-不变，1-重联作业，2-解编作业，3-相同车
         相同车（重联车）钩号
-        List<钩计划模型>重联车信息
+        开始时间/结束时间
+        前序钩
+        后序钩
         List<作业模型>钩内作业
         出库：{
         出库车次
@@ -34,7 +36,7 @@ namespace TimeTableAutoCompleteTool
         原文信息
         */
         //第几钩
-        public int projectIndex { get; set; }
+        public string projectIndex { get; set; }
         //钩号B
         public string secondProjectIndex { get; set; }
         //入库
@@ -51,9 +53,17 @@ namespace TimeTableAutoCompleteTool
         //编组作业 0不变 1短变长 2长变短 3有重复车
         public int trainWorkingMode { get; set; }
         //不仅仅是同车，也是单组车被包含的重联车所在钩
-        public int sameTrain_ProjectIndex { get; set; }
+        public string sameTrain_ProjectIndex { get; set; }
         
-        public List<TrainProjectModel> connectedTrainProjectModels { get; set; }
+        //该钩开始的时间和结束的时间
+        public string startTime { get; set; }
+        public string endTime { get; set; }
+
+        //链表方式存储前序后序钩
+        public List<TrainProjectStruct> previousProject { get; set; }
+        public List<TrainProjectStruct> nextProject { get; set; }
+
+        //        public List<TrainProjectModel> connectedTrainProjectModels { get; set; }
         public List<TrainProjectWorking> trainProjectWorkingModel { get; set; }
 
         //出库
@@ -66,7 +76,7 @@ namespace TimeTableAutoCompleteTool
 
         public TrainProjectModel()
         {
-            this.projectIndex = -1;
+            this.projectIndex = "";
             this.secondProjectIndex = "";
             this.getInside_trainNum = "";
             this.getInside_track = "";
@@ -78,8 +88,12 @@ namespace TimeTableAutoCompleteTool
             this.trainConnectType = -1;
             this.trainWorkingMode = -1;
 
-            this.sameTrain_ProjectIndex = -1;
-            this.connectedTrainProjectModels = new List<TrainProjectModel>();
+            this.sameTrain_ProjectIndex = "-1";
+            this.startTime = "";
+            this.endTime = "";
+            //this.connectedTrainProjectModels = new List<TrainProjectModel>();
+            this.previousProject = new List<TrainProjectStruct>();
+            this.nextProject = new List<TrainProjectStruct>();
             this.trainProjectWorkingModel = new List<TrainProjectWorking>();
             this.getOutside_trainNum = "";
             this.getOutside_track = "";
@@ -104,8 +118,12 @@ namespace TimeTableAutoCompleteTool
             _P.trainWorkingMode = this.trainWorkingMode;
 
             _P.sameTrain_ProjectIndex = this.sameTrain_ProjectIndex;
-            _P.connectedTrainProjectModels = this.connectedTrainProjectModels;
-            _P.trainProjectWorkingModel = this.trainProjectWorkingModel;
+            _P.startTime = this.startTime;
+            _P.endTime = this.endTime;
+            _P.previousProject = new List<TrainProjectStruct>();
+            _P.nextProject = new List<TrainProjectStruct>();
+            //_P.connectedTrainProjectModels = this.connectedTrainProjectModels;
+            _P.trainProjectWorkingModel = new List<TrainProjectWorking>();
             _P.getOutside_trainNum = this.getOutside_trainNum;
             _P.getOutside_track = this.getOutside_track;
             _P.getOutside_time = this.getOutside_time;

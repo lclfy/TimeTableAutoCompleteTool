@@ -4986,6 +4986,10 @@ namespace TimeTableAutoCompleteTool
                     bool hasBroken = false;
                     //重复车应该同一条只用找一次
                     bool hasFoundOthers = false;
+                    //单组车已经添加进重联车组 不需要继续寻找后续内容时
+                    bool skipToNext = false;
+                    //用于记录已找到相同车号的钩号
+                    string sameTrainIndex = "";
                     string currentTrain = trainProjectList[i];
                     if (currentTrain.Length == 0)
                     {
@@ -5000,7 +5004,7 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        _pm.projectIndex = index;
+                        _pm.projectIndex = index.ToString();
                     }
                     string[] workFlows;
                     if (currentTrain.Split('、').Length > 1)
@@ -5027,11 +5031,11 @@ namespace TimeTableAutoCompleteTool
                         //入库车都在第一部分，先找入库车
                         if (j == 0)
                         {
-                            if((_currentWork.Contains("0G")||
+                            if ((_currentWork.Contains("0G") ||
                                 _currentWork.Contains("0J") ||
                                 _currentWork.Contains("0C") ||
                                 _currentWork.Contains("0D") ||
-                                _currentWork.Contains("00") )&&
+                                _currentWork.Contains("00")) &&
                                 _currentWork.Contains("次"))
                             {
                                 _pm.getInside_trainNum = _currentWork.Split('次')[0].TrimStart('\r').TrimStart('\n');
@@ -5039,37 +5043,40 @@ namespace TimeTableAutoCompleteTool
                             //入库时间
                             Regex regInTime;
                             Match mInTime;
+                            //如果找到了入库时间 则钩开始时间为入库时间
                             if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
                             {
                                 regInTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
                                 mInTime = regInTime.Match(_currentWork.Trim());
                                 _pm.getInside_time = mInTime.Value;
+                                _pm.startTime = mInTime.Value;
                             }
                             else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
                             {
                                 regInTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
                                 mInTime = regInTime.Match(_currentWork.Trim());
                                 _pm.getInside_time = mInTime.Value;
+                                _pm.startTime = mInTime.Value;
                             }
                             //车号
-                                try
+                            try
+                            {
+                                Regex regTrain = new Regex(@"\(([^)]*)\)");
+                                //@"\(.*?\)"
+                                MatchCollection mTrain = regTrain.Matches(_currentWork);
+                                foreach (Match match in mTrain)
                                 {
-                                    Regex regTrain = new Regex(@"\(([^)]*)\)");
-                                    //@"\(.*?\)"
-                                    MatchCollection mTrain = regTrain.Matches(_currentWork);
-                                    foreach (Match match in mTrain)
-                                    {
-                                        string value = match.Value.Trim('(', ')');
-                                    if (value.Contains("CR") && value.Split('-').Length >1)
+                                    string value = match.Value.Trim('(', ')');
+                                    if (value.Contains("CR") && value.Split('-').Length > 1)
                                     {
                                         string trainModel = value.Split('-')[0].Trim();
                                         string trainID = value.Split('-')[1].Trim();
                                         _pm.trainModel = trainModel;
                                         if (trainModel.Contains("L") ||
-                                            trainModel.Contains("2B")||
-                                            trainModel.Contains("AF-A")||
-                                            trainModel.Contains("AF-B")||
-                                            trainModel.Contains("BF-A")||
+                                            trainModel.Contains("2B") ||
+                                            trainModel.Contains("AF-A") ||
+                                            trainModel.Contains("AF-B") ||
+                                            trainModel.Contains("BF-A") ||
                                             trainModel.Contains("BF-B"))
                                         {
                                             _pm.trainConnectType = 1;
@@ -5087,15 +5094,15 @@ namespace TimeTableAutoCompleteTool
                                             _pm.trainId = value.Split('-')[1].Trim();
                                         }
                                     }
-                                    }
                                 }
-                                catch (ArgumentException ex)
-                                {
-                                    // Syntax error in the regular expression
-                                }
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                // Syntax error in the regular expression
+                            }
                         }
                         //找出库车
-                        if(_currentWork.Contains("备开")&&
+                        if (_currentWork.Contains("备开") &&
                             (_currentWork.Contains("0G") ||
                                 _currentWork.Contains("0J") ||
                                 _currentWork.Contains("0C") ||
@@ -5104,8 +5111,8 @@ namespace TimeTableAutoCompleteTool
                         {
                             //车次
                             string _trainNum = "";
-                            char[] _workToChar = _currentWork.Replace("次","").ToCharArray();
-                            for(int c = _workToChar.Length - 1; c > 0; c--)
+                            char[] _workToChar = _currentWork.Replace("次", "").ToCharArray();
+                            for (int c = _workToChar.Length - 1; c > 0; c--)
                             {//从后往前找“次”前面的字符，直到碰到第一个不是数字字母的
                                 if (Regex.IsMatch(_workToChar[c].ToString(), @"^[A-Za-z0-9]+$"))
                                 {
@@ -5130,6 +5137,7 @@ namespace TimeTableAutoCompleteTool
 
                             //时间
                             //出库时间
+                            //如果找到了出库时间，则该钩结束时间为出库时间
                             Regex regOutTime;
                             Match mOutTime;
                             if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
@@ -5139,10 +5147,12 @@ namespace TimeTableAutoCompleteTool
                                 if (!hasBroken)
                                 {
                                     _pm.getOutside_time = mOutTime.Value;
+                                    _pm.endTime = mOutTime.Value;
                                 }
                                 else
                                 {
                                     _pmBreak.getOutside_time = mOutTime.Value;
+                                    _pmBreak.endTime = mOutTime.Value;
                                 }
                             }
                             else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
@@ -5152,16 +5162,18 @@ namespace TimeTableAutoCompleteTool
                                 if (!hasBroken)
                                 {
                                     _pm.getOutside_time = mOutTime.Value;
+                                    _pm.endTime = mOutTime.Value;
                                 }
                                 else
                                 {
                                     _pmBreak.getOutside_time = mOutTime.Value;
+                                    _pmBreak.endTime = mOutTime.Value;
                                 }
 
                             }
                         }
                         //找其他位置是否已经有该车号，若其他位置已有，则标记为重复车，读取完成后与已存在的模型进行同步
-                        foreach(TrainProjectModel _compareModel in allTrainProjectModels)
+                        foreach (TrainProjectModel _compareModel in _trainProjectModels)
                         {
                             if (hasFoundOthers)
                             {
@@ -5172,25 +5184,26 @@ namespace TimeTableAutoCompleteTool
                             string currentID_B = "";
                             string compareID_A = _compareModel.trainId;
                             string compareID_B = "";
-                            if(_pm.secondTrainId.Length != 0)
+                            if (_pm.secondTrainId.Length != 0)
                             {
                                 currentID_B = _pm.secondTrainId;
                             }
-                            if(_compareModel.secondTrainId.Length != 0)
+                            if (_compareModel.secondTrainId.Length != 0)
                             {
                                 compareID_B = _compareModel.secondTrainId;
                             }
-                            if ((currentID_A+currentID_B).Equals(compareID_A+compareID_B) ||
-                                (currentID_A + currentID_B).Equals(compareID_B + compareID_A))
+                            if (((currentID_A + "+" + currentID_B).Equals(compareID_A + "+" + compareID_B) ||
+                                (currentID_A + "+" + currentID_B).Equals(compareID_B + "+" + compareID_A))&&
+                               ! _compareModel.projectIndex.Contains("-"))
                             {
                                 //标记为重复车(重联发现了重联)
                                 _pm.trainWorkingMode = 3;
                                 _pm.sameTrain_ProjectIndex = _compareModel.projectIndex;
                                 break;
                             }
-                            else if (((compareID_A + compareID_B).Contains(currentID_A) ||
-                                (compareID_A + compareID_B).Contains(currentID_B))
-                                && compareID_B.Length != 0 && currentID_B.Length == 0)
+                            else if ((compareID_A + "+"+compareID_B).Contains(currentID_A)
+                                && compareID_B.Length != 0 && currentID_B.Length == 0 &&
+                               !_compareModel.projectIndex.Contains("-"))
                             {
                                 //标记为（短变长）车（短编发现了重联）
                                 _pm.trainWorkingMode = 1;
@@ -5203,7 +5216,7 @@ namespace TimeTableAutoCompleteTool
                             hasFoundOthers = true;
                         }
                         //找工作流
-                        if(!_currentWork.Contains("备开"))
+                        if (!_currentWork.Contains("备开"))
                         {
                             TrainProjectWorking _tpw = new TrainProjectWorking();
                             //找时间
@@ -5227,7 +5240,7 @@ namespace TimeTableAutoCompleteTool
                                 bool hasGotIt2 = false;
                                 if (!hasBroken)
                                 {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
+                                    for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                     {
                                         if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
                                         {
@@ -5240,7 +5253,7 @@ namespace TimeTableAutoCompleteTool
                                 else//解编后
                                 {
                                     bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count- 1; _t > 0; _t--)
+                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                     {
                                         if (_pmBreak.trainProjectWorkingModel[_t].time.Length != 0)
                                         {
@@ -5252,7 +5265,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     if (!hasGotInBreakOne)
                                     {//从前面找
-                                        for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
+                                        for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
                                             {
@@ -5264,21 +5277,24 @@ namespace TimeTableAutoCompleteTool
                                     }
                                 }
                                 if (!hasGotIt2)
-                                {//默认为开始时间
+                                {//默认为开始时间(同时将该钩开始时间调整)
                                     if (morningOrNight == 0)
                                     {
                                         _tpw.time = "8:00";
-                                    }else if(morningOrNight == 1)
+                                        _pm.startTime = "8:00";
+                                    }
+                                    else if (morningOrNight == 1)
                                     {
                                         _tpw.time = "16:00";
+                                        _pm.startTime = "16:00";
                                     }
                                 }
                             }
                             //找股道
                             string trackNum = "";
-                            for(int tNum = 1; tNum <= 65; tNum++)
+                            for (int tNum = 1; tNum <= 65; tNum++)
                             {
-                                if(_currentWork.Contains(tNum + "道"))
+                                if (_currentWork.Contains(tNum + "道"))
                                 {
                                     trackNum = tNum.ToString();
                                 }
@@ -5287,13 +5303,13 @@ namespace TimeTableAutoCompleteTool
                                     trackNum = "JC" + tNum.ToString();
                                 }
                             }
-                            if(trackNum.Length == 0)
+                            if (trackNum.Length == 0)
                             {
                                 //如果不包含股道，就往前寻找股道
                                 bool hasGotIt1 = false;
                                 if (!hasBroken)
                                 {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count -1; _t > 0; _t--)
+                                    for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                     {
                                         if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
                                         {
@@ -5306,7 +5322,7 @@ namespace TimeTableAutoCompleteTool
                                 else//解编后
                                 {
                                     bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count-1; _t > 0; _t--)
+                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                     {
                                         if (_pmBreak.trainProjectWorkingModel[_t].track.Length != 0)
                                         {
@@ -5318,7 +5334,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     if (!hasGotInBreakOne)
                                     {//从前面找
-                                        for (int _t = _pm.trainProjectWorkingModel.Count-1; _t > 0; _t--)
+                                        for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
                                             {
@@ -5331,7 +5347,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 if (!hasGotIt1)
                                 {//从头到尾都没有股道信息 这就很尴尬了。。我也不知道咋办了
-                                    
+
                                 }
                             }
                             if (!trackNum.Contains("G"))
@@ -5339,7 +5355,7 @@ namespace TimeTableAutoCompleteTool
                                 trackNum = trackNum + "G";
                             }
                             //找一列位二列位
-                            if (!trackNum.Contains("G1")&& !trackNum.Contains("G2"))
+                            if (!trackNum.Contains("G1") && !trackNum.Contains("G2"))
                             {
                                 if (_currentWork.Contains("东端"))
                                 {
@@ -5368,7 +5384,7 @@ namespace TimeTableAutoCompleteTool
                             //如果本模型没有作业内容，那说明与前一个是同一项作业，直接把全部内容填写到前面去
                             //|第1钩、(CRH380A - 2876)JC2道西端停放，19:50转42道东端停放，与2645重联作业，与2645解编作业，备开10日(05:48)0G55481次。
                             if (workingInformation.Length == 0)
-                            { 
+                            {
                                 for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                 {
                                     if (_pm.trainProjectWorkingModel[_t].workingInformation.Length != 0)
@@ -5381,23 +5397,121 @@ namespace TimeTableAutoCompleteTool
                             }
                             _tpw.workingInformation = workingInformation;
                             //特殊情况：重联
-                            //重联前二者的工作流不同，存入子项目，重联后工作流相同，只添加一次
+                            //重联前二者的工作流不同，分别存储，第一次找到的变长编，复制自身作为短编
+                            /*短找长找到的：
+                            将自身变成 - B钩，添加进找到的长编车前序序列，结束时间为重联时间，将长编车添加进自身后序序列
+                            */
                             //如果之前已经有该短编被重联后的模型
-                            if (_currentWork.Contains("重联")&& _currentWork.Contains("(CR"))
+                            if (_currentWork.Contains("重联") && _currentWork.Contains("(CR"))
                             {
                                 //短找长合并，合并后的事件可以不用管了，自身创建的时候就弄了，自身标记为3 自动忽略
                                 bool hasGotIt = false;
-                                if (_pm.trainConnectType == 0 && _pm.trainWorkingMode == 1 && _pm.sameTrain_ProjectIndex != -1)
+                                if (_pm.trainConnectType == 0 && _pm.trainWorkingMode == 1 && !_pm.sameTrain_ProjectIndex.Equals("-1"))
                                 {
                                     for (int ij = 0; ij < _trainProjectModels.Count; ij++)
                                     {
-                                        if (_trainProjectModels[ij].projectIndex == _pm.sameTrain_ProjectIndex)
+                                        if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
                                         {
-                                            TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
-                                            _trainProjectModels[ij].connectedTrainProjectModels.Add(_itsOwn);
-                                            _pm.trainWorkingMode = 3;
-                                            hasGotIt = true;
-                                            break;
+                                            //已弃用的方法
+                                            //TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
+                                            //_trainProjectModels[ij].connectedTrainProjectModels.Add(_itsOwn);
+                                            //_pm.trainWorkingMode = 3;
+
+                                            //自身标记为-B钩
+                                            _pm.projectIndex = _pm.projectIndex + "-B";
+                                            //自身结束时间
+                                            _pm.endTime = _tpw.time;
+                                            //自身为短变长
+                                            _pm.trainWorkingMode = 1;
+                                            _pm.secondTrainId = "";
+                                            //添加到已存在长编车的代表自身短编的前序序列
+                                            TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
+                                            _tps_SelfInLong.trainId = _pm.trainId;
+                                            _tps_SelfInLong.trainConnectType = 0;
+                                            _tps_SelfInLong.projectIndex = _pm.projectIndex;
+                                            //这个时间为重联前的最后一次工作时间
+                                            if (_pm.trainProjectWorkingModel.Count > 0)
+                                            {
+                                                _tps_SelfInLong.relatedMovingTime = _pm.trainProjectWorkingModel[_pm.trainProjectWorkingModel.Count - 1].time;
+                                            }
+                                            else
+                                            {
+                                                _tps_SelfInLong.relatedMovingTime = "";
+                                            }
+                                            _trainProjectModels[ij].previousProject.Add(_tps_SelfInLong);
+                                            //添加到自身短编车的长编车所在后序序列
+                                            TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
+                                            _tps_LongInSelf.trainId = _trainProjectModels[ij].trainId;
+                                            _tps_LongInSelf.secondTrainId = _trainProjectModels[ij].secondTrainId;
+                                            _tps_LongInSelf.projectIndex = _trainProjectModels[ij].projectIndex;
+                                            _tps_LongInSelf.trainConnectType = 2;
+                                            _tps_LongInSelf.relatedMovingTime = "";
+                                            _pm.nextProject.Add(_tps_LongInSelf);
+                                            //此时对比长编车中的两个作业时间，取后来者为重联的发生时间，且统一后来者为两个车的结束时间
+                                            if (_trainProjectModels[ij].previousProject.Count == 2)
+                                            {
+                                                string timeA = _trainProjectModels[ij].previousProject[0].relatedMovingTime;
+                                                string timeB = _trainProjectModels[ij].previousProject[1].relatedMovingTime;
+                                                string indexA = _trainProjectModels[ij].previousProject[0].projectIndex;
+                                                string indexB = _trainProjectModels[ij].previousProject[1].projectIndex;
+                                                int timeA_INT, timeB_INT = 0;
+                                                int.TryParse(timeA.Replace(":", ""), out timeA_INT);
+                                                int.TryParse(timeB.Replace(":", ""), out timeB_INT);
+                                                //A大false还是B大true
+                                                bool AorB = false;
+                                                //注意0-8点排在19-23点前面
+                                                if (timeA_INT % 100 <= 8 && timeB_INT % 100 > 8)
+                                                {
+                                                    AorB = false;
+                                                }
+                                                else if (timeA_INT % 100 > 8 && timeB_INT % 100 <= 8)
+                                                {
+                                                    AorB = true;
+                                                }
+                                                else if ((timeA_INT % 100 <= 8 && timeB_INT % 100 <= 8) ||
+                                                   (timeA_INT % 100 > 8 && timeB_INT % 100 > 8))
+                                                {
+                                                    if (timeA_INT > timeB_INT)
+                                                    {
+                                                        AorB = false;
+                                                    }
+                                                    else
+                                                    {
+                                                        AorB = true;
+                                                    }
+                                                }
+                                                if (timeA.Equals(timeB))
+                                                {
+                                                    _trainProjectModels[ij].startTime = timeA;
+                                                }
+                                                else if (!AorB)
+                                                {
+                                                    _trainProjectModels[ij].startTime = timeA;
+                                                    //把B的结束时间替换为A的结束时间
+                                                    for (int k = 0; k < _trainProjectModels.Count; k++)
+                                                    {
+                                                        if (_trainProjectModels[k].projectIndex.Equals(indexB))
+                                                        {
+                                                            _trainProjectModels[k].endTime = timeA;
+                                                        }
+                                                    }
+                                                }
+                                                else if (AorB)
+                                                {
+                                                    _trainProjectModels[ij].startTime = timeB;
+                                                    //把A的结束时间替换为B的结束时间
+                                                    for (int k = 0; k < _trainProjectModels.Count; k++)
+                                                    {
+                                                        if (_trainProjectModels[k].projectIndex.Equals(indexA))
+                                                        {
+                                                            _trainProjectModels[k].endTime = timeB;
+                                                        }
+                                                    }
+                                                }
+                                                skipToNext = true;
+                                                hasGotIt = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -5405,12 +5519,17 @@ namespace TimeTableAutoCompleteTool
                                 {
                                     break;
                                 }
-                                //短找长没找到的时候，创建重联车组
-                                if (_pm.trainConnectType == 0 && _pm.sameTrain_ProjectIndex == -1)
-                                {//自身短编并且没找到已存在的重联模型，将不同于自身的车号标记为第二个车号，同时变为重联车，变为短变长，
-                                 //此时原有单组车存为重联车的一部分
-                                 //车号
-                                    _pm.trainWorkingMode = 1;
+                                /*短找长没找到时：
+                                将自身写作短变长，复制自身，
+                                将复制后的变成-A钩，自身的工作流清零，
+                                加入第二车次，写作重联，将复制后的后序写上自身，
+                                自身的前序加上复制后的，自身的开始时间为重联时间，
+                                复制后的结束时间为重联时间，继续寻找自身的。
+                                 */
+                                if (_pm.trainConnectType == 0 && _pm.sameTrain_ProjectIndex.Equals("-1"))
+                                {
+                                    //此时原有单组车存为重联车的一部分
+                                    //车号
                                     try
                                     {
                                         Regex regTrain = new Regex(@"\(([^)]*)\)");
@@ -5419,9 +5538,13 @@ namespace TimeTableAutoCompleteTool
                                         foreach (Match match in mTrain)
                                         {
                                             string value = match.Value.Trim('(', ')');
-                                            if (!value.Equals(_pm.trainId) && value.Contains("CR"))
+                                            if (!value.Contains("-"))
                                             {
-                                                _pm.secondTrainId = value;
+                                                continue;
+                                            }
+                                            if (!value.Split('-')[1].Equals(_pm.trainId) && value.Contains("CR"))
+                                            {
+                                                _pm.secondTrainId = value.Split('-')[1];
                                                 break;
                                             }
                                         }
@@ -5430,167 +5553,252 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         // Syntax error in the regular expression
                                     }
+                                    //自身写作短变长
+                                    _pm.trainWorkingMode = 1;
+                                    //复制自身作为短编车，改为-A钩，相同车钩号改为自身，直接存储起来不记录后序工作流
+                                    TrainProjectModel _shortTPM = _pm.Clone() as TrainProjectModel;
+                                    _shortTPM.sameTrain_ProjectIndex = _shortTPM.projectIndex;
+                                    _shortTPM.projectIndex = _shortTPM.projectIndex + "-A";
+                                    _shortTPM.secondTrainId = "";
+                                    //结束时间为重联的前一个动作时间
+                                    _shortTPM.endTime = _tpw.time;
+                                    //在复制的短编车内标记自身长编车
+                                    TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
+                                    _tps_LongInSelf.trainId = _pm.trainId;
+                                    _tps_LongInSelf.secondTrainId = _pm.secondTrainId;
+                                    _tps_LongInSelf.trainConnectType = 2;
+                                    _tps_LongInSelf.projectIndex = _pm.projectIndex;
+                                    _tps_LongInSelf.relatedMovingTime = "";
+                                    _shortTPM.nextProject.Add(_tps_LongInSelf);
+                                    //在自身标记短编车
+                                    //添加到自身长编车的代表复制后短编的前序序列
+                                    TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
+                                    _tps_SelfInLong.trainId = _shortTPM.trainId;
+                                    _tps_SelfInLong.trainConnectType = 0;
+                                    _tps_SelfInLong.projectIndex = _shortTPM.projectIndex;
+                                    //这个时间为重联前的最后一次工作时间
+                                    if (_shortTPM.trainProjectWorkingModel.Count > 0)
+                                    {
+                                        _tps_SelfInLong.relatedMovingTime = _shortTPM.trainProjectWorkingModel[_shortTPM.trainProjectWorkingModel.Count - 1].time;
+                                    }
+                                    else
+                                    {
+                                        _tps_SelfInLong.relatedMovingTime = "";
+                                    }
+                                    _pm.previousProject.Add(_tps_SelfInLong);
+                                    //自身工作流清空
+                                    _pm.trainProjectWorkingModel.Clear();
+                                    //自身写作重联车
+                                    _pm.trainConnectType = 2;
+                                    //开始时间为重联时间
+                                    _pm.startTime = _tpw.time;
+                                    //存储短编车
+                                    _trainProjectModels.Add(_shortTPM);
+                                    /*已弃用的方法
                                     TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
                                     _pm.trainProjectWorkingModel.Clear();
                                     _pm.trainConnectType = 2;
                                     _pm.trainWorkingMode = 1;
                                     _pm.connectedTrainProjectModels.Add(_itsOwn);
+                                    */
                                 }
-                                //长找短
-                                if (_pm.trainConnectType == 2)
-                                {
+                                if (_pm.trainConnectType == 2 && _pm.sameTrain_ProjectIndex.Equals("-1"))
+                                {//长找长没找到
                                     _pm.trainWorkingMode = 1;
-                                    //往前找和重联的两个车次相同的信息，把他们加入进来
-                                    string firstOne = "";
-                                    for (int _t = 0; _t < _trainProjectModels.Count; _t++)
+                                }
+                            }
+                                    //长找长找到了的 后面加完计划后再找
+                                //特殊情况：解编
+                                //解编时自身前半部分模型是公用的，后半部分各自引用
+                                if (_currentWork.Contains("进行解编") && _currentWork.Contains("道"))
+                                {
+                                    /*1、长找长没找到：
+                                    自身标记为长变短，
+                                    复制为 - A钩，
+                                    复制后的（删除车次2，改为短编，
+                                    删除工作流，开始时间为解编时间，
+                                    将自身添加进前序序列），将复制后的添加进自身后序序列，
+                                    自身结束时间为解编时间
+                                    */
+                                    //大概率是还不知道是解编后的哪个车，因此后面如果获得了，就替换车次1，删除车次2
+                                    if (_pm.sameTrain_ProjectIndex.Equals("-1"))
                                     {
-                                        TrainProjectModel _tempModel = _trainProjectModels[_t];
-                                        if (_tempModel.trainConnectType == 0 && (_pm.trainId + _pm.secondTrainId).Contains(_tempModel.trainId))
+                                        _pm.trainWorkingMode = 2;
+                                        _pmBreak = (TrainProjectModel)_pm.Clone();
+                                        _pmBreak.projectIndex = _pmBreak.projectIndex + "-A";
+                                        _pmBreak.trainConnectType = 0;
+                                        _pmBreak.trainProjectWorkingModel.Clear();
+                                        _pmBreak.startTime = _tpw.time;
+                                        _pm.endTime = _tpw.time;
+                                        //为便于识别，将_pm的sametrain改为-2
+                                        _pm.sameTrain_ProjectIndex = "-2";
+                                        //将长编车添加到短编车内
+                                        TrainProjectStruct _tps_LongInShort = new TrainProjectStruct();
+                                        _tps_LongInShort.trainId = _pm.trainId;
+                                        _tps_LongInShort.secondTrainId = _pm.secondTrainId;
+                                        _tps_LongInShort.trainConnectType = 2;
+                                        _tps_LongInShort.projectIndex = _pm.projectIndex;
+                                        //这个时间为解编前的最后一次工作时间
+                                        if (_pm.trainProjectWorkingModel.Count > 0)
                                         {
-                                            if (!_tempModel.trainId.Equals(firstOne))
+                                            _tps_LongInShort.relatedMovingTime = _pm.trainProjectWorkingModel[_pm.trainProjectWorkingModel.Count - 1].time;
+                                        }
+                                        else
+                                        {
+                                            _tps_LongInShort.relatedMovingTime = "";
+                                        }
+                                        _pmBreak.previousProject.Add(_tps_LongInShort);
+                                        //直接存储长编序列
+                                        _trainProjectModels.Add(_pm);
+                                        //可以进行下一次循环了，后面再添加序列
+                                    }
+                                    /*2、长找长找到了
+                                    自身改为长变短，改为 - B钩，删除车次2，改为短编，删除工作流，开始时间为解编时间，将自身添加进找到的长编车的后序序列，将长编车添加进自身的前序序列
+                                    */
+                                    else
+                                    {
+                                        //其实就是把自身当做短编车来做了
+                                        _pm.trainWorkingMode = 2;
+                                        _pm.projectIndex = _pm.projectIndex + "-B";
+                                        _pm.trainConnectType = 0;
+                                        _pm.startTime = _tpw.time;
+                                        _pm.trainProjectWorkingModel.Clear();
+                                        _pmBreak = (TrainProjectModel)_pm.Clone();
+                                        //将自身添加进找到的长编车
+                                        for (int k = 0; k < _trainProjectModels.Count; k++)
+                                        {
+                                            if (_trainProjectModels[k].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
                                             {
-                                                firstOne = _tempModel.trainId;
-                                                _tempModel.trainWorkingMode = 1;
-                                                TrainProjectModel _addingPM = (TrainProjectModel)_tempModel.Clone();
-                                                _pm.connectedTrainProjectModels.Add(_addingPM);
+                                                //需要记录一下k的值，后面再添加（不知道自身解编后的车号）
+                                                sameTrainIndex = k.ToString();
+                                                //将长编车存于自身的前序序列
+                                                TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
+                                                _tps_LongInSelf.trainId = _trainProjectModels[k].trainId;
+                                                _tps_LongInSelf.secondTrainId = _trainProjectModels[k].secondTrainId;
+                                                _tps_LongInSelf.projectIndex = _trainProjectModels[k].projectIndex;
+                                                //这个时间为解编前的最后一次工作时间
+                                                if (_trainProjectModels[k].trainProjectWorkingModel.Count > 0)
+                                                {
+                                                    _tps_LongInSelf.relatedMovingTime = _trainProjectModels[k].trainProjectWorkingModel[_trainProjectModels[k].trainProjectWorkingModel.Count - 1].time;
+                                                }
+                                                else
+                                                {
+                                                    _tps_LongInSelf.relatedMovingTime = "";
+                                                }
+                                                _pmBreak.previousProject.Add(_tps_LongInSelf);
                                             }
                                         }
-                                    }
-                                }
-                                //长找长后面加完计划后再找
-                            }
-                            //特殊情况：解编
-                            //解编时自身前半部分模型是公用的，后半部分添加到各自的里面
-                            if (_currentWork.Contains("进行解编") && _currentWork.Contains("道"))
-                            {
-                                //长找长没找到的时候(暂时还没发现短的解编的)
-                                //自身标记长变短，内容克隆给重联对象，重联对象变短编，当前标记为已解编
-                                //大概率是还不知道是解编后的哪个车，因此后面如果获得了，就替换车次1，删除车次2
-                                if(_pm.sameTrain_ProjectIndex == -1)
-                                {
-                                    _pm.trainWorkingMode = 2;
-                                    _pmBreak = (TrainProjectModel)_pm.Clone();
-                                    _pmBreak.trainConnectType = 0;
-                                    _pmBreak.trainProjectWorkingModel.Clear();
-                                    //可以进行下一次循环了
-                                }
-                                //长找长找到的时候
-                                //接着往后找分开后不同的，添加进pmbreak，
-                                //pmbreak的连接改为0，工作方式2，替换车次，加入上一个车次内作为二级车次-全部修改完后，删除之前的工作流
-                                //同时pm工作标记为3
-                                else
-                                {
-                                    hasBroken = true;
+                                        /*
                                     _pmBreak = (TrainProjectModel)_pm.Clone();
                                     _pm.trainWorkingMode = 3;
                                     _pmBreak.trainConnectType = 0;
                                     _pmBreak.trainWorkingMode = 2;
                                     _pmBreak.trainProjectWorkingModel.Clear();
-                                }
-                                hasBroken = true;
-                            }
-                            //解编后遇到第二次循环，里面有车号的时候
-                            if (_currentWork.Contains("(CR") &&_currentWork.Contains("-")&& hasBroken)
-                            {//取该车号为解编后的自身车号，车号2删掉
-                                string brokenTrainID = _currentWork.Split('-')[1].Split(')')[0].Trim();
-                                _pmBreak.trainId = brokenTrainID;
-                                _pmBreak.secondTrainId = "";
-                            }
-                            if (!hasBroken)
-                            {
-                                _pm.trainProjectWorkingModel.Add(_tpw);
-                            }
-                            else
-                            {//解编后
-                                _pmBreak.trainProjectWorkingModel.Add(_tpw);
-                            }
-
-                        }
-                    }
-                    //重联长找长，合并数据
-                    if(_pm.trainConnectType == 2 &&_pm.sameTrain_ProjectIndex != -1)
-                    {
-                        for (int ij = 0; ij < _trainProjectModels.Count; ij++)
-                        {
-                            if (_trainProjectModels[ij].projectIndex == _pm.sameTrain_ProjectIndex)
-                            {
-                                //检查入库车和出库车，最后将工作流添加进去
-                                if(_trainProjectModels[ij].getInside_trainNum.Length == 0 && _pm.getInside_trainNum.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getInside_trainNum = _pm.getInside_trainNum;
-                                }
-                                if (_trainProjectModels[ij].getInside_track.Length == 0 && _pm.getInside_track.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getInside_track = _pm.getInside_track;
-                                }
-                                if (_trainProjectModels[ij].getInside_time.Length == 0 && _pm.getInside_time.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getInside_time = _pm.getInside_time;
-                                }
-                                if (_trainProjectModels[ij].getOutside_time.Length == 0 && _pm.getOutside_time.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getOutside_time = _pm.getOutside_time;
-                                }
-                                if (_trainProjectModels[ij].getOutside_track.Length == 0 && _pm.getOutside_track.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getOutside_track = _pm.getOutside_track;
-                                }
-                                if (_trainProjectModels[ij].getOutside_trainNum.Length == 0 && _pm.getOutside_trainNum.Length != 0)
-                                {
-                                    _trainProjectModels[ij].getOutside_trainNum = _pm.getOutside_trainNum;
-                                }
-                                foreach(TrainProjectWorking _tpwm in _pm.trainProjectWorkingModel)
-                                {//如果时间没有一样的就往里加
-                                    bool hasGotKey = false;
-                                    for(int ik = 0;ik < _trainProjectModels[ij].trainProjectWorkingModel.Count; ik++)
-                                    {
-                                        if (_tpwm.time.Equals(_trainProjectModels[ij].trainProjectWorkingModel[ik].time))
-                                        {
-                                            hasGotKey = true;
-                                            break;
-                                        }
+                                    */
                                     }
-                                    if (hasGotKey)
+                                    hasBroken = true;
+                                }
+                                //解编后遇到第二次循环，里面有车号的时候
+                                if (_currentWork.Contains("(CR") && _currentWork.Contains("-") && hasBroken)
+                                {//取该车号为解编后的自身车号，车号2删掉
+                                    string brokenTrainID = _currentWork.Split('-')[1].Split(')')[0].Trim();
+                                    _pmBreak.trainId = brokenTrainID;
+                                    _pmBreak.secondTrainId = "";
+                                    //将短编车存储于长编车的后序序列
+                                    TrainProjectStruct _tps_selfInLong = new TrainProjectStruct();
+                                    _tps_selfInLong.trainId = brokenTrainID;
+                                    _tps_selfInLong.projectIndex = _pmBreak.projectIndex;
+                                    _tps_selfInLong.trainConnectType = 0;
+                                    _tps_selfInLong.relatedMovingTime = _tpw.time;
+                                    //长找长没找到时
+                                    if (_pm.sameTrain_ProjectIndex.Equals("-2"))
                                     {
-                                        continue;
+                                        _pm.nextProject.Add(_tps_selfInLong);
                                     }
                                     else
-                                    {
-                                        _trainProjectModels[ij].trainProjectWorkingModel.Add(_tpwm);
+                                    {//找到了时
+                                        if (sameTrainIndex.Trim().Length != 0)
+                                        {
+                                            try
+                                            {
+                                                _trainProjectModels[int.Parse(sameTrainIndex)].nextProject.Add(_tps_selfInLong);
+                                            }
+                                            catch (Exception eMath)
+                                            {
+                                                int jk = 0;
+                                            }
+                                        }
                                     }
                                 }
-                                break;
-                            }
+                                //添加工作流数据
+                                if (!hasBroken)
+                                {
+                                    _pm.trainProjectWorkingModel.Add(_tpw);
+                                }
+                                else
+                                {//解编后
+                                    _pmBreak.trainProjectWorkingModel.Add(_tpw);
+                                }
+                                //可以跳过这一行了
+                                if (skipToNext)
+                                {
+                                    continue;
+                                }
                         }
-                    }
-                    //解编添加-添加解编后的短编车
-                    if(hasBroken)
-                    {
-                        if(_pm.trainWorkingMode != 3)
-                        {//如果该车次是第一个
-                            _pm.connectedTrainProjectModels.Add(_pmBreak);
-                        }
-                        else
-                        {//如果该车次需要添加进其他的里面
+                        //重联长找长，合并数据
+                        if (_pm.trainConnectType == 2 && !_pm.sameTrain_ProjectIndex.Equals("-1"))
+                        {
                             for (int ij = 0; ij < _trainProjectModels.Count; ij++)
                             {
-                                if (_trainProjectModels[ij].projectIndex == _pm.sameTrain_ProjectIndex)
+                                if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
                                 {
                                     //检查入库车和出库车，最后将工作流添加进去
-                                    if (_trainProjectModels[ij].getInside_trainNum.Length == 0 && _pmBreak.getInside_trainNum.Length != 0)
+                                    if (_trainProjectModels[ij].getInside_trainNum.Length == 0 && _pm.getInside_trainNum.Length != 0)
                                     {
-                                        _trainProjectModels[ij].getInside_trainNum = _pmBreak.getInside_trainNum;
+                                        _trainProjectModels[ij].getInside_trainNum = _pm.getInside_trainNum;
                                     }
-                                    if (_trainProjectModels[ij].getInside_track.Length == 0 && _pmBreak.getInside_track.Length != 0)
+                                    if (_trainProjectModels[ij].getInside_track.Length == 0 && _pm.getInside_track.Length != 0)
                                     {
-                                        _trainProjectModels[ij].getInside_track = _pmBreak.getInside_track;
+                                        _trainProjectModels[ij].getInside_track = _pm.getInside_track;
                                     }
-                                    if (_trainProjectModels[ij].getInside_time.Length == 0 && _pmBreak.getInside_time.Length != 0)
+                                    if (_trainProjectModels[ij].getInside_time.Length == 0 && _pm.getInside_time.Length != 0)
                                     {
-                                        _trainProjectModels[ij].getInside_time = _pmBreak.getInside_time;
+                                        _trainProjectModels[ij].getInside_time = _pm.getInside_time;
                                     }
-                                    //添加进找到的那个里面
-                                    _trainProjectModels[ij].connectedTrainProjectModels.Add(_pmBreak);
+                                    if (_trainProjectModels[ij].getOutside_time.Length == 0 && _pm.getOutside_time.Length != 0)
+                                    {
+                                        _trainProjectModels[ij].getOutside_time = _pm.getOutside_time;
+                                    }
+                                    if (_trainProjectModels[ij].getOutside_track.Length == 0 && _pm.getOutside_track.Length != 0)
+                                    {
+                                        _trainProjectModels[ij].getOutside_track = _pm.getOutside_track;
+                                    }
+                                    if (_trainProjectModels[ij].getOutside_trainNum.Length == 0 && _pm.getOutside_trainNum.Length != 0)
+                                    {
+                                        _trainProjectModels[ij].getOutside_trainNum = _pm.getOutside_trainNum;
+                                    }
+                                    foreach (TrainProjectWorking _tpwm in _pm.trainProjectWorkingModel)
+                                    {//如果时间没有一样的就往里加
+                                        bool hasGotKey = false;
+                                        for (int ik = 0; ik < _trainProjectModels[ij].trainProjectWorkingModel.Count; ik++)
+                                        {
+                                            if (_tpwm.time.Equals(_trainProjectModels[ij].trainProjectWorkingModel[ik].time))
+                                            {
+                                                hasGotKey = true;
+                                                break;
+                                            }
+                                        }
+                                        if (hasGotKey)
+                                        {
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            _trainProjectModels[ij].trainProjectWorkingModel.Add(_tpwm);
+                                        }
+                                    }
+                                    //自身标记为3 默认不显示
+                                    _pm.trainWorkingMode = 3;
                                     break;
                                 }
                             }
