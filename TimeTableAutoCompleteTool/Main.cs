@@ -5292,17 +5292,56 @@ namespace TimeTableAutoCompleteTool
                             }
                             //找股道
                             string trackNum = "";
-                            for (int tNum = 1; tNum <= 65; tNum++)
+                            string throughTrack = "";
+                            if (_currentWork.Split('道').Length == 2)
                             {
-                                if (_currentWork.Contains(tNum + "道"))
+                                for (int tNum = 1; tNum <= 65; tNum++)
                                 {
-                                    trackNum = tNum.ToString();
-                                }
-                                if (_currentWork.Contains("JC" + tNum + "道"))
-                                {
-                                    trackNum = "JC" + tNum.ToString();
+                                    if (_currentWork.Contains(tNum + "道"))
+                                    {
+                                        trackNum = tNum.ToString();
+                                    }
+                                    if (_currentWork.Contains("JC" + tNum + "道"))
+                                    {
+                                        trackNum = "JC" + tNum.ToString();
+                                    }
                                 }
                             }
+                            //13	0G2046次(CRH380B-5864)18:23终到后经28道西端转JC3道西端停放。
+                            //19	0G55482次(CRH380B-5654)09:31终到后经26道西端转JC5道西端停放。17:45转40道东端停放，18:35与(CRH380B-5837)进行重联作业。
+                            else if (_currentWork.Split('道').Length == 3 && _currentWork.Contains("经"))
+                            {
+                                throughTrack = _currentWork.Split('经')[1].Split('道')[0] + "G";
+                                if (_currentWork.Split('经')[1].Split('道')[1].Contains("西"))
+                                {
+                                    throughTrack = throughTrack + "1";
+                                }
+                                else if (_currentWork.Split('经')[1].Split('道')[1].Contains("东"))
+                                {
+                                    throughTrack = throughTrack + "2";
+                                }
+                                for (int tNum = 1; tNum <= 65; tNum++)
+                                {
+                                    if ((_currentWork.Split('道')[1]+"道").Contains(tNum+"道"))
+                                    {
+                                        trackNum = tNum.ToString() + "G";
+                                    }
+                                    if ((_currentWork.Split('道')[1] + "道").Contains("JC" + tNum + "道"))
+                                    {
+                                        trackNum = "JC" + tNum.ToString() + "G";
+                                    }
+                                }
+                                if (_currentWork.Split('道')[2].Contains("西"))
+                                {
+                                    trackNum = trackNum + "1";
+                                }
+                                else if (_currentWork.Split('道')[2].Contains("东"))
+                                {
+                                    trackNum = trackNum + "2";
+                                }
+
+                            }
+
                             if (trackNum.Length == 0)
                             {
                                 //如果不包含股道，就往前寻找股道
@@ -5367,6 +5406,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                             }
                             _tpw.track = trackNum;
+                            _tpw.throughTrack = throughTrack;
                             //作业内容
                             string workingInformation = "";
                             if (trackNum.Contains("G1") || trackNum.Contains("G2"))
