@@ -99,38 +99,73 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="basicTrainGraphTitle.cs" />
-    <Compile Include="CaculatorModel.cs" />
-    <Compile Include="CommandModel.cs" />
-    <Compile Include="DailySchedule.cs" />
-    <Compile Include="EMUCheckModel.cs" />
-    <Compile Include="EMUGarageTableModel.cs" />
+    <Compile Include="DisplayModels\Ubinder.cs" />
+    <Compile Include="Models\basicTrainGraphTitle.cs" />
+    <Compile Include="Models\CaculatorModel.cs" />
+    <Compile Include="Models\CommandModel.cs" />
+    <Compile Include="Models\DailySchedule.cs" />
+    <Compile Include="Display.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Display.Designer.cs">
+      <DependentUpon>Display.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EMUCheckModel.cs" />
+    <Compile Include="Models\EMUGarageTableModel.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisplayModels\ModelData.cs" />
+    <Compile Include="DisplayModify\ModifyPowerSupplyModel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayModify\ModifyPowerSupplyModel.Designer.cs" />
+    <Compile Include="DisplayModify\ModifySignal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayModify\ModifySignal.Designer.cs" />
+    <Compile Include="DisplayModify\ModifyTrackLine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayModify\ModifyTrackLine.Designer.cs" />
+    <Compile Include="DisplayModify\ModifyTrackPoint.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisplayModify\ModifyTrackPoint.Designer.cs" />
+    <Compile Include="DisplayModels\PowerSupplyModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DisplayModels\Signal.cs" />
+    <Compile Include="DisplayModels\TrackLine.cs" />
+    <Compile Include="DisplayModels\TrackPoint.cs" />
     <Compile Include="TrainEarlyCaculator.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TrainEarlyCaculator.Designer.cs">
       <DependentUpon>TrainEarlyCaculator.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrainProjectModel.cs" />
-    <Compile Include="TrainProjectStruct.cs" />
-    <Compile Include="TrainProjectWorking.cs" />
+    <Compile Include="Models\TrainProjectModel.cs" />
+    <Compile Include="Models\TrainProjectStruct.cs" />
+    <Compile Include="Models\TrainProjectWorking.cs" />
     <Compile Include="Welcome.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Welcome.Designer.cs">
       <DependentUpon>Welcome.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Display.resx">
+      <DependentUpon>Display.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DisplayModify\ModifyPowerSupplyModel.resx" />
+    <EmbeddedResource Include="DisplayModify\ModifySignal.resx" />
+    <EmbeddedResource Include="DisplayModify\ModifyTrackLine.resx" />
+    <EmbeddedResource Include="DisplayModify\ModifyTrackPoint.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

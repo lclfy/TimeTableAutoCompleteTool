@@ -5924,6 +5924,8 @@ namespace TimeTableAutoCompleteTool
         private void matchTrackWithTrain_Project_btn_Click(object sender, EventArgs e)
         {
             trainTypeAutoComplete(true);
+            Form _displaySystem = new Display();
+            _displaySystem.Show();
         }
 
         private void trainProjectBtnCheck()
