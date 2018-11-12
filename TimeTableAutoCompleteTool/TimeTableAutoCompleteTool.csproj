@@ -104,6 +104,7 @@
     <Compile Include="CommandModel.cs" />
     <Compile Include="DailySchedule.cs" />
     <Compile Include="EMUCheckModel.cs" />
+    <Compile Include="EMUGarageTableModel.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

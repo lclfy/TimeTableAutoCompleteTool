@@ -34,6 +34,7 @@ namespace TimeTableAutoCompleteTool
         private List<DailySchedule> allDailyScheduleModel;
         private List<EMUCheckModel> allEmuCheckModel;
         private List<TrainProjectModel> allTrainProjectModels;
+        private List<EMUGarageTableModel> allEMUGarageTableModels;
         List<string> ExcelFile = new List<string>();
         private string startPath = "";
         private string wrongTrain = "";
@@ -163,7 +164,7 @@ namespace TimeTableAutoCompleteTool
                 hasTrainProjectFile = false;
                 trainProjectText = "";
                 trainPorjectFilePath_lbl.Text = "";
-                matchTrackWithTrain_Project_btn.Visible = false;
+                matchTrackWithTrain_Project_btn.Visible = true;
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
                 yesterdayCommandModel = new List<CommandModel>();
@@ -4112,7 +4113,7 @@ namespace TimeTableAutoCompleteTool
         }
 
         //动车所填车型
-        private void trainTypeAutoComplete()
+        private void trainTypeAutoComplete(bool isProjectHelper = false)
         {
             //白班和夜班的开始所在行
             int nightStart = -1;
@@ -4122,6 +4123,11 @@ namespace TimeTableAutoCompleteTool
             //如果这个车是前一天的话
             bool isYesterday = false;
             IWorkbook workbook = null;  //新建IWorkbook对象  
+            allEMUGarageTableModels = new List<EMUGarageTableModel>();
+            //动车走行线模型
+            List<EMUGarageTableModel> _eMUGarageTableModels = new List<EMUGarageTableModel>();
+            //标题行
+            int titleRowNum = -1;
             string fileName = ExcelFile[0];
             try
             {
@@ -4231,6 +4237,7 @@ namespace TimeTableAutoCompleteTool
 
                 ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
                 IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                IRow titleRow = sheet.GetRow(3);
                 string failedLoadingTrain = "";
                 for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                 {
@@ -4238,9 +4245,14 @@ namespace TimeTableAutoCompleteTool
                     row = sheet.GetRow(i);   //row读入第i行数据  
                     if (row != null)
                     {
-                        //判断当前位置是白班还是夜班
-                        if(row.GetCell(0)!= null)
+                        //判断当前位置是白班还是夜班/标题行
+                        if (row.GetCell(0)!= null)
                         {
+                            if (row.GetCell(0).ToString().Contains("备注") && titleRowNum == -1)
+                            {
+                                titleRowNum = i;
+                                titleRow = sheet.GetRow(i);
+                            }
                             if (nightStart == -1)
                             {
                                 if (row.GetCell(0).ToString().Contains("夜班"))
@@ -4286,17 +4298,71 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("J")) &&
                                     regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim()))
                                 {
-                                    if (row.GetCell(j).ToString().Contains("0G1287"))
-                                    {
-                                        int l = 9;
-                                    }
                                     if (row.GetCell(j + 1) == null)
                                     {
                                         row.CreateCell(j + 1);
                                     }
+                                    //新任务：找对应的动车走行线
+                                    //添加一下车次，并且找一下动车走行线
+                                    if (isProjectHelper)
+                                    {
+                                        EMUGarageTableModel _gtm = new EMUGarageTableModel();
+                                        _gtm.id = i;
+                                        _gtm.trainNumber = row.GetCell(j).ToString();
+                                        //判断是入库还是出库
+                                        if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 0)
+                                        {//偶数结尾 入库
+                                            _gtm.isGettingInGarage = 1;
+                                        }
+                                        else if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 1)
+                                        {
+                                            _gtm.isGettingInGarage = 0;
+                                        }
+                                        for (int line = j + 1; line <= row.LastCellNum; line++)
+                                        {
+                                            if ((row.GetCell(line).ToString().Contains("G") ||
+                                                row.GetCell(line).ToString().Contains("D") ||
+                                                    row.GetCell(line).ToString().Contains("C") ||
+                                                    row.GetCell(line).ToString().Contains("J")) &&
+                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim()))
+                                            {
+                                                break;
+                                            }
+                                            if (titleRow != null && titleRow.GetCell(line) != null && titleRow.GetCell(line).ToString().Contains("线别"))
+                                            {
+                                                string str;
+                                                if (row.GetCell(line) != null && row.GetCell(line).ToString().Length != 0)
+                                                {
+                                                    int outLine = -1;
+                                                    int.TryParse(row.GetCell(line).ToString(), out outLine);
+                                                    if (outLine != -1)
+                                                    {
+                                                        _gtm.trackLine = outLine;
+                                                        break;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    IRow upRow = sheet.GetRow(i - 1);
+                                                    if (upRow.GetCell(line) != null)
+                                                    {
+                                                        int outLine = -1;
+                                                        int.TryParse(upRow.GetCell(line).ToString(), out outLine);
+                                                        if (outLine != -1)
+                                                        {
+                                                            _gtm.trackLine = outLine;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        _eMUGarageTableModels.Add(_gtm);
+                                        continue;
+                                    }
                                     //先判断这个是昨天还是今天的 昨天的在夜班里 时间范围是18:00-次日0:30
                                     //先看是不是在夜班里
-                                    if((nightFirst && (i > nightStart && i < morningStart) || (i>nightStart && morningStart == -1)) ||
+                                    if ((nightFirst && (i > nightStart && i < morningStart) || (i>nightStart && morningStart == -1)) ||
                                         (!nightFirst && i > nightStart))
                                     {
                                         for (int timeColumn = j + 1; timeColumn <= row.LastCellNum; timeColumn++)
@@ -4447,6 +4513,11 @@ namespace TimeTableAutoCompleteTool
                 if (failedLoadingTrain.Length != 0)
                 {
                     MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                allEMUGarageTableModels = _eMUGarageTableModels;
+                if (isProjectHelper)
+                {//不需要打开文件
+                    return;
                 }
                 //重新修改文件指定单元格样式
                 FileStream fs1 = File.OpenWrite(fileName);
@@ -5848,7 +5919,11 @@ namespace TimeTableAutoCompleteTool
                 }
             }
             allTrainProjectModels = _trainProjectModels;
-            int ijk = 0;
+        }
+
+        private void matchTrackWithTrain_Project_btn_Click(object sender, EventArgs e)
+        {
+            trainTypeAutoComplete(true);
         }
 
         private void trainProjectBtnCheck()
@@ -5859,7 +5934,7 @@ namespace TimeTableAutoCompleteTool
             }
             else
             {
-                matchTrackWithTrain_Project_btn.Visible = false;
+                matchTrackWithTrain_Project_btn.Visible = true;
             }
         }
 

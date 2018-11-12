@@ -59,7 +59,7 @@ namespace TimeTableAutoCompleteTool
         public string startTime { get; set; }
         public string endTime { get; set; }
 
-        //链表方式存储前序后序钩
+        //存储前序节点与后序节点
         public List<TrainProjectStruct> previousProject { get; set; }
         public List<TrainProjectStruct> nextProject { get; set; }
 

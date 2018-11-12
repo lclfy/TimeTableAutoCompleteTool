@@ -866,7 +866,7 @@
             this.matchTrackWithTrain_Project_btn.TabIndex = 31;
             this.matchTrackWithTrain_Project_btn.Text = "(-测试版-)调车作业计划辅助";
             this.matchTrackWithTrain_Project_btn.UseVisualStyleBackColor = false;
-            this.matchTrackWithTrain_Project_btn.Visible = false;
+            this.matchTrackWithTrain_Project_btn.Click += new System.EventHandler(this.matchTrackWithTrain_Project_btn_Click);
             // 
             // trainPorjectFilePath_lbl
             // 
