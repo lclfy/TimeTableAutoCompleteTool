@@ -179,7 +179,7 @@ namespace TimeTableAutoCompleteTool.Modify
 
         private void loadTempData()
         {
-            if (tempTP.trackPointID != null)
+            if (tempTP.trackPointID != 0)
             {
                 id_tb.Text = tempTP.trackPointID.ToString();
             }

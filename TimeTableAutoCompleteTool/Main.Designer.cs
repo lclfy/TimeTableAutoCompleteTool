@@ -98,6 +98,8 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.EMUGarage_YesterdayCommand_rtb = new System.Windows.Forms.RichTextBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.EMUorEMUC_groupBox.SuspendLayout();
@@ -832,6 +834,8 @@
             // 
             // rightGroupBox_EMUGarage
             // 
+            this.rightGroupBox_EMUGarage.Controls.Add(this.label17);
+            this.rightGroupBox_EMUGarage.Controls.Add(this.richTextBox1);
             this.rightGroupBox_EMUGarage.Controls.Add(this.matchTrackWithTrain_Project_btn);
             this.rightGroupBox_EMUGarage.Controls.Add(this.trainPorjectFilePath_lbl);
             this.rightGroupBox_EMUGarage.Controls.Add(this.importTrainProjectFile_btn);
@@ -866,6 +870,7 @@
             this.matchTrackWithTrain_Project_btn.TabIndex = 31;
             this.matchTrackWithTrain_Project_btn.Text = "(-测试版-)调车作业计划辅助";
             this.matchTrackWithTrain_Project_btn.UseVisualStyleBackColor = false;
+            this.matchTrackWithTrain_Project_btn.Visible = false;
             this.matchTrackWithTrain_Project_btn.Click += new System.EventHandler(this.matchTrackWithTrain_Project_btn_Click);
             // 
             // trainPorjectFilePath_lbl
@@ -949,10 +954,32 @@
             this.EMUGarage_YesterdayCommand_rtb.Location = new System.Drawing.Point(24, 64);
             this.EMUGarage_YesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(6);
             this.EMUGarage_YesterdayCommand_rtb.Name = "EMUGarage_YesterdayCommand_rtb";
-            this.EMUGarage_YesterdayCommand_rtb.Size = new System.Drawing.Size(880, 548);
+            this.EMUGarage_YesterdayCommand_rtb.Size = new System.Drawing.Size(880, 292);
             this.EMUGarage_YesterdayCommand_rtb.TabIndex = 31;
             this.EMUGarage_YesterdayCommand_rtb.Text = "";
             this.EMUGarage_YesterdayCommand_rtb.TextChanged += new System.EventHandler(this.EMUGarage_YesterdayCommand_rtb_TextChanged);
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.ContextMenuStrip = this.contextMenuStrip1;
+            this.richTextBox1.Location = new System.Drawing.Point(19, 449);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(880, 163);
+            this.richTextBox1.TabIndex = 37;
+            this.richTextBox1.Text = "";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label17.ForeColor = System.Drawing.Color.Red;
+            this.label17.Location = new System.Drawing.Point(17, 382);
+            this.label17.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(498, 41);
+            this.label17.TabIndex = 38;
+            this.label17.Text = "计划文件中夜班空股道（测试版）";
             // 
             // Main
             // 
@@ -1073,6 +1100,8 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.RichTextBox EMUGarage_YesterdayCommand_rtb;
         private CCWin.SkinControl.SkinButton matchTrackWithTrain_Project_btn;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 

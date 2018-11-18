@@ -36,6 +36,7 @@ namespace TimeTableAutoCompleteTool
         private List<TrainProjectModel> allTrainProjectModels;
         private List<EMUGarageTableModel> allEMUGarageTableModels;
         List<string> ExcelFile = new List<string>();
+        List<string> EMUGarageFile = new List<string>();
         private string startPath = "";
         private string wrongTrain = "";
         private string commandText = "";
@@ -164,7 +165,7 @@ namespace TimeTableAutoCompleteTool
                 hasTrainProjectFile = false;
                 trainProjectText = "";
                 trainPorjectFilePath_lbl.Text = "";
-                matchTrackWithTrain_Project_btn.Visible = true;
+                matchTrackWithTrain_Project_btn.Visible = false;
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
                 yesterdayCommandModel = new List<CommandModel>();
@@ -352,6 +353,11 @@ namespace TimeTableAutoCompleteTool
                 else if(yesterdayCommandModel.Count != 0)
                 {
                     EMUGarage_hasYesterdayText = true;
+                }
+                //动车所的初版 受代码所限暂时先这么写…带true的是获取车次 开车方向和动车走行线的部分
+                if(allTrainProjectModels != null && allTrainProjectModels.Count != 0)
+                {
+                    trainTypeAutoComplete(true);
                 }
                 trainTypeAutoComplete();
             }
@@ -1140,6 +1146,11 @@ namespace TimeTableAutoCompleteTool
 
         private void updateTimeTable()
         {
+            if (ExcelFile == null)
+            {
+                MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
             foreach (string fileName in ExcelFile)
             {
                 IWorkbook workbook = null;  //新建IWorkbook对象 
@@ -1589,6 +1600,11 @@ namespace TimeTableAutoCompleteTool
         //读基本图-存模型
         private void readBasicTrainTable(bool isComparing = false)
         {
+            if (ExcelFile == null)
+            {
+                MessageBox.Show("请重新选择班计划文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
             string fileName = ExcelFile[0];
             IWorkbook workbook = null;  //新建IWorkbook对象  
             basicTrainGraphTitle titleInfo = new basicTrainGraphTitle();
@@ -4115,6 +4131,11 @@ namespace TimeTableAutoCompleteTool
         //动车所填车型
         private void trainTypeAutoComplete(bool isProjectHelper = false)
         {
+            if(ExcelFile == null || ExcelFile.Count == 0)
+            {
+                MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
             //白班和夜班的开始所在行
             int nightStart = -1;
             int morningStart = -1;
@@ -4123,11 +4144,17 @@ namespace TimeTableAutoCompleteTool
             //如果这个车是前一天的话
             bool isYesterday = false;
             IWorkbook workbook = null;  //新建IWorkbook对象  
-            allEMUGarageTableModels = new List<EMUGarageTableModel>();
-            //动车走行线模型
             List<EMUGarageTableModel> _eMUGarageTableModels = new List<EMUGarageTableModel>();
+            if (isProjectHelper)
+            {
+                allEMUGarageTableModels = new List<EMUGarageTableModel>();
+                //动车走行线模型
+            }
             //标题行
             int titleRowNum = -1;
+            //动车所股道所在列
+            int firstTrackNumColumn = -1;
+            int secondTrackNumColumn = -1;
             string fileName = ExcelFile[0];
             try
             {
@@ -4206,6 +4233,34 @@ namespace TimeTableAutoCompleteTool
                 normalStyle.SetFont(fontNormalID);
 
                 //表格样式
+                ICellStyle trackNumStyle = workbook.CreateCellStyle();
+                trackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                trackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                trackNumStyle.WrapText = true;
+                trackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                trackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                trackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                trackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                HSSFFont trackNumFont = (HSSFFont)workbook.CreateFont();
+                trackNumFont.FontName = "宋体";//字体  
+                trackNumFont.FontHeightInPoints = 14;//字号  
+                trackNumStyle.SetFont(trackNumFont);
+
+                //表格样式
+                ICellStyle notRecommandedTrackNumStyle = workbook.CreateCellStyle();
+                notRecommandedTrackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                notRecommandedTrackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                notRecommandedTrackNumStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                notRecommandedTrackNumStyle.FillPattern = FillPattern.SolidForeground;
+                notRecommandedTrackNumStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                notRecommandedTrackNumStyle.WrapText = true;
+                notRecommandedTrackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                notRecommandedTrackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                notRecommandedTrackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                notRecommandedTrackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                notRecommandedTrackNumStyle.SetFont(trackNumFont);
+
+                //表格样式
                 ICellStyle normalNumberStyle = workbook.CreateCellStyle();
                 normalNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
                 normalNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
@@ -4249,9 +4304,32 @@ namespace TimeTableAutoCompleteTool
                         if (row.GetCell(0)!= null)
                         {
                             if (row.GetCell(0).ToString().Contains("备注") && titleRowNum == -1)
-                            {
+                            {//标题行
                                 titleRowNum = i;
                                 titleRow = sheet.GetRow(i);
+                                //找一下动车所的股道所在列
+                                for(int b = 0; b <= row.LastCellNum; b++)
+                                {
+                                    if(row.GetCell(b) == null)
+                                    {
+                                        continue;
+                                    }
+                                    if (row.GetCell(b).ToString().Contains("动车所"))
+                                    {
+                                        if(firstTrackNumColumn == -1)
+                                        {
+                                            firstTrackNumColumn = b;
+                                        }
+                                        else
+                                        {
+                                            secondTrackNumColumn = b;
+                                        }
+                                        if(firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             if (nightStart == -1)
                             {
@@ -4287,7 +4365,10 @@ namespace TimeTableAutoCompleteTool
                         {
                             nightFirst = false;
                         }
+                        bool hasFoundThisRow = false;
                         Regex regexOnlyNumAndAlphabeta = new Regex(@"^[A-Za-z0-9]+$");
+                        //共线车
+                        bool isInUpRow = false;
                         for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
                         {
                             if (row.GetCell(j) != null)
@@ -4296,7 +4377,8 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(j).ToString().Contains("D") ||
                                     row.GetCell(j).ToString().Contains("C") ||
                                     row.GetCell(j).ToString().Contains("J")) &&
-                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim()))
+                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim())
+                                    && j != firstTrackNumColumn && j != secondTrackNumColumn)
                                 {
                                     if (row.GetCell(j + 1) == null)
                                     {
@@ -4324,13 +4406,13 @@ namespace TimeTableAutoCompleteTool
                                                 row.GetCell(line).ToString().Contains("D") ||
                                                     row.GetCell(line).ToString().Contains("C") ||
                                                     row.GetCell(line).ToString().Contains("J")) &&
-                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim()))
+                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim())&&
+                                                    line != firstTrackNumColumn && line != secondTrackNumColumn)
                                             {
                                                 break;
                                             }
                                             if (titleRow != null && titleRow.GetCell(line) != null && titleRow.GetCell(line).ToString().Contains("线别"))
                                             {
-                                                string str;
                                                 if (row.GetCell(line) != null && row.GetCell(line).ToString().Length != 0)
                                                 {
                                                     int outLine = -1;
@@ -4377,7 +4459,8 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(timeColumn).ToString().Contains("D") ||
                                                     row.GetCell(timeColumn).ToString().Contains("C") ||
                                                     row.GetCell(timeColumn).ToString().Contains("J")) &&
-                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim()))
+                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim())&&
+                                                    timeColumn != firstTrackNumColumn && timeColumn != secondTrackNumColumn)
                                             {
                                                 break;
                                             }
@@ -4421,11 +4504,34 @@ namespace TimeTableAutoCompleteTool
                                                     }
                                                 }
                                             }
+
                                         }
                                     }
                                     row = sheet.GetRow(i);
                                     row.GetCell(j + 1).SetCellValue("");
                                     row.GetCell(j).CellStyle = normalNumberStyle;
+                                    //把股道所在列和备注列清空一下
+                                    int rowi = i;
+                                    if (!hasFoundThisRow)
+                                    {
+                                        if (row.GetCell(firstTrackNumColumn) != null && row.GetCell(firstTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(firstTrackNumColumn).ToString().Trim()))
+                                        {
+                                            row.GetCell(firstTrackNumColumn).SetCellValue("");
+                                            row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+                                        }
+                                        if (row.GetCell(secondTrackNumColumn) != null && row.GetCell(secondTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(secondTrackNumColumn).ToString().Trim()))
+                                        {
+                                            row.GetCell(secondTrackNumColumn).SetCellValue("");
+                                            row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                        }
+                                        /*
+                                        if(row.GetCell(0).ToString().Split('-').Length > 1)
+                                        {
+                                            row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[1]);
+                                        }
+                                        */
+                                        hasFoundThisRow = true;
+                                    }
                                     bool hasGotIt = false;
                                     if (!isYesterday || !EMUGarage_hasYesterdayText)
                                     {
@@ -4441,6 +4547,7 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
                                                     row = sheet.GetRow(i - 1);
+                                                    isInUpRow = true;
                                                     if (row.GetCell(j + 1) == null)
                                                     {
                                                         row.CreateCell(j + 1);
@@ -4455,6 +4562,129 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j + 1).SetCellValue(model.trainId);
                                                 }
                                                 row.GetCell(j + 1).CellStyle = normalStyle;
+                                                //填写计划中的股道
+                                                string targetTrackNum = "";
+                                                string projectNum = "";
+                                                if(allTrainProjectModels != null && allTrainProjectModels.Count > 0)
+                                                {
+                                                    foreach(TrainProjectModel _tpm in allTrainProjectModels)
+                                                    {
+                                                        if(_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
+                                                            {//是该项目的入库车
+                                                                projectNum = _tpm.projectIndex;
+                                                                if(_tpm.trainProjectWorkingModel.Count > 0)
+                                                                {//第一项工作的股道
+                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
+                                                            {//是该项目的出库车
+                                                                projectNum = _tpm.projectIndex;
+                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                {//最后一项工作的股道
+                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (targetTrackNum.Length == 0)
+                                                    {
+                                                        foreach (TrainProjectModel _tpm in allTrainProjectModels)
+                                                        {
+                                                            if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                {//是该项目的入库车
+                                                                    projectNum = _tpm.projectIndex;
+                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                    {//第一项工作的股道
+                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                {//是该项目的出库车
+                                                                    projectNum = _tpm.projectIndex;
+                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                    {//最后一项工作的股道
+                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (targetTrackNum.Length != 0)
+                                                {
+                                                    //计算用
+                                                    int trackNumInt = 0;
+                                                    int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
+                                                    if(j < firstTrackNumColumn)
+                                                    {
+                                                        if(row.GetCell(firstTrackNumColumn) == null)
+                                                        {
+                                                            row.CreateCell(firstTrackNumColumn);
+                                                        }
+                                                        row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
+                                                        row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+                                                        if (projectNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(0) == null)
+                                                            {
+                                                                row.CreateCell(0);
+                                                            }
+                                                            row.GetCell(0).SetCellValue(projectNum + "钩-" + row.GetCell(0).ToString().Trim());
+                                                        }
+                                                    }
+                                                    else if(j < secondTrackNumColumn)
+                                                    {
+                                                        if (row.GetCell(secondTrackNumColumn) == null)
+                                                        {
+                                                            row.CreateCell(secondTrackNumColumn);
+                                                        }
+                                                        row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
+                                                        row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                                        if (projectNum.Length != 0)
+                                                        {
+                                                            if(row.GetCell(9) == null)
+                                                            {
+                                                                row.CreateCell(9);
+                                                            }
+                                                            row.GetCell(9).SetCellValue(projectNum + "钩-" + row.GetCell(9).ToString().Trim());
+                                                        }
+                                                        if (trackNumInt != 0)
+                                                        {
+                                                            foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                {
+                                                                    if (_emugtm.isGettingInGarage == 0)
+                                                                    {//必须是出库车
+                                                                        if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
+                                                                            (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
+                                                                            (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
+                                                                            (_emugtm.trackLine == 4 && trackNumInt <= 33))
+                                                                        {//动存线-走行线匹配判断
+                                                                            row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                         if (!hasGotIt)
@@ -4479,6 +4709,7 @@ namespace TimeTableAutoCompleteTool
                                                 (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
                                                 {
                                                     //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                    isInUpRow = true;
                                                     row = sheet.GetRow(i - 1);
                                                     if (row.GetCell(j + 1) == null)
                                                     {
@@ -4494,11 +4725,134 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j + 1).SetCellValue(model.trainId);
                                                 }
                                                 row.GetCell(j + 1).CellStyle = normalStyle;
+                                                string targetTrackNum = "";
+                                                string projectNum = "";
+                                                if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
+                                                {
+                                                    foreach (TrainProjectModel _tpm in allTrainProjectModels)
+                                                    {
+                                                        if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
+                                                            {//是该项目的入库车
+                                                                projectNum = _tpm.projectIndex;
+                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                {//第一项工作的股道
+                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
+                                                            {//是该项目的出库车
+                                                                projectNum = _tpm.projectIndex;
+                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                {//最后一项工作的股道
+                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (targetTrackNum.Length == 0)
+                                                    {
+                                                        foreach (TrainProjectModel _tpm in allTrainProjectModels)
+                                                        {
+                                                            if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                {//是该项目的入库车
+                                                                    projectNum = _tpm.projectIndex;
+                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                    {//第一项工作的股道
+                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                {//是该项目的出库车
+                                                                    projectNum = _tpm.projectIndex;
+                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                    {//最后一项工作的股道
+                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (targetTrackNum.Length != 0)
+                                                {
+                                                    //计算用
+                                                    int trackNumInt = 0;
+                                                    int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
+                                                    if (j < firstTrackNumColumn)
+                                                    {
+                                                        if (row.GetCell(firstTrackNumColumn) == null)
+                                                        {
+                                                            row.CreateCell(firstTrackNumColumn);
+                                                        }
+                                                        row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
+                                                        row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+                                                        if (projectNum.Length != 0)
+                                                        {
+                                                            if(row.GetCell(0) == null)
+                                                            {
+                                                                row.CreateCell(0);
+                                                            }
+                                                            row.GetCell(0).SetCellValue(projectNum + "钩-" + row.GetCell(0).ToString().Trim());
+                                                        }
+                                                    }
+                                                    else if (j < secondTrackNumColumn)
+                                                    {
+                                                        if (row.GetCell(secondTrackNumColumn) == null)
+                                                        {
+                                                            row.CreateCell(secondTrackNumColumn);
+                                                        }
+                                                        row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
+                                                        row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                                        if (projectNum.Length != 0)
+                                                        {
+                                                            if (row.GetCell(9) == null)
+                                                            {
+                                                                row.CreateCell(9);
+                                                            }
+                                                            row.GetCell(9).SetCellValue(projectNum + "钩-" + row.GetCell(9).ToString().Trim());
+                                                        }
+                                                        if (trackNumInt != 0)
+                                                        {
+                                                            foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
+                                                            {
+                                                                if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                {
+                                                                    if (_emugtm.isGettingInGarage == 0)
+                                                                    {//必须是出库车
+                                                                        if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
+                                                                            (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
+                                                                            (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
+                                                                            (_emugtm.trackLine == 4 && trackNumInt <= 33))
+                                                                        {//动存线-走行线匹配判断
+                                                                            row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                break;
                                             }
                                         }
                                         if (!hasGotIt)
                                         {
-                                            if (yesterdayCommandText.Contains(row.GetCell(j).ToString().Trim()))
+                                            if (yesterdayCommandText.Contains(row.GetCell(j).ToString().Trim()) && row.GetCell(j).ToString().Trim().Length != 0)
                                             {
                                                 failedLoadingTrain = failedLoadingTrain + " (→昨天的)" + row.GetCell(j).ToString().Trim();
                                                 searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2,2);
@@ -4507,6 +4861,10 @@ namespace TimeTableAutoCompleteTool
                                     }
                                 }
                             }
+                            if (isInUpRow == true)
+                            {
+                                row = sheet.GetRow(i);
+                            }
                         }
                     }
                 }
@@ -4514,9 +4872,9 @@ namespace TimeTableAutoCompleteTool
                 {
                     MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                allEMUGarageTableModels = _eMUGarageTableModels;
                 if (isProjectHelper)
                 {//不需要打开文件
+                    allEMUGarageTableModels = _eMUGarageTableModels;
                     return;
                 }
                 //重新修改文件指定单元格样式
@@ -4948,7 +5306,7 @@ namespace TimeTableAutoCompleteTool
         {
             try
             {
-                ExcelFile = new List<string>();
+                EMUGarageFile = new List<string>();
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
                 openFileDialog1.Filter = "Word 文件 |*.docx;*.doc";
                 openFileDialog1.InitialDirectory = Application.StartupPath + "\\动车所-调车作业计划\\";
@@ -5029,8 +5387,10 @@ namespace TimeTableAutoCompleteTool
                     }
                     trainProjectText = sb.ToString();
                     analyseTrainProjects();
+                    /*
                     File.WriteAllText("CommentExtraction.txt", sb.ToString());
                     System.Diagnostics.Process.Start("CommentExtraction.txt");
+                    */
                 }
             }
             catch(IOException eIO)
