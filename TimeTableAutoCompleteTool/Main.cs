@@ -60,9 +60,12 @@ namespace TimeTableAutoCompleteTool
         float dpiX, dpiY;
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
-        string build = "build 45.1 - v181027";
-        string readMe = "build45更新内容:\n" +
-            " 45.1、修复了动车所昨日客调令纠错出现误报的问题，修复了不能多次做表的问题。\n 1、动车所现在可以一张表打两天的命令了（自动区分当日/明日）。\n 2、修复了动车所当出现共用车底的两个车次时，位于下方的车次无法显示的问题。\n 3、(行车)列车搜索增加车型车号\n 4、(综控)现在可以识别17节400AF-B/400BF-B了。";
+        string[] allEMUGarageTracks = {"1G", "2G", "3G", "4G1", "4G2", "5G1", "5G2", "6G1", "6G2", "7G1", "7G2", "8G1", "8G2", "9G1", "9G2", "10G1", "10G2", "11G1", "11G2", "12G1", "12G2", "13G1", "13G2",
+        "14G", "15G","16G1", "16G2","17G1", "17G2","18G1", "18G2","19G", "20G","21G1", "21G2","22G", "23G","24G", "25G","26G", "27G","28G", "29G","30G", "31G","32G", "33G1", "33G2","34G1", "34G2",
+        "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G"};
+        string build = "build 46 - v181119";
+        string readMe = "build46更新内容:\n" +
+            " 1、动车所增加调车计划识别功能，包含调车作业建议股道，钩数，走行线匹配检测以及空股道筛选（Beta）\n 2、(综控)现在可以识别17节400AF-B/400BF-B了。";
 
         public Main()
         {
@@ -131,7 +134,7 @@ namespace TimeTableAutoCompleteTool
                 Size _size = new Size(Convert.ToInt32(210 * (dpiX/96)), Convert.ToInt32(283 * (dpiY/96)));
                 outputTB.Size = _size;
                 searchResult_tb.Size = _size;
-                hint_label.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注";
+                hint_label.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注\n*“加开车次”部分需要人工设置在时刻表最底部（“加开车次”四个字占一行，后面选择打印不受影响的数行合并即可）";
             }
             else if (radioButton2.Checked)
             {
@@ -182,10 +185,11 @@ namespace TimeTableAutoCompleteTool
                 startPath = "动车所时刻表";
                 //<作业计划优化辅助工具>\n（首先补全车型-并在右侧选择计划）
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
-                start_Btn.Text = "补全车辆编组";
+                hint_label.Text = "时刻表中浅黄色标注为在43G条件下，最佳出库走行线与存场股道不匹配的车。\n夜班空股道为：除去在晚间占用过的，或回库后存放超过凌晨的，或在凌晨后才进入检修库的车之后，剩余的股道。";
+                start_Btn.Text = "补全车辆信息";
+                label18.Text = "动车所：选择动车段给出的计划文件\n(请从值班室拷贝word,可在时刻表中标记股道)";
                 ExcelFile = new List<string>();
                 filePathLBL.Text = "已选择：";
-                hint_label.Text = "";
             }
         }
 
@@ -4131,476 +4135,458 @@ namespace TimeTableAutoCompleteTool
         //动车所填车型
         private void trainTypeAutoComplete(bool isProjectHelper = false)
         {
-            if(ExcelFile == null || ExcelFile.Count == 0)
-            {
-                MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            //白班和夜班的开始所在行
-            int nightStart = -1;
-            int morningStart = -1;
-            //如果夜班在前面的话
-            bool nightFirst = false;
-            //如果这个车是前一天的话
-            bool isYesterday = false;
-            IWorkbook workbook = null;  //新建IWorkbook对象  
-            List<EMUGarageTableModel> _eMUGarageTableModels = new List<EMUGarageTableModel>();
-            if (isProjectHelper)
-            {
-                allEMUGarageTableModels = new List<EMUGarageTableModel>();
-                //动车走行线模型
-            }
-            //标题行
-            int titleRowNum = -1;
-            //动车所股道所在列
-            int firstTrackNumColumn = -1;
-            int secondTrackNumColumn = -1;
-            string fileName = ExcelFile[0];
             try
             {
-                FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
+                if (ExcelFile == null || ExcelFile.Count == 0)
                 {
-                    try
-                    {
-                        workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
-                    }
-                    catch (Exception e)
-                    {
-                        if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                        {
-                            MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                            string pSaveFilePath = fileName;//指定存储的路径
-                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                            fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                        }
-                        else
-                        {
-                            MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
-                            return;
-                        }
-                    }
+                    MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
                 }
-                else if (fileName.IndexOf(".xls") > 0) // 2003版本  
+                //白班和夜班的开始所在行
+                int nightStart = -1;
+                int morningStart = -1;
+                //如果夜班在前面的话
+                bool nightFirst = false;
+                //如果这个车是前一天的话
+                bool isYesterday = false;
+                IWorkbook workbook = null;  //新建IWorkbook对象  
+                List<EMUGarageTableModel> _eMUGarageTableModels = new List<EMUGarageTableModel>();
+                if (isProjectHelper)
                 {
-                    try
-                    {
-                        workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
-                    }
-                    catch (Exception e)
-                    {
-                        if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                        {
-                            MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                            string pSaveFilePath = fileName;//指定存储的路径
-                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                            fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                        }
-                        else
-                        {
-                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
-                            return;
-                        }
-                    }
+                    allEMUGarageTableModels = new List<EMUGarageTableModel>();
+                    //动车走行线模型
                 }
-
-                if (workbook != null && !fileName.Contains("自动备份-"))
+                //标题行
+                int titleRowNum = -1;
+                //动车所股道所在列
+                int firstTrackNumColumn = -1;
+                int secondTrackNumColumn = -1;
+                string fileName = ExcelFile[0];
+                try
                 {
-                    string pLocalFilePath = fileName.ToString();//要复制的文件路径
-                    string pSaveFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//指定存储的路径
-                    File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-
-                }
-
-                //表格样式
-                ICellStyle normalStyle = workbook.CreateCellStyle();
-                normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalStyle.WrapText = true;
-                normalStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-                normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                HSSFFont fontNormalID = (HSSFFont)workbook.CreateFont();
-                fontNormalID.FontName = "宋体";//字体  
-                fontNormalID.FontHeightInPoints = 16;//字号  
-                normalStyle.SetFont(fontNormalID);
-
-                //表格样式
-                ICellStyle trackNumStyle = workbook.CreateCellStyle();
-                trackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                trackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                trackNumStyle.WrapText = true;
-                trackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                trackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                trackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-                trackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                HSSFFont trackNumFont = (HSSFFont)workbook.CreateFont();
-                trackNumFont.FontName = "宋体";//字体  
-                trackNumFont.FontHeightInPoints = 14;//字号  
-                trackNumStyle.SetFont(trackNumFont);
-
-                //表格样式
-                ICellStyle notRecommandedTrackNumStyle = workbook.CreateCellStyle();
-                notRecommandedTrackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                notRecommandedTrackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                notRecommandedTrackNumStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-                notRecommandedTrackNumStyle.FillPattern = FillPattern.SolidForeground;
-                notRecommandedTrackNumStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-                notRecommandedTrackNumStyle.WrapText = true;
-                notRecommandedTrackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                notRecommandedTrackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                notRecommandedTrackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-                notRecommandedTrackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                notRecommandedTrackNumStyle.SetFont(trackNumFont);
-
-                //表格样式
-                ICellStyle normalNumberStyle = workbook.CreateCellStyle();
-                normalNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalNumberStyle.WrapText = true;
-                normalNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                normalNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-                normalNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                HSSFFont fontNormalNumber = (HSSFFont)workbook.CreateFont();
-                fontNormalNumber.FontName = "宋体";//字体  
-                fontNormalNumber.FontHeightInPoints = 17;//字号  
-                normalNumberStyle.SetFont(fontNormalNumber);
-
-                //表格样式
-                ICellStyle yesterdayNumberStyle = workbook.CreateCellStyle();
-                yesterdayNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                yesterdayNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                yesterdayNumberStyle.WrapText = true;
-                yesterdayNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                yesterdayNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                yesterdayNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-                yesterdayNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                HSSFFont fontYesterdayNumber = (HSSFFont)workbook.CreateFont();
-                fontYesterdayNumber.FontName = "宋体";//字体  
-                fontYesterdayNumber.FontHeightInPoints = 17;//字号  
-                fontYesterdayNumber.Underline = NPOI.SS.UserModel.FontUnderlineType.Double;//下划线
-                fontYesterdayNumber.IsItalic = true;//斜体
-                yesterdayNumberStyle.SetFont(fontYesterdayNumber);
-
-                ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
-                IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
-                IRow titleRow = sheet.GetRow(3);
-                string failedLoadingTrain = "";
-                for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
-                {
-                    isYesterday = false;
-                    row = sheet.GetRow(i);   //row读入第i行数据  
-                    if (row != null)
+                    FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
                     {
-                        //判断当前位置是白班还是夜班/标题行
-                        if (row.GetCell(0)!= null)
+                        try
                         {
-                            if (row.GetCell(0).ToString().Contains("备注") && titleRowNum == -1)
-                            {//标题行
-                                titleRowNum = i;
-                                titleRow = sheet.GetRow(i);
-                                //找一下动车所的股道所在列
-                                for(int b = 0; b <= row.LastCellNum; b++)
-                                {
-                                    if(row.GetCell(b) == null)
-                                    {
-                                        continue;
-                                    }
-                                    if (row.GetCell(b).ToString().Contains("动车所"))
-                                    {
-                                        if(firstTrackNumColumn == -1)
-                                        {
-                                            firstTrackNumColumn = b;
-                                        }
-                                        else
-                                        {
-                                            secondTrackNumColumn = b;
-                                        }
-                                        if(firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (nightStart == -1)
+                            workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
+                        }
+                        catch (Exception e)
+                        {
+                            if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
-                                if (row.GetCell(0).ToString().Contains("夜班"))
-                                {
-                                    nightStart = i;
-                                }
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
+                                string pSaveFilePath = fileName;//指定存储的路径
+                                File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+                                fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                                workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
                             }
-                            if (morningStart == -1)
+                            else
                             {
-                                if (row.GetCell(0).ToString().Contains("白班"))
-                                {
-                                    morningStart = i;
-                                }
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
+                                return;
                             }
                         }
-                        if(nightStart != -1 && morningStart != -1)
-                        {//如果白班夜班都获取到了 判断一下两个的大小
-                            if(nightStart < morningStart)
+                    }
+                    else if (fileName.IndexOf(".xls") > 0) // 2003版本  
+                    {
+                        try
+                        {
+                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook  
+                        }
+                        catch (Exception e)
+                        {
+                            if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
-                                nightFirst = true;
+                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
+                                string pSaveFilePath = fileName;//指定存储的路径
+                                File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+                                fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                                workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
                             }
-                            else if(nightStart > morningStart)
+                            else
                             {
-                                nightFirst = false;
+                                MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
+                                return;
                             }
                         }
-                        else if(nightStart != -1 && morningStart == -1)
+                    }
+
+                    if (workbook != null && !fileName.Contains("自动备份-"))
+                    {
+                        string pLocalFilePath = fileName.ToString();//要复制的文件路径
+                        string pSaveFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//指定存储的路径
+                        File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
+
+                    }
+
+                    //表格样式
+                    ICellStyle normalStyle = workbook.CreateCellStyle();
+                    normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalStyle.WrapText = true;
+                    normalStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                    HSSFFont fontNormalID = (HSSFFont)workbook.CreateFont();
+                    fontNormalID.FontName = "宋体";//字体  
+                    fontNormalID.FontHeightInPoints = 16;//字号  
+                    normalStyle.SetFont(fontNormalID);
+
+                    //表格样式
+                    ICellStyle trackNumStyle = workbook.CreateCellStyle();
+                    trackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    trackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    trackNumStyle.WrapText = true;
+                    trackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    trackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    trackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    trackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                    HSSFFont trackNumFont = (HSSFFont)workbook.CreateFont();
+                    trackNumFont.FontName = "宋体";//字体  
+                    trackNumFont.FontHeightInPoints = 14;//字号  
+                    trackNumStyle.SetFont(trackNumFont);
+
+                    //表格样式
+                    ICellStyle notRecommandedTrackNumStyle = workbook.CreateCellStyle();
+                    notRecommandedTrackNumStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    notRecommandedTrackNumStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    notRecommandedTrackNumStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                    notRecommandedTrackNumStyle.FillPattern = FillPattern.SolidForeground;
+                    notRecommandedTrackNumStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                    notRecommandedTrackNumStyle.WrapText = true;
+                    notRecommandedTrackNumStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    notRecommandedTrackNumStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    notRecommandedTrackNumStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    notRecommandedTrackNumStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                    notRecommandedTrackNumStyle.SetFont(trackNumFont);
+
+                    //表格样式
+                    ICellStyle normalNumberStyle = workbook.CreateCellStyle();
+                    normalNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalNumberStyle.WrapText = true;
+                    normalNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    normalNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    normalNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                    HSSFFont fontNormalNumber = (HSSFFont)workbook.CreateFont();
+                    fontNormalNumber.FontName = "宋体";//字体  
+                    fontNormalNumber.FontHeightInPoints = 17;//字号  
+                    normalNumberStyle.SetFont(fontNormalNumber);
+
+                    //表格样式
+                    ICellStyle yesterdayNumberStyle = workbook.CreateCellStyle();
+                    yesterdayNumberStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                    yesterdayNumberStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                    yesterdayNumberStyle.WrapText = true;
+                    yesterdayNumberStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                    yesterdayNumberStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                    yesterdayNumberStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                    yesterdayNumberStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                    HSSFFont fontYesterdayNumber = (HSSFFont)workbook.CreateFont();
+                    fontYesterdayNumber.FontName = "宋体";//字体  
+                    fontYesterdayNumber.FontHeightInPoints = 17;//字号  
+                    fontYesterdayNumber.Underline = NPOI.SS.UserModel.FontUnderlineType.Double;//下划线
+                    fontYesterdayNumber.IsItalic = true;//斜体
+                    yesterdayNumberStyle.SetFont(fontYesterdayNumber);
+
+                    ISheet sheet = workbook.GetSheetAt(0);  //获取第一个工作表  
+                    IRow row;// = sheet.GetRow(0);            //新建当前工作表行数据  
+                    IRow titleRow = sheet.GetRow(3);
+                    string failedLoadingTrain = "";
+                    for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
+                    {
+                        isYesterday = false;
+                        row = sheet.GetRow(i);   //row读入第i行数据  
+                        if (row != null)
                         {
-                            nightFirst = true;
-                        }
-                        else if(nightStart == -1 && morningStart != -1)
-                        {
-                            nightFirst = false;
-                        }
-                        bool hasFoundThisRow = false;
-                        Regex regexOnlyNumAndAlphabeta = new Regex(@"^[A-Za-z0-9]+$");
-                        //共线车
-                        bool isInUpRow = false;
-                        for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
-                        {
-                            if (row.GetCell(j) != null)
+                            //判断当前位置是白班还是夜班/标题行
+                            if (row.GetCell(0) != null)
                             {
-                                if ((row.GetCell(j).ToString().Contains("G") ||
-                                    row.GetCell(j).ToString().Contains("D") ||
-                                    row.GetCell(j).ToString().Contains("C") ||
-                                    row.GetCell(j).ToString().Contains("J")) &&
-                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim())
-                                    && j != firstTrackNumColumn && j != secondTrackNumColumn)
-                                {
-                                    if (row.GetCell(j + 1) == null)
+                                if (row.GetCell(0).ToString().Contains("备注") && titleRowNum == -1)
+                                {//标题行
+                                    titleRowNum = i;
+                                    titleRow = sheet.GetRow(i);
+                                    //找一下动车所的股道所在列
+                                    for (int b = 0; b <= row.LastCellNum; b++)
                                     {
-                                        row.CreateCell(j + 1);
-                                    }
-                                    //新任务：找对应的动车走行线
-                                    //添加一下车次，并且找一下动车走行线
-                                    if (isProjectHelper)
-                                    {
-                                        EMUGarageTableModel _gtm = new EMUGarageTableModel();
-                                        _gtm.id = i;
-                                        _gtm.trainNumber = row.GetCell(j).ToString();
-                                        //判断是入库还是出库
-                                        if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 0)
-                                        {//偶数结尾 入库
-                                            _gtm.isGettingInGarage = 1;
-                                        }
-                                        else if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 1)
+                                        if (row.GetCell(b) == null)
                                         {
-                                            _gtm.isGettingInGarage = 0;
+                                            continue;
                                         }
-                                        for (int line = j + 1; line <= row.LastCellNum; line++)
+                                        if (row.GetCell(b).ToString().Contains("动车所"))
                                         {
-                                            if ((row.GetCell(line).ToString().Contains("G") ||
-                                                row.GetCell(line).ToString().Contains("D") ||
-                                                    row.GetCell(line).ToString().Contains("C") ||
-                                                    row.GetCell(line).ToString().Contains("J")) &&
-                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim())&&
-                                                    line != firstTrackNumColumn && line != secondTrackNumColumn)
+                                            if (firstTrackNumColumn == -1)
+                                            {
+                                                firstTrackNumColumn = b;
+                                            }
+                                            else
+                                            {
+                                                secondTrackNumColumn = b;
+                                            }
+                                            if (firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
                                             {
                                                 break;
                                             }
-                                            if (titleRow != null && titleRow.GetCell(line) != null && titleRow.GetCell(line).ToString().Contains("线别"))
+                                        }
+                                    }
+                                }
+                                if (nightStart == -1)
+                                {
+                                    if (row.GetCell(0).ToString().Contains("夜班"))
+                                    {
+                                        nightStart = i;
+                                    }
+                                }
+                                if (morningStart == -1)
+                                {
+                                    if (row.GetCell(0).ToString().Contains("白班"))
+                                    {
+                                        morningStart = i;
+                                    }
+                                }
+                            }
+                            if (nightStart != -1 && morningStart != -1)
+                            {//如果白班夜班都获取到了 判断一下两个的大小
+                                if (nightStart < morningStart)
+                                {
+                                    nightFirst = true;
+                                }
+                                else if (nightStart > morningStart)
+                                {
+                                    nightFirst = false;
+                                }
+                            }
+                            else if (nightStart != -1 && morningStart == -1)
+                            {
+                                nightFirst = true;
+                            }
+                            else if (nightStart == -1 && morningStart != -1)
+                            {
+                                nightFirst = false;
+                            }
+                            bool hasFoundThisRow = false;
+                            Regex regexOnlyNumAndAlphabeta = new Regex(@"^[A-Za-z0-9]+$");
+                            //共线车
+                            bool isInUpRow = false;
+                            for (int j = 0; j <= row.LastCellNum; j++)  //对工作表每一列  
+                            {
+                                if (row.GetCell(j) != null)
+                                {
+                                    if ((row.GetCell(j).ToString().Contains("G") ||
+                                        row.GetCell(j).ToString().Contains("D") ||
+                                        row.GetCell(j).ToString().Contains("C") ||
+                                        row.GetCell(j).ToString().Contains("J")) &&
+                                        regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim())
+                                        && j != firstTrackNumColumn && j != secondTrackNumColumn)
+                                    {
+                                        if (row.GetCell(j + 1) == null)
+                                        {
+                                            row.CreateCell(j + 1);
+                                        }
+                                        //新任务：找对应的动车走行线
+                                        //添加一下车次，并且找一下动车走行线
+                                        if (isProjectHelper)
+                                        {
+                                            EMUGarageTableModel _gtm = new EMUGarageTableModel();
+                                            _gtm.id = i;
+                                            _gtm.trainNumber = row.GetCell(j).ToString();
+                                            //判断是入库还是出库
+                                            if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 0)
+                                            {//偶数结尾 入库
+                                                _gtm.isGettingInGarage = 1;
+                                            }
+                                            else if (row.GetCell(j).ToString().ToCharArray()[row.GetCell(j).ToString().ToCharArray().Length - 1] % 2 == 1)
                                             {
-                                                if (row.GetCell(line) != null && row.GetCell(line).ToString().Length != 0)
+                                                _gtm.isGettingInGarage = 0;
+                                            }
+                                            for (int line = j + 1; line <= row.LastCellNum; line++)
+                                            {
+                                                if ((row.GetCell(line).ToString().Contains("G") ||
+                                                    row.GetCell(line).ToString().Contains("D") ||
+                                                        row.GetCell(line).ToString().Contains("C") ||
+                                                        row.GetCell(line).ToString().Contains("J")) &&
+                                                        regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim()) &&
+                                                        line != firstTrackNumColumn && line != secondTrackNumColumn)
                                                 {
-                                                    int outLine = -1;
-                                                    int.TryParse(row.GetCell(line).ToString(), out outLine);
-                                                    if (outLine != -1)
-                                                    {
-                                                        _gtm.trackLine = outLine;
-                                                        break;
-                                                    }
+                                                    break;
                                                 }
-                                                else
+                                                if (titleRow != null && titleRow.GetCell(line) != null && titleRow.GetCell(line).ToString().Contains("线别"))
                                                 {
-                                                    IRow upRow = sheet.GetRow(i - 1);
-                                                    if (upRow.GetCell(line) != null)
+                                                    if (row.GetCell(line) != null && row.GetCell(line).ToString().Length != 0)
                                                     {
                                                         int outLine = -1;
-                                                        int.TryParse(upRow.GetCell(line).ToString(), out outLine);
+                                                        int.TryParse(row.GetCell(line).ToString(), out outLine);
                                                         if (outLine != -1)
                                                         {
                                                             _gtm.trackLine = outLine;
                                                             break;
                                                         }
                                                     }
+                                                    else
+                                                    {
+                                                        IRow upRow = sheet.GetRow(i - 1);
+                                                        if (upRow.GetCell(line) != null)
+                                                        {
+                                                            int outLine = -1;
+                                                            int.TryParse(upRow.GetCell(line).ToString(), out outLine);
+                                                            if (outLine != -1)
+                                                            {
+                                                                _gtm.trackLine = outLine;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
                                                 }
+                                            }
+                                            _eMUGarageTableModels.Add(_gtm);
+                                            continue;
+                                        }
+                                        //先判断这个是昨天还是今天的 昨天的在夜班里 时间范围是18:00-次日0:30
+                                        //先看是不是在夜班里
+                                        if ((nightFirst && (i > nightStart && i < morningStart) || (i > nightStart && morningStart == -1)) ||
+                                            (!nightFirst && i > nightStart))
+                                        {
+                                            for (int timeColumn = j + 1; timeColumn <= row.LastCellNum; timeColumn++)
+                                            {
+                                                //空的直接跳过
+                                                if (row.GetCell(timeColumn) == null)
+                                                {
+                                                    continue;
+                                                }
+                                                //如果找到的是车次 说明找过头了 直接跳出
+                                                if ((row.GetCell(timeColumn).ToString().Contains("G") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("D") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("C") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("J")) &&
+                                                        regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim()) &&
+                                                        timeColumn != firstTrackNumColumn && timeColumn != secondTrackNumColumn)
+                                                {
+                                                    break;
+                                                }
+                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                {
+                                                    //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                    row = sheet.GetRow(i - 1);
+                                                    if (row.GetCell(j + 1) == null)
+                                                    {
+                                                        row.CreateCell(j + 1);
+                                                    }
+                                                }
+                                                if (Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(:)[0-9]{2}") ||
+                                                Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(:)[0-9]{2}") ||
+                                                Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(：)[0-9]{2}") ||
+                                                Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(：)[0-9]{2}"))
+                                                {//如果包含时间的话
+                                                    string timeStr = row.GetCell(timeColumn).ToString().Trim();
+                                                    timeStr = timeStr.Replace("：", ":");
+                                                    if (timeStr.Contains(":"))
+                                                    {
+                                                        int hours = -1;
+                                                        int.TryParse(timeStr.Split(':')[0], out hours);
+                                                        int minutes = -1;
+                                                        int.TryParse(timeStr.Split(':')[1], out minutes);
+                                                        if (hours == -1)
+                                                        {
+                                                            continue;
+                                                        }
+                                                        if ((hours >= 18 && hours <= 23) ||
+                                                            (hours == 0 && minutes <= 30 && minutes >= 0))
+                                                        {//18-23点/0:30之前，是昨天的车
+                                                            isYesterday = true;
+                                                            break;
+                                                        }
+                                                        else
+                                                        {//不是昨天的车
+                                                            isYesterday = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+
                                             }
                                         }
-                                        _eMUGarageTableModels.Add(_gtm);
-                                        continue;
-                                    }
-                                    //先判断这个是昨天还是今天的 昨天的在夜班里 时间范围是18:00-次日0:30
-                                    //先看是不是在夜班里
-                                    if ((nightFirst && (i > nightStart && i < morningStart) || (i>nightStart && morningStart == -1)) ||
-                                        (!nightFirst && i > nightStart))
-                                    {
-                                        for (int timeColumn = j + 1; timeColumn <= row.LastCellNum; timeColumn++)
+                                        row = sheet.GetRow(i);
+                                        row.GetCell(j + 1).SetCellValue("");
+                                        row.GetCell(j).CellStyle = normalNumberStyle;
+                                        //把股道所在列和备注列清空一下
+                                        int rowi = i;
+                                        if (!hasFoundThisRow)
                                         {
-                                            //空的直接跳过
-                                            if (row.GetCell(timeColumn) == null)
+                                            if (row.GetCell(0) != null)
                                             {
-                                                continue;
+                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0]);
                                             }
-                                            //如果找到的是车次 说明找过头了 直接跳出
-                                            if ((row.GetCell(timeColumn).ToString().Contains("G") ||
-                                                    row.GetCell(timeColumn).ToString().Contains("D") ||
-                                                    row.GetCell(timeColumn).ToString().Contains("C") ||
-                                                    row.GetCell(timeColumn).ToString().Contains("J")) &&
-                                                    regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim())&&
-                                                    timeColumn != firstTrackNumColumn && timeColumn != secondTrackNumColumn)
+                                            if(row.GetCell(9) != null)
                                             {
-                                                break;
+                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0]);
                                             }
-                                            if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
-                                            (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                            if (row.GetCell(firstTrackNumColumn) != null && row.GetCell(firstTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(firstTrackNumColumn).ToString().Trim()))
                                             {
-                                                //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
-                                                row = sheet.GetRow(i - 1);
-                                                if (row.GetCell(j + 1) == null)
-                                                {
-                                                    row.CreateCell(j + 1);
-                                                }
-                                            }
-                                            if (Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(:)[0-9]{2}") ||
-                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(:)[0-9]{2}")||
-                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{2}(：)[0-9]{2}") ||
-                                            Regex.IsMatch(row.GetCell(timeColumn).ToString().Trim(), @"[0-9]{1}(：)[0-9]{2}"))
-                                            {//如果包含时间的话
-                                                string timeStr = row.GetCell(timeColumn).ToString().Trim();
-                                                timeStr = timeStr.Replace("：", ":");
-                                                if (timeStr.Contains(":"))
-                                                {
-                                                    int hours = -1;
-                                                    int.TryParse(timeStr.Split(':')[0], out hours);
-                                                    int minutes = -1;
-                                                    int.TryParse(timeStr.Split(':')[1], out minutes);
-                                                    if (hours == -1)
-                                                    {
-                                                        continue;
-                                                    }
-                                                    if((hours >= 18 && hours <= 23) ||
-                                                        (hours == 0 && minutes <= 30 && minutes >= 0))
-                                                    {//18-23点/0:30之前，是昨天的车
-                                                        isYesterday = true;
-                                                        break;
-                                                    }
-                                                    else
-                                                    {//不是昨天的车
-                                                        isYesterday = false;
-                                                        break;
-                                                    }
-                                                }
+                                                row.GetCell(firstTrackNumColumn).SetCellValue("");
+                                                row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
                                             }
 
-                                        }
-                                    }
-                                    row = sheet.GetRow(i);
-                                    row.GetCell(j + 1).SetCellValue("");
-                                    row.GetCell(j).CellStyle = normalNumberStyle;
-                                    //把股道所在列和备注列清空一下
-                                    int rowi = i;
-                                    if (!hasFoundThisRow)
-                                    {
-                                        if (row.GetCell(firstTrackNumColumn) != null && row.GetCell(firstTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(firstTrackNumColumn).ToString().Trim()))
-                                        {
-                                            row.GetCell(firstTrackNumColumn).SetCellValue("");
-                                            row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
-                                        }
-                                        if (row.GetCell(secondTrackNumColumn) != null && row.GetCell(secondTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(secondTrackNumColumn).ToString().Trim()))
-                                        {
-                                            row.GetCell(secondTrackNumColumn).SetCellValue("");
-                                            row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
-                                        }
-                                        /*
-                                        if(row.GetCell(0).ToString().Split('-').Length > 1)
-                                        {
-                                            row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[1]);
-                                        }
-                                        */
-                                        hasFoundThisRow = true;
-                                    }
-                                    bool hasGotIt = false;
-                                    if (!isYesterday || !EMUGarage_hasYesterdayText)
-                                    {
-                                        row.GetCell(j).CellStyle = normalNumberStyle;
-                                        foreach (CommandModel model in commandModel)
-                                        {
-                                            if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
-                                                row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                            if (row.GetCell(secondTrackNumColumn) != null && row.GetCell(secondTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(secondTrackNumColumn).ToString().Trim()))
                                             {
-                                                hasGotIt = true;
-                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
-                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                row.GetCell(secondTrackNumColumn).SetCellValue("");
+                                                row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                            }
+                                            /*
+                                            if(row.GetCell(0).ToString().Split('-').Length > 1)
+                                            {
+                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[1]);
+                                            }
+                                            */
+                                            hasFoundThisRow = true;
+                                        }
+                                        bool hasGotIt = false;
+                                        if (!isYesterday || !EMUGarage_hasYesterdayText)
+                                        {
+                                            row.GetCell(j).CellStyle = normalNumberStyle;
+                                            foreach (CommandModel model in commandModel)
+                                            {
+                                                if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
+                                                    row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
                                                 {
-                                                    //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
-                                                    row = sheet.GetRow(i - 1);
-                                                    isInUpRow = true;
-                                                    if (row.GetCell(j + 1) == null)
+                                                    hasGotIt = true;
+                                                    if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                                    (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
                                                     {
-                                                        row.CreateCell(j + 1);
-                                                    }
-                                                }
-                                                if (model.streamStatus == 0)
-                                                {
-                                                    row.GetCell(j + 1).SetCellValue("停开");
-                                                }
-                                                else
-                                                {
-                                                    row.GetCell(j + 1).SetCellValue(model.trainId);
-                                                }
-                                                row.GetCell(j + 1).CellStyle = normalStyle;
-                                                //填写计划中的股道
-                                                string targetTrackNum = "";
-                                                string projectNum = "";
-                                                if(allTrainProjectModels != null && allTrainProjectModels.Count > 0)
-                                                {
-                                                    foreach(TrainProjectModel _tpm in allTrainProjectModels)
-                                                    {
-                                                        if(_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                        //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                        row = sheet.GetRow(i - 1);
+                                                        isInUpRow = true;
+                                                        if (row.GetCell(j + 1) == null)
                                                         {
-                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
-                                                            {//是该项目的入库车
-                                                                projectNum = _tpm.projectIndex;
-                                                                if(_tpm.trainProjectWorkingModel.Count > 0)
-                                                                {//第一项工作的股道
-                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
-                                                                }
-                                                                break;
-                                                            }
-                                                        }
-                                                        if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
-                                                        {
-                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
-                                                            {//是该项目的出库车
-                                                                projectNum = _tpm.projectIndex;
-                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                {//最后一项工作的股道
-                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
-                                                                }
-                                                                break;
-                                                            }
+                                                            row.CreateCell(j + 1);
                                                         }
                                                     }
-                                                    if (targetTrackNum.Length == 0)
+                                                    if (model.streamStatus == 0)
+                                                    {
+                                                        row.GetCell(j + 1).SetCellValue("停开");
+                                                    }
+                                                    else
+                                                    {
+                                                        row.GetCell(j + 1).SetCellValue(model.trainId);
+                                                    }
+                                                    row.GetCell(j + 1).CellStyle = normalStyle;
+                                                    //填写计划中的股道
+                                                    string targetTrackNum = "";
+                                                    string projectNum = "";
+                                                    if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
                                                     {
                                                         foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                         {
                                                             if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                             {
-                                                                if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
                                                                 {//是该项目的入库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
@@ -4612,7 +4598,7 @@ namespace TimeTableAutoCompleteTool
                                                             }
                                                             if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
                                                             {
-                                                                if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
                                                                 {//是该项目的出库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
@@ -4623,146 +4609,146 @@ namespace TimeTableAutoCompleteTool
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                }
-                                                if (targetTrackNum.Length != 0)
-                                                {
-                                                    //计算用
-                                                    int trackNumInt = 0;
-                                                    int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
-                                                    if(j < firstTrackNumColumn)
-                                                    {
-                                                        if(row.GetCell(firstTrackNumColumn) == null)
+                                                        if (targetTrackNum.Length == 0)
                                                         {
-                                                            row.CreateCell(firstTrackNumColumn);
-                                                        }
-                                                        row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
-                                                        row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
-                                                        if (projectNum.Length != 0)
-                                                        {
-                                                            if (row.GetCell(0) == null)
+                                                            foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                             {
-                                                                row.CreateCell(0);
-                                                            }
-                                                            row.GetCell(0).SetCellValue(projectNum + "钩-" + row.GetCell(0).ToString().Trim());
-                                                        }
-                                                    }
-                                                    else if(j < secondTrackNumColumn)
-                                                    {
-                                                        if (row.GetCell(secondTrackNumColumn) == null)
-                                                        {
-                                                            row.CreateCell(secondTrackNumColumn);
-                                                        }
-                                                        row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
-                                                        row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
-                                                        if (projectNum.Length != 0)
-                                                        {
-                                                            if(row.GetCell(9) == null)
-                                                            {
-                                                                row.CreateCell(9);
-                                                            }
-                                                            row.GetCell(9).SetCellValue(projectNum + "钩-" + row.GetCell(9).ToString().Trim());
-                                                        }
-                                                        if (trackNumInt != 0)
-                                                        {
-                                                            foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
-                                                            {
-                                                                if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                                 {
-                                                                    if (_emugtm.isGettingInGarage == 0)
-                                                                    {//必须是出库车
-                                                                        if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
-                                                                            (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
-                                                                            (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
-                                                                            (_emugtm.trackLine == 4 && trackNumInt <= 33))
-                                                                        {//动存线-走行线匹配判断
-                                                                            row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                    if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                    {//是该项目的入库车
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//第一项工作的股道
+                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                         }
+                                                                        break;
                                                                     }
-                                                                    break;
+                                                                }
+                                                                if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                                {
+                                                                    if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                    {//是该项目的出库车
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//最后一项工作的股道
+                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                        }
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (targetTrackNum.Length != 0)
+                                                    {
+                                                        //计算用
+                                                        int trackNumInt = 0;
+                                                        int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
+                                                        if (j < firstTrackNumColumn)
+                                                        {
+                                                            if (row.GetCell(firstTrackNumColumn) == null)
+                                                            {
+                                                                row.CreateCell(firstTrackNumColumn);
+                                                            }
+                                                            row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
+                                                            row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+                                                            if (projectNum.Length != 0)
+                                                            {
+                                                                if (row.GetCell(0) == null)
+                                                                {
+                                                                    row.CreateCell(0);
+                                                                }
+                                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                            }
+                                                        }
+                                                        else if (j < secondTrackNumColumn)
+                                                        {
+                                                            if (row.GetCell(secondTrackNumColumn) == null)
+                                                            {
+                                                                row.CreateCell(secondTrackNumColumn);
+                                                            }
+                                                            row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
+                                                            row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                                            if (projectNum.Length != 0)
+                                                            {
+                                                                if (row.GetCell(9) == null)
+                                                                {
+                                                                    row.CreateCell(9);
+                                                                }
+                                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                            }
+                                                            if (trackNumInt != 0)
+                                                            {
+                                                                foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
+                                                                {
+                                                                    if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                    {
+                                                                        if (_emugtm.isGettingInGarage == 0)
+                                                                        {//必须是出库车
+                                                                            if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
+                                                                                (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
+                                                                                (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
+                                                                                (_emugtm.trackLine == 4 && trackNumInt <= 33))
+                                                                            {//动存线-走行线匹配判断
+                                                                                row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
-                                        if (!hasGotIt)
-                                        {
-                                            if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                            if (!hasGotIt)
                                             {
-                                                failedLoadingTrain = failedLoadingTrain + " " + row.GetCell(j).ToString().Trim();
-                                                searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(),0, 2);
+                                                if (commandText.Contains(row.GetCell(j).ToString().Trim()))
+                                                {
+                                                    failedLoadingTrain = failedLoadingTrain + " " + row.GetCell(j).ToString().Trim();
+                                                    searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 0, 2);
+                                                }
                                             }
                                         }
-                                    }
-                                    else
-                                    {//昨天的
-                                        row.GetCell(j).CellStyle = yesterdayNumberStyle;
-                                        foreach (CommandModel model in yesterdayCommandModel)
-                                        {
-                                            if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
-                                                row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                        else
+                                        {//昨天的
+                                            row.GetCell(j).CellStyle = yesterdayNumberStyle;
+                                            foreach (CommandModel model in yesterdayCommandModel)
                                             {
-                                                hasGotIt = true;
-                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
-                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
+                                                    row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
                                                 {
-                                                    //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
-                                                    isInUpRow = true;
-                                                    row = sheet.GetRow(i - 1);
-                                                    if (row.GetCell(j + 1) == null)
+                                                    hasGotIt = true;
+                                                    if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
+                                                    (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
                                                     {
-                                                        row.CreateCell(j + 1);
-                                                    }
-                                                }
-                                                if (model.streamStatus == 0)
-                                                {
-                                                    row.GetCell(j + 1).SetCellValue("停开");
-                                                }
-                                                else
-                                                {
-                                                    row.GetCell(j + 1).SetCellValue(model.trainId);
-                                                }
-                                                row.GetCell(j + 1).CellStyle = normalStyle;
-                                                string targetTrackNum = "";
-                                                string projectNum = "";
-                                                if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
-                                                {
-                                                    foreach (TrainProjectModel _tpm in allTrainProjectModels)
-                                                    {
-                                                        if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
+                                                        //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
+                                                        isInUpRow = true;
+                                                        row = sheet.GetRow(i - 1);
+                                                        if (row.GetCell(j + 1) == null)
                                                         {
-                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
-                                                            {//是该项目的入库车
-                                                                projectNum = _tpm.projectIndex;
-                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                {//第一项工作的股道
-                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
-                                                                }
-                                                                break;
-                                                            }
-                                                        }
-                                                        if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
-                                                        {
-                                                            if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
-                                                            {//是该项目的出库车
-                                                                projectNum = _tpm.projectIndex;
-                                                                if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                {//最后一项工作的股道
-                                                                    targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
-                                                                }
-                                                                break;
-                                                            }
+                                                            row.CreateCell(j + 1);
                                                         }
                                                     }
-                                                    if (targetTrackNum.Length == 0)
+                                                    if (model.streamStatus == 0)
+                                                    {
+                                                        row.GetCell(j + 1).SetCellValue("停开");
+                                                    }
+                                                    else
+                                                    {
+                                                        row.GetCell(j + 1).SetCellValue(model.trainId);
+                                                    }
+                                                    row.GetCell(j + 1).CellStyle = normalStyle;
+                                                    string targetTrackNum = "";
+                                                    string projectNum = "";
+                                                    if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
                                                     {
                                                         foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                         {
                                                             if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                             {
-                                                                if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
                                                                 {//是该项目的入库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
@@ -4774,7 +4760,7 @@ namespace TimeTableAutoCompleteTool
                                                             }
                                                             if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
                                                             {
-                                                                if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
                                                                 {//是该项目的出库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
@@ -4785,124 +4771,159 @@ namespace TimeTableAutoCompleteTool
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                }
-                                                if (targetTrackNum.Length != 0)
-                                                {
-                                                    //计算用
-                                                    int trackNumInt = 0;
-                                                    int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
-                                                    if (j < firstTrackNumColumn)
-                                                    {
-                                                        if (row.GetCell(firstTrackNumColumn) == null)
+                                                        if (targetTrackNum.Length == 0)
                                                         {
-                                                            row.CreateCell(firstTrackNumColumn);
-                                                        }
-                                                        row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
-                                                        row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
-                                                        if (projectNum.Length != 0)
-                                                        {
-                                                            if(row.GetCell(0) == null)
+                                                            foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                             {
-                                                                row.CreateCell(0);
-                                                            }
-                                                            row.GetCell(0).SetCellValue(projectNum + "钩-" + row.GetCell(0).ToString().Trim());
-                                                        }
-                                                    }
-                                                    else if (j < secondTrackNumColumn)
-                                                    {
-                                                        if (row.GetCell(secondTrackNumColumn) == null)
-                                                        {
-                                                            row.CreateCell(secondTrackNumColumn);
-                                                        }
-                                                        row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
-                                                        row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
-                                                        if (projectNum.Length != 0)
-                                                        {
-                                                            if (row.GetCell(9) == null)
-                                                            {
-                                                                row.CreateCell(9);
-                                                            }
-                                                            row.GetCell(9).SetCellValue(projectNum + "钩-" + row.GetCell(9).ToString().Trim());
-                                                        }
-                                                        if (trackNumInt != 0)
-                                                        {
-                                                            foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
-                                                            {
-                                                                if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                                 {
-                                                                    if (_emugtm.isGettingInGarage == 0)
-                                                                    {//必须是出库车
-                                                                        if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
-                                                                            (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
-                                                                            (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
-                                                                            (_emugtm.trackLine == 4 && trackNumInt <= 33))
-                                                                        {//动存线-走行线匹配判断
-                                                                            row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                    if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
+                                                                    {//是该项目的入库车
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//第一项工作的股道
+                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                         }
+                                                                        break;
                                                                     }
-                                                                    break;
+                                                                }
+                                                                if (_tpm.getOutside_trainNum != null && _tpm.getOutside_trainNum.Length != 0)
+                                                                {
+                                                                    if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
+                                                                    {//是该项目的出库车
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//最后一项工作的股道
+                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                        }
+                                                                        break;
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
+                                                    if (targetTrackNum.Length != 0)
+                                                    {
+                                                        //计算用
+                                                        int trackNumInt = 0;
+                                                        int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
+                                                        if (j < firstTrackNumColumn)
+                                                        {
+                                                            if (row.GetCell(firstTrackNumColumn) == null)
+                                                            {
+                                                                row.CreateCell(firstTrackNumColumn);
+                                                            }
+                                                            row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
+                                                            row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+                                                            if (projectNum.Length != 0)
+                                                            {
+                                                                if (row.GetCell(0) == null)
+                                                                {
+                                                                    row.CreateCell(0);
+                                                                }
+                                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                            }
+                                                        }
+                                                        else if (j < secondTrackNumColumn)
+                                                        {
+                                                            if (row.GetCell(secondTrackNumColumn) == null)
+                                                            {
+                                                                row.CreateCell(secondTrackNumColumn);
+                                                            }
+                                                            row.GetCell(secondTrackNumColumn).SetCellValue(targetTrackNum);
+                                                            row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
+                                                            if (projectNum.Length != 0)
+                                                            {
+                                                                if (row.GetCell(9) == null)
+                                                                {
+                                                                    row.CreateCell(9);
+                                                                }
+                                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                            }
+                                                            if (trackNumInt != 0)
+                                                            {
+                                                                foreach (EMUGarageTableModel _emugtm in allEMUGarageTableModels)
+                                                                {
+                                                                    if (model.trainNumber.Trim().Equals(_emugtm.trainNumber))
+                                                                    {
+                                                                        if (_emugtm.isGettingInGarage == 0)
+                                                                        {//必须是出库车
+                                                                            if ((_emugtm.trackLine == 1 && trackNumInt > 13) ||
+                                                                                (_emugtm.trackLine == 2 && (trackNumInt <= 13 || trackNumInt > 25)) ||
+                                                                                (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
+                                                                                (_emugtm.trackLine == 4 && trackNumInt <= 33))
+                                                                            {//动存线-走行线匹配判断
+                                                                                row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
                                                 }
-                                                break;
                                             }
-                                        }
-                                        if (!hasGotIt)
-                                        {
-                                            if (yesterdayCommandText.Contains(row.GetCell(j).ToString().Trim()) && row.GetCell(j).ToString().Trim().Length != 0)
+                                            if (!hasGotIt)
                                             {
-                                                failedLoadingTrain = failedLoadingTrain + " (→昨天的)" + row.GetCell(j).ToString().Trim();
-                                                searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2,2);
+                                                if (yesterdayCommandText.Contains(row.GetCell(j).ToString().Trim()) && row.GetCell(j).ToString().Trim().Length != 0)
+                                                {
+                                                    failedLoadingTrain = failedLoadingTrain + " (→昨天的)" + row.GetCell(j).ToString().Trim();
+                                                    searchAndHightlightUnresolvedTrains(row.GetCell(j).ToString().Trim(), 2, 2);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            if (isInUpRow == true)
-                            {
-                                row = sheet.GetRow(i);
+                                if (isInUpRow == true)
+                                {
+                                    row = sheet.GetRow(i);
+                                }
                             }
                         }
                     }
+                    if (failedLoadingTrain.Length != 0)
+                    {
+                        MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    if (isProjectHelper)
+                    {//不需要打开文件
+                        allEMUGarageTableModels = _eMUGarageTableModels;
+                        return;
+                    }
+                    //重新修改文件指定单元格样式
+                    FileStream fs1 = File.OpenWrite(fileName);
+                    workbook.Write(fs1);
+                    fs1.Close();
+                    Console.ReadLine();
+                    fileStream.Close();
+                    workbook.Close();
+                    System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+                    //info.WorkingDirectory = Application.StartupPath;
+                    info.FileName = fileName;
+                    info.Arguments = "";
+                    try
+                    {
+                        System.Diagnostics.Process.Start(info);
+                    }
+                    catch (System.ComponentModel.Win32Exception we)
+                    {
+                        MessageBox.Show(this, we.Message);
+                        return;
+                    }
                 }
-                if (failedLoadingTrain.Length != 0)
+                catch (IOException)
                 {
-                    MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                if (isProjectHelper)
-                {//不需要打开文件
-                    allEMUGarageTableModels = _eMUGarageTableModels;
-                    return;
-                }
-                //重新修改文件指定单元格样式
-                FileStream fs1 = File.OpenWrite(fileName);
-                workbook.Write(fs1);
-                fs1.Close();
-                Console.ReadLine();
-                fileStream.Close();
-                workbook.Close();
-                System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
-                //info.WorkingDirectory = Application.StartupPath;
-                info.FileName = fileName;
-                info.Arguments = "";
-                try
-                {
-                    System.Diagnostics.Process.Start(info);
-                }
-                catch (System.ComponentModel.Win32Exception we)
-                {
-                    MessageBox.Show(this, we.Message);
+                    MessageBox.Show("时刻表文件正在使用中，请关闭后重试", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
-            catch (IOException)
+            catch(Exception autoCompleteE)
             {
-                MessageBox.Show("时刻表文件正在使用中，请关闭后重试", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + autoCompleteE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+
         }
         /*
         //赶点计算器
@@ -5387,6 +5408,14 @@ namespace TimeTableAutoCompleteTool
                     }
                     trainProjectText = sb.ToString();
                     analyseTrainProjects();
+                    if(allTrainProjectModels != null && allTrainProjectModels.Count != 0)
+                    {
+                        emptyTrackList_rtb.Text = checkEmptyTrack(allTrainProjectModels);
+                    }
+                    else
+                    {
+                        MessageBox.Show("未检测到计划，请确认是否选择了正确的计划文件。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                     /*
                     File.WriteAllText("CommentExtraction.txt", sb.ToString());
                     System.Diagnostics.Process.Start("CommentExtraction.txt");
@@ -5403,299 +5432,276 @@ namespace TimeTableAutoCompleteTool
         private void analyseTrainProjects()
         {//分析调车作业计划
             //以添加的分隔符（“|第x”“钩、”）为分界，包含逗号的为同一辆车
-            allTrainProjectModels = new List<TrainProjectModel>();
-            List<TrainProjectModel> _trainProjectModels = new List<TrainProjectModel>();
-            string[] trainProjectList = trainProjectText.Split('|');
-            for(int i = 0;i< trainProjectList.Length; i++)
-            {//对于每一条
-                if (trainProjectList[i] != null)
-                {
-                    TrainProjectModel _pm = new TrainProjectModel();
-                    //解编后的
-                    TrainProjectModel _pmBreak = new TrainProjectModel();
-                    //是否启用解编后的对象
-                    bool hasBroken = false;
-                    //重复车应该同一条只用找一次
-                    bool hasFoundOthers = false;
-                    //单组车已经添加进重联车组 不需要继续寻找后续内容时
-                    bool skipToNext = false;
-                    //用于记录已找到相同车号的钩号
-                    string sameTrainIndex = "";
-                    string currentTrain = trainProjectList[i];
-                    if (currentTrain.Length == 0)
+            try
+            {
+                allTrainProjectModels = new List<TrainProjectModel>();
+                List<TrainProjectModel> _trainProjectModels = new List<TrainProjectModel>();
+                string[] trainProjectList = trainProjectText.Split('|');
+                for (int i = 0; i < trainProjectList.Length; i++)
+                {//对于每一条
+                    if (trainProjectList[i] != null)
                     {
-                        continue;
-                    }
-                    //钩号
-                    int index = -1;
-                    int.TryParse(currentTrain.Split('、')[0].TrimStart('|'), out index);
-                    if(index == -1)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        _pm.projectIndex = index.ToString();
-                    }
-                    string[] workFlows;
-                    if (currentTrain.Split('、').Length > 1)
-                    {
-                        string _cTrain = "";
-                        for(int ij = 1; ij < currentTrain.Split('、').Length; ij++)
+                        TrainProjectModel _pm = new TrainProjectModel();
+                        //解编后的
+                        TrainProjectModel _pmBreak = new TrainProjectModel();
+                        //是否启用解编后的对象
+                        bool hasBroken = false;
+                        //重复车应该同一条只用找一次
+                        bool hasFoundOthers = false;
+                        //单组车已经添加进重联车组 不需要继续寻找后续内容时
+                        bool skipToNext = false;
+                        //用于记录已找到相同车号的钩号
+                        string sameTrainIndex = "";
+                        string currentTrain = trainProjectList[i];
+                        if (currentTrain.Length == 0)
                         {
-                            _cTrain = _cTrain + currentTrain.Split('、')[ij];
+                            continue;
                         }
-                        workFlows = _cTrain.Split('，');
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                    if (workFlows.Length == 0)
-                    {
-                        continue;
-                    }
-                    //工作流
-                    for (int j = 0; j < workFlows.Length; j++)
-                    {
-                        string _currentWork = workFlows[j];
-                        //入库车都在第一部分，先找入库车
-                        if (j == 0)
+                        //钩号
+                        int index = -1;
+                        int.TryParse(currentTrain.Split('、')[0].TrimStart('|'), out index);
+                        if (index == -1)
                         {
-                            if ((_currentWork.Contains("0G") ||
-                                _currentWork.Contains("0J") ||
-                                _currentWork.Contains("0C") ||
-                                _currentWork.Contains("0D") ||
-                                _currentWork.Contains("00")) &&
-                                _currentWork.Contains("次"))
+                            continue;
+                        }
+                        else
+                        {
+                            _pm.projectIndex = index.ToString();
+                        }
+                        string[] workFlows;
+                        if (currentTrain.Split('、').Length > 1)
+                        {
+                            string _cTrain = "";
+                            for (int ij = 1; ij < currentTrain.Split('、').Length; ij++)
                             {
-                                _pm.getInside_trainNum = _currentWork.Split('次')[0].TrimStart('\r').TrimStart('\n');
+                                _cTrain = _cTrain + currentTrain.Split('、')[ij];
                             }
-                            //入库时间
-                            Regex regInTime;
-                            Match mInTime;
-                            //如果找到了入库时间 则钩开始时间为入库时间
-                            if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
+                            workFlows = _cTrain.Split('，');
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        if (workFlows.Length == 0)
+                        {
+                            continue;
+                        }
+                        //工作流
+                        for (int j = 0; j < workFlows.Length; j++)
+                        {
+                            string _currentWork = workFlows[j];
+                            //入库车都在第一部分，先找入库车
+                            if (j == 0)
                             {
-                                regInTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
-                                mInTime = regInTime.Match(_currentWork.Trim());
-                                _pm.getInside_time = mInTime.Value;
-                                _pm.startTime = mInTime.Value;
-                            }
-                            else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
-                            {
-                                regInTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
-                                mInTime = regInTime.Match(_currentWork.Trim());
-                                _pm.getInside_time = mInTime.Value;
-                                _pm.startTime = mInTime.Value;
-                            }
-                            //车号
-                            try
-                            {
-                                Regex regTrain = new Regex(@"\(([^)]*)\)");
-                                //@"\(.*?\)"
-                                MatchCollection mTrain = regTrain.Matches(_currentWork);
-                                foreach (Match match in mTrain)
+                                if ((_currentWork.Contains("0G") ||
+                                    _currentWork.Contains("0J") ||
+                                    _currentWork.Contains("0C") ||
+                                    _currentWork.Contains("0D") ||
+                                    _currentWork.Contains("00")) &&
+                                    _currentWork.Contains("次"))
                                 {
-                                    string value = match.Value.Trim('(', ')');
-                                    if (value.Contains("CR") && value.Split('-').Length > 1)
+                                    _pm.getInside_trainNum = _currentWork.Split('次')[0].TrimStart('\r').TrimStart('\n');
+                                }
+                                //入库时间
+                                Regex regInTime;
+                                Match mInTime;
+                                //如果找到了入库时间 则钩开始时间为入库时间
+                                if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
+                                {
+                                    regInTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
+                                    mInTime = regInTime.Match(_currentWork.Trim());
+                                    _pm.getInside_time = mInTime.Value;
+                                    _pm.startTime = mInTime.Value;
+                                }
+                                else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
+                                {
+                                    regInTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
+                                    mInTime = regInTime.Match(_currentWork.Trim());
+                                    _pm.getInside_time = mInTime.Value;
+                                    _pm.startTime = mInTime.Value;
+                                }
+                                //车号
+                                try
+                                {
+                                    Regex regTrain = new Regex(@"\(([^)]*)\)");
+                                    //@"\(.*?\)"
+                                    MatchCollection mTrain = regTrain.Matches(_currentWork);
+                                    foreach (Match match in mTrain)
                                     {
-                                        string trainModel = value.Split('-')[0].Trim();
-                                        string trainID = value.Split('-')[1].Trim();
-                                        _pm.trainModel = trainModel;
-                                        if (trainModel.Contains("L") ||
-                                            trainModel.Contains("2B") ||
-                                            trainModel.Contains("AF-A") ||
-                                            trainModel.Contains("AF-B") ||
-                                            trainModel.Contains("BF-A") ||
-                                            trainModel.Contains("BF-B"))
+                                        string value = match.Value.Trim('(', ')');
+                                        if (value.Contains("CR") && value.Split('-').Length > 1)
                                         {
-                                            _pm.trainConnectType = 1;
-                                            _pm.trainId = value.Split('-')[1].Trim();
-                                        }
-                                        else if (trainID.Contains("+"))
-                                        {
-                                            _pm.trainConnectType = 2;
-                                            _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
-                                            _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
-                                        }
-                                        else
-                                        {
-                                            _pm.trainConnectType = 0;
-                                            _pm.trainId = value.Split('-')[1].Trim();
+                                            string trainModel = value.Split('-')[0].Trim();
+                                            string trainID = value.Split('-')[1].Trim();
+                                            _pm.trainModel = trainModel;
+                                            if (trainModel.Contains("L") ||
+                                                trainModel.Contains("2B") ||
+                                                trainModel.Contains("AF-A") ||
+                                                trainModel.Contains("AF-B") ||
+                                                trainModel.Contains("BF-A") ||
+                                                trainModel.Contains("BF-B"))
+                                            {
+                                                _pm.trainConnectType = 1;
+                                                _pm.trainId = value.Split('-')[1].Trim();
+                                            }
+                                            else if (trainID.Contains("+"))
+                                            {
+                                                _pm.trainConnectType = 2;
+                                                _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
+                                                _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
+                                            }
+                                            else
+                                            {
+                                                _pm.trainConnectType = 0;
+                                                _pm.trainId = value.Split('-')[1].Trim();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                // Syntax error in the regular expression
-                            }
-                        }
-                        //找出库车
-                        if (_currentWork.Contains("备开") &&
-                            (_currentWork.Contains("0G") ||
-                                _currentWork.Contains("0J") ||
-                                _currentWork.Contains("0C") ||
-                                _currentWork.Contains("0D") ||
-                                _currentWork.Contains("00")))
-                        {
-                            //车次
-                            string _trainNum = "";
-                            char[] _workToChar = _currentWork.Replace("次", "").ToCharArray();
-                            for (int c = _workToChar.Length - 1; c > 0; c--)
-                            {//从后往前找“次”前面的字符，直到碰到第一个不是数字字母的
-                                if (Regex.IsMatch(_workToChar[c].ToString(), @"^[A-Za-z0-9]+$"))
+                                catch (ArgumentException ex)
                                 {
-                                    _trainNum = _workToChar[c].ToString() + _trainNum;
+                                    // Syntax error in the regular expression
                                 }
-                                else
-                                {
-                                    if (Regex.IsMatch(_trainNum, @"^[A-Za-z0-9]+$"))
+                            }
+                            //找出库车
+                            if (_currentWork.Contains("备开") &&
+                                (_currentWork.Contains("0G") ||
+                                    _currentWork.Contains("0J") ||
+                                    _currentWork.Contains("0C") ||
+                                    _currentWork.Contains("0D") ||
+                                    _currentWork.Contains("00")))
+                            {
+                                //车次
+                                string _trainNum = "";
+                                char[] _workToChar = _currentWork.Replace("次", "").ToCharArray();
+                                for (int c = _workToChar.Length - 1; c > 0; c--)
+                                {//从后往前找“次”前面的字符，直到碰到第一个不是数字字母的
+                                    if (Regex.IsMatch(_workToChar[c].ToString(), @"^[A-Za-z0-9]+$"))
                                     {
-                                        if (!hasBroken)
-                                        {//分为解编后和解编前
-                                            _pm.getOutside_trainNum = _trainNum;
-                                        }
-                                        else
-                                        {
-                                            _pmBreak.getOutside_trainNum = _trainNum;
-                                        }
-                                        break;
+                                        _trainNum = _workToChar[c].ToString() + _trainNum;
                                     }
-                                }
-                            }
-
-                            //时间
-                            //出库时间
-                            //如果找到了出库时间，则该钩结束时间为出库时间
-                            Regex regOutTime;
-                            Match mOutTime;
-                            if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
-                            {
-                                regOutTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
-                                mOutTime = regOutTime.Match(_currentWork.Trim());
-                                if (!hasBroken)
-                                {
-                                    _pm.getOutside_time = mOutTime.Value;
-                                    _pm.endTime = mOutTime.Value;
-                                }
-                                else
-                                {
-                                    _pmBreak.getOutside_time = mOutTime.Value;
-                                    _pmBreak.endTime = mOutTime.Value;
-                                }
-                            }
-                            else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
-                            {
-                                regOutTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
-                                mOutTime = regOutTime.Match(_currentWork.Trim());
-                                if (!hasBroken)
-                                {
-                                    _pm.getOutside_time = mOutTime.Value;
-                                    _pm.endTime = mOutTime.Value;
-                                }
-                                else
-                                {
-                                    _pmBreak.getOutside_time = mOutTime.Value;
-                                    _pmBreak.endTime = mOutTime.Value;
-                                }
-
-                            }
-                        }
-                        //找其他位置是否已经有该车号，若其他位置已有，则标记为重复车，读取完成后与已存在的模型进行同步
-                        foreach (TrainProjectModel _compareModel in _trainProjectModels)
-                        {
-                            if (hasFoundOthers)
-                            {
-                                break;
-                            }
-                            //应付顺序变化的情况
-                            string currentID_A = _pm.trainId;
-                            string currentID_B = "";
-                            string compareID_A = _compareModel.trainId;
-                            string compareID_B = "";
-                            if (_pm.secondTrainId.Length != 0)
-                            {
-                                currentID_B = _pm.secondTrainId;
-                            }
-                            if (_compareModel.secondTrainId.Length != 0)
-                            {
-                                compareID_B = _compareModel.secondTrainId;
-                            }
-                            if (((currentID_A + "+" + currentID_B).Equals(compareID_A + "+" + compareID_B) ||
-                                (currentID_A + "+" + currentID_B).Equals(compareID_B + "+" + compareID_A))&&
-                               ! _compareModel.projectIndex.Contains("-"))
-                            {
-                                //标记为重复车(重联发现了重联)
-                                _pm.trainWorkingMode = 3;
-                                _pm.sameTrain_ProjectIndex = _compareModel.projectIndex;
-                                break;
-                            }
-                            else if ((compareID_A + "+"+compareID_B).Contains(currentID_A)
-                                && compareID_B.Length != 0 && currentID_B.Length == 0 &&
-                               !_compareModel.projectIndex.Contains("-"))
-                            {
-                                //标记为（短变长）车（短编发现了重联）
-                                _pm.trainWorkingMode = 1;
-                                _pm.sameTrain_ProjectIndex = _compareModel.projectIndex;
-                                break;
-                            }
-                        }
-                        if (!hasFoundOthers)
-                        {
-                            hasFoundOthers = true;
-                        }
-                        //找工作流
-                        if (!_currentWork.Contains("备开"))
-                        {
-                            TrainProjectWorking _tpw = new TrainProjectWorking();
-                            //找时间
-                            Regex regWorkTime;
-                            Match mWorkTime;
-                            if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
-                            {
-                                regWorkTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
-                                mWorkTime = regWorkTime.Match(_currentWork.Trim());
-                                _tpw.time = mWorkTime.Value;
-                            }
-                            else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
-                            {
-                                regWorkTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
-                                mWorkTime = regWorkTime.Match(_currentWork.Trim());
-                                _tpw.time = mWorkTime.Value;
-                            }
-                            else
-                            {
-                                //如果不包含时间，就往前寻找时间
-                                bool hasGotIt2 = false;
-                                if (!hasBroken)
-                                {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                    else
                                     {
-                                        if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
+                                        if (Regex.IsMatch(_trainNum, @"^[A-Za-z0-9]+$"))
                                         {
-                                            _tpw.time = _pm.trainProjectWorkingModel[_t].time;
-                                            hasGotIt2 = true;
+                                            if (!hasBroken)
+                                            {//分为解编后和解编前
+                                                _pm.getOutside_trainNum = _trainNum;
+                                            }
+                                            else
+                                            {
+                                                _pmBreak.getOutside_trainNum = _trainNum;
+                                            }
                                             break;
                                         }
                                     }
                                 }
-                                else//解编后
+
+                                //时间
+                                //出库时间
+                                //如果找到了出库时间，则该钩结束时间为出库时间
+                                Regex regOutTime;
+                                Match mOutTime;
+                                if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
                                 {
-                                    bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                    regOutTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
+                                    mOutTime = regOutTime.Match(_currentWork.Trim());
+                                    if (!hasBroken)
                                     {
-                                        if (_pmBreak.trainProjectWorkingModel[_t].time.Length != 0)
-                                        {
-                                            _tpw.time = _pmBreak.trainProjectWorkingModel[_t].time;
-                                            hasGotInBreakOne = true;
-                                            hasGotIt2 = true;
-                                            break;
-                                        }
+                                        _pm.getOutside_time = mOutTime.Value;
+                                        _pm.endTime = mOutTime.Value;
                                     }
-                                    if (!hasGotInBreakOne)
-                                    {//从前面找
+                                    else
+                                    {
+                                        _pmBreak.getOutside_time = mOutTime.Value;
+                                        _pmBreak.endTime = mOutTime.Value;
+                                    }
+                                }
+                                else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
+                                {
+                                    regOutTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
+                                    mOutTime = regOutTime.Match(_currentWork.Trim());
+                                    if (!hasBroken)
+                                    {
+                                        _pm.getOutside_time = mOutTime.Value;
+                                        _pm.endTime = mOutTime.Value;
+                                    }
+                                    else
+                                    {
+                                        _pmBreak.getOutside_time = mOutTime.Value;
+                                        _pmBreak.endTime = mOutTime.Value;
+                                    }
+
+                                }
+                            }
+                            //找其他位置是否已经有该车号，若其他位置已有，则标记为重复车，读取完成后与已存在的模型进行同步
+                            foreach (TrainProjectModel _compareModel in _trainProjectModels)
+                            {
+                                if (hasFoundOthers)
+                                {
+                                    break;
+                                }
+                                //应付顺序变化的情况
+                                string currentID_A = _pm.trainId;
+                                string currentID_B = "";
+                                string compareID_A = _compareModel.trainId;
+                                string compareID_B = "";
+                                if (_pm.secondTrainId.Length != 0)
+                                {
+                                    currentID_B = _pm.secondTrainId;
+                                }
+                                if (_compareModel.secondTrainId.Length != 0)
+                                {
+                                    compareID_B = _compareModel.secondTrainId;
+                                }
+                                if (((currentID_A + "+" + currentID_B).Equals(compareID_A + "+" + compareID_B) ||
+                                    (currentID_A + "+" + currentID_B).Equals(compareID_B + "+" + compareID_A)) &&
+                                   !_compareModel.projectIndex.Contains("-"))
+                                {
+                                    //标记为重复车(重联发现了重联)
+                                    _pm.trainWorkingMode = 3;
+                                    _pm.sameTrain_ProjectIndex = _compareModel.projectIndex;
+                                    break;
+                                }
+                                else if ((compareID_A + "+" + compareID_B).Contains(currentID_A)
+                                    && compareID_B.Length != 0 && currentID_B.Length == 0 &&
+                                   !_compareModel.projectIndex.Contains("-"))
+                                {
+                                    //标记为（短变长）车（短编发现了重联）
+                                    _pm.trainWorkingMode = 1;
+                                    _pm.sameTrain_ProjectIndex = _compareModel.projectIndex;
+                                    break;
+                                }
+                            }
+                            if (!hasFoundOthers)
+                            {
+                                hasFoundOthers = true;
+                            }
+                            //找工作流
+                            if (!_currentWork.Contains("备开"))
+                            {
+                                TrainProjectWorking _tpw = new TrainProjectWorking();
+                                //找时间
+                                Regex regWorkTime;
+                                Match mWorkTime;
+                                if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{2}(:)[0-9]{2}"))
+                                {
+                                    regWorkTime = new Regex(@"[0-9]{2}(:)[0-9]{2}", RegexOptions.None);
+                                    mWorkTime = regWorkTime.Match(_currentWork.Trim());
+                                    _tpw.time = mWorkTime.Value;
+                                }
+                                else if (Regex.IsMatch(_currentWork.Trim(), @"[0-9]{1}(:)[0-9]{2}"))
+                                {
+                                    regWorkTime = new Regex(@"[0-9]{1}(:)[0-9]{2}", RegexOptions.None);
+                                    mWorkTime = regWorkTime.Match(_currentWork.Trim());
+                                    _tpw.time = mWorkTime.Value;
+                                }
+                                else
+                                {
+                                    //如果不包含时间，就往前寻找时间
+                                    bool hasGotIt2 = false;
+                                    if (!hasBroken)
+                                    {
                                         for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
@@ -5706,104 +5712,104 @@ namespace TimeTableAutoCompleteTool
                                             }
                                         }
                                     }
-                                }
-                                if (!hasGotIt2)
-                                {//默认为开始时间(同时将该钩开始时间调整)
-                                    if (morningOrNight == 0)
+                                    else//解编后
                                     {
-                                        _tpw.time = "8:00";
-                                        _pm.startTime = "8:00";
-                                    }
-                                    else if (morningOrNight == 1)
-                                    {
-                                        _tpw.time = "16:00";
-                                        _pm.startTime = "16:00";
-                                    }
-                                }
-                            }
-                            //找股道
-                            string trackNum = "";
-                            string throughTrack = "";
-                            if (_currentWork.Split('道').Length == 2)
-                            {
-                                for (int tNum = 1; tNum <= 65; tNum++)
-                                {
-                                    if (_currentWork.Contains(tNum + "道"))
-                                    {
-                                        trackNum = tNum.ToString();
-                                    }
-                                    if (_currentWork.Contains("JC" + tNum + "道"))
-                                    {
-                                        trackNum = "JC" + tNum.ToString();
-                                    }
-                                }
-                            }
-                            //13	0G2046次(CRH380B-5864)18:23终到后经28道西端转JC3道西端停放。
-                            //19	0G55482次(CRH380B-5654)09:31终到后经26道西端转JC5道西端停放。17:45转40道东端停放，18:35与(CRH380B-5837)进行重联作业。
-                            else if (_currentWork.Split('道').Length == 3 && _currentWork.Contains("经"))
-                            {
-                                throughTrack = _currentWork.Split('经')[1].Split('道')[0] + "G";
-                                if (_currentWork.Split('经')[1].Split('道')[1].Contains("西"))
-                                {
-                                    throughTrack = throughTrack + "1";
-                                }
-                                else if (_currentWork.Split('经')[1].Split('道')[1].Contains("东"))
-                                {
-                                    throughTrack = throughTrack + "2";
-                                }
-                                for (int tNum = 1; tNum <= 65; tNum++)
-                                {
-                                    if ((_currentWork.Split('道')[1]+"道").Contains(tNum+"道"))
-                                    {
-                                        trackNum = tNum.ToString() + "G";
-                                    }
-                                    if ((_currentWork.Split('道')[1] + "道").Contains("JC" + tNum + "道"))
-                                    {
-                                        trackNum = "JC" + tNum.ToString() + "G";
-                                    }
-                                }
-                                if (_currentWork.Split('道')[2].Contains("西"))
-                                {
-                                    trackNum = trackNum + "1";
-                                }
-                                else if (_currentWork.Split('道')[2].Contains("东"))
-                                {
-                                    trackNum = trackNum + "2";
-                                }
-
-                            }
-
-                            if (trackNum.Length == 0)
-                            {
-                                //如果不包含股道，就往前寻找股道
-                                bool hasGotIt1 = false;
-                                if (!hasBroken)
-                                {
-                                    for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
-                                    {
-                                        if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
+                                        bool hasGotInBreakOne = false;
+                                        for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                         {
-                                            trackNum = _pm.trainProjectWorkingModel[_t].track;
-                                            hasGotIt1 = true;
-                                            break;
+                                            if (_pmBreak.trainProjectWorkingModel[_t].time.Length != 0)
+                                            {
+                                                _tpw.time = _pmBreak.trainProjectWorkingModel[_t].time;
+                                                hasGotInBreakOne = true;
+                                                hasGotIt2 = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!hasGotInBreakOne)
+                                        {//从前面找
+                                            for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                            {
+                                                if (_pm.trainProjectWorkingModel[_t].time.Length != 0)
+                                                {
+                                                    _tpw.time = _pm.trainProjectWorkingModel[_t].time;
+                                                    hasGotIt2 = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!hasGotIt2)
+                                    {//默认为开始时间(同时将该钩开始时间调整)
+                                        if (morningOrNight == 0)
+                                        {
+                                            _tpw.time = "8:00";
+                                            _pm.startTime = "8:00";
+                                        }
+                                        else if (morningOrNight == 1)
+                                        {
+                                            _tpw.time = "16:00";
+                                            _pm.startTime = "16:00";
                                         }
                                     }
                                 }
-                                else//解编后
+                                //找股道
+                                string trackNum = "";
+                                string throughTrack = "";
+                                if (_currentWork.Split('道').Length == 2)
                                 {
-                                    bool hasGotInBreakOne = false;
-                                    for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                    for (int tNum = 1; tNum <= 65; tNum++)
                                     {
-                                        if (_pmBreak.trainProjectWorkingModel[_t].track.Length != 0)
+                                        if (_currentWork.Contains(tNum + "道"))
                                         {
-                                            trackNum = _pmBreak.trainProjectWorkingModel[_t].track;
-                                            hasGotInBreakOne = true;
-                                            hasGotIt1 = true;
-                                            break;
+                                            trackNum = tNum.ToString();
+                                        }
+                                        if (_currentWork.Contains("JC" + tNum + "道"))
+                                        {
+                                            trackNum = "JC" + tNum.ToString();
                                         }
                                     }
-                                    if (!hasGotInBreakOne)
-                                    {//从前面找
+                                }
+                                //13	0G2046次(CRH380B-5864)18:23终到后经28道西端转JC3道西端停放。
+                                //19	0G55482次(CRH380B-5654)09:31终到后经26道西端转JC5道西端停放。17:45转40道东端停放，18:35与(CRH380B-5837)进行重联作业。
+                                else if (_currentWork.Split('道').Length == 3 && _currentWork.Contains("经"))
+                                {
+                                    throughTrack = _currentWork.Split('经')[1].Split('道')[0] + "G";
+                                    if (_currentWork.Split('经')[1].Split('道')[1].Contains("西"))
+                                    {
+                                        throughTrack = throughTrack + "1";
+                                    }
+                                    else if (_currentWork.Split('经')[1].Split('道')[1].Contains("东"))
+                                    {
+                                        throughTrack = throughTrack + "2";
+                                    }
+                                    for (int tNum = 1; tNum <= 65; tNum++)
+                                    {
+                                        if ((_currentWork.Split('道')[1] + "道").Contains(tNum + "道"))
+                                        {
+                                            trackNum = tNum.ToString() + "G";
+                                        }
+                                        if ((_currentWork.Split('道')[1] + "道").Contains("JC" + tNum + "道"))
+                                        {
+                                            trackNum = "JC" + tNum.ToString() + "G";
+                                        }
+                                    }
+                                    if (_currentWork.Split('道')[2].Contains("西"))
+                                    {
+                                        trackNum = trackNum + "1";
+                                    }
+                                    else if (_currentWork.Split('道')[2].Contains("东"))
+                                    {
+                                        trackNum = trackNum + "2";
+                                    }
+
+                                }
+
+                                if (trackNum.Length == 0)
+                                {
+                                    //如果不包含股道，就往前寻找股道
+                                    bool hasGotIt1 = false;
+                                    if (!hasBroken)
+                                    {
                                         for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
                                         {
                                             if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
@@ -5814,271 +5820,296 @@ namespace TimeTableAutoCompleteTool
                                             }
                                         }
                                     }
-                                }
-                                if (!hasGotIt1)
-                                {//从头到尾都没有股道信息 这就很尴尬了。。我也不知道咋办了
-
-                                }
-                            }
-                            if (!trackNum.Contains("G"))
-                            {
-                                trackNum = trackNum + "G";
-                            }
-                            //找一列位二列位
-                            if (!trackNum.Contains("G1") && !trackNum.Contains("G2"))
-                            {
-                                if (_currentWork.Contains("东端"))
-                                {
-                                    trackNum = trackNum + "2";
-                                }
-                                else if (_currentWork.Contains("西端"))
-                                {
-                                    trackNum = trackNum + "1";
-                                }
-                            }
-                            _tpw.track = trackNum;
-                            _tpw.throughTrack = throughTrack;
-                            //作业内容
-                            string workingInformation = "";
-                            if (trackNum.Contains("G1") || trackNum.Contains("G2"))
-                            {
-                                workingInformation = _currentWork.Split('端')[_currentWork.Split('端').Length - 1];
-                            }
-                            else
-                            {
-                                workingInformation = _currentWork.Split('道')[_currentWork.Split('道').Length - 1];
-                            }
-                            if (_currentWork.Contains("重联"))
-                            {
-                                workingInformation = _currentWork.Replace(_tpw.track.Replace("G", "") + "道", "");
-                            }
-                            //如果本模型没有作业内容，那说明与前一个是同一项作业，直接把全部内容填写到前面去
-                            //|第1钩、(CRH380A - 2876)JC2道西端停放，19:50转42道东端停放，与2645重联作业，与2645解编作业，备开10日(05:48)0G55481次。
-                            if (workingInformation.Length == 0)
-                            {
-                                for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
-                                {
-                                    if (_pm.trainProjectWorkingModel[_t].workingInformation.Length != 0)
+                                    else//解编后
                                     {
-                                        _pm.trainProjectWorkingModel[_t].workingInformation = _pm.trainProjectWorkingModel[_t].workingInformation + _currentWork;
-                                        break;
+                                        bool hasGotInBreakOne = false;
+                                        for (int _t = _pmBreak.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                        {
+                                            if (_pmBreak.trainProjectWorkingModel[_t].track.Length != 0)
+                                            {
+                                                trackNum = _pmBreak.trainProjectWorkingModel[_t].track;
+                                                hasGotInBreakOne = true;
+                                                hasGotIt1 = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!hasGotInBreakOne)
+                                        {//从前面找
+                                            for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                            {
+                                                if (_pm.trainProjectWorkingModel[_t].track.Length != 0)
+                                                {
+                                                    trackNum = _pm.trainProjectWorkingModel[_t].track;
+                                                    hasGotIt1 = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!hasGotIt1)
+                                    {//从头到尾都没有股道信息 这就很尴尬了。。我也不知道咋办了
+
                                     }
                                 }
-                                continue;
-                            }
-                            _tpw.workingInformation = workingInformation;
-                            //特殊情况：重联
-                            //重联前二者的工作流不同，分别存储，第一次找到的变长编，复制自身作为短编
-                            /*短找长找到的：
-                            将自身变成 - B钩，添加进找到的长编车前序序列，结束时间为重联时间，将长编车添加进自身后序序列
-                            */
-                            //如果之前已经有该短编被重联后的模型
-                            if (_currentWork.Contains("重联") && _currentWork.Contains("(CR"))
-                            {
-                                //短找长合并，合并后的事件可以不用管了，自身创建的时候就弄了，自身标记为3 自动忽略
-                                bool hasGotIt = false;
-                                if (_pm.trainConnectType == 0 && _pm.trainWorkingMode == 1 && !_pm.sameTrain_ProjectIndex.Equals("-1"))
+                                if (!trackNum.Contains("G"))
                                 {
-                                    for (int ij = 0; ij < _trainProjectModels.Count; ij++)
+                                    trackNum = trackNum + "G";
+                                }
+                                //找一列位二列位
+                                if (!trackNum.Contains("G1") && !trackNum.Contains("G2"))
+                                {
+                                    if (_currentWork.Contains("东端"))
                                     {
-                                        if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
+                                        trackNum = trackNum + "2";
+                                    }
+                                    else if (_currentWork.Contains("西端"))
+                                    {
+                                        trackNum = trackNum + "1";
+                                    }
+                                }
+                                _tpw.track = trackNum;
+                                _tpw.throughTrack = throughTrack;
+                                //作业内容
+                                string workingInformation = "";
+                                if (trackNum.Contains("G1") || trackNum.Contains("G2"))
+                                {
+                                    workingInformation = _currentWork.Split('端')[_currentWork.Split('端').Length - 1];
+                                }
+                                else
+                                {
+                                    workingInformation = _currentWork.Split('道')[_currentWork.Split('道').Length - 1];
+                                }
+                                if (_currentWork.Contains("重联"))
+                                {
+                                    workingInformation = _currentWork.Replace(_tpw.track.Replace("G", "") + "道", "");
+                                }
+                                //如果本模型没有作业内容，那说明与前一个是同一项作业，直接把全部内容填写到前面去
+                                //|第1钩、(CRH380A - 2876)JC2道西端停放，19:50转42道东端停放，与2645重联作业，与2645解编作业，备开10日(05:48)0G55481次。
+                                if (workingInformation.Length == 0)
+                                {
+                                    for (int _t = _pm.trainProjectWorkingModel.Count - 1; _t > 0; _t--)
+                                    {
+                                        if (_pm.trainProjectWorkingModel[_t].workingInformation.Length != 0)
                                         {
-                                            //已弃用的方法
-                                            //TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
-                                            //_trainProjectModels[ij].connectedTrainProjectModels.Add(_itsOwn);
-                                            //_pm.trainWorkingMode = 3;
+                                            _pm.trainProjectWorkingModel[_t].workingInformation = _pm.trainProjectWorkingModel[_t].workingInformation + _currentWork;
+                                            break;
+                                        }
+                                    }
+                                    continue;
+                                }
+                                _tpw.workingInformation = workingInformation;
+                                //特殊情况：重联
+                                //重联前二者的工作流不同，分别存储，第一次找到的变长编，复制自身作为短编
+                                /*短找长找到的：
+                                将自身变成 - B钩，添加进找到的长编车前序序列，结束时间为重联时间，将长编车添加进自身后序序列
+                                */
+                                //如果之前已经有该短编被重联后的模型
+                                if (_currentWork.Contains("重联") && _currentWork.Contains("(CR"))
+                                {
+                                    //短找长合并，合并后的事件可以不用管了，自身创建的时候就弄了，自身标记为3 自动忽略
+                                    bool hasGotIt = false;
+                                    if (_pm.trainConnectType == 0 && _pm.trainWorkingMode == 1 && !_pm.sameTrain_ProjectIndex.Equals("-1"))
+                                    {
+                                        for (int ij = 0; ij < _trainProjectModels.Count; ij++)
+                                        {
+                                            if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
+                                            {
+                                                //已弃用的方法
+                                                //TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
+                                                //_trainProjectModels[ij].connectedTrainProjectModels.Add(_itsOwn);
+                                                //_pm.trainWorkingMode = 3;
 
-                                            //自身标记为-B钩
-                                            _pm.projectIndex = _pm.projectIndex + "-B";
-                                            //自身结束时间
-                                            _pm.endTime = _tpw.time;
-                                            //自身为短变长
-                                            _pm.trainWorkingMode = 1;
-                                            _pm.secondTrainId = "";
-                                            //添加到已存在长编车的代表自身短编的前序序列
-                                            TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
-                                            _tps_SelfInLong.trainId = _pm.trainId;
-                                            _tps_SelfInLong.trainConnectType = 0;
-                                            _tps_SelfInLong.projectIndex = _pm.projectIndex;
-                                            //这个时间为重联前的最后一次工作时间
-                                            if (_pm.trainProjectWorkingModel.Count > 0)
-                                            {
-                                                _tps_SelfInLong.relatedMovingTime = _pm.trainProjectWorkingModel[_pm.trainProjectWorkingModel.Count - 1].time;
-                                            }
-                                            else
-                                            {
-                                                _tps_SelfInLong.relatedMovingTime = "";
-                                            }
-                                            _trainProjectModels[ij].previousProject.Add(_tps_SelfInLong);
-                                            //添加到自身短编车的长编车所在后序序列
-                                            TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
-                                            _tps_LongInSelf.trainId = _trainProjectModels[ij].trainId;
-                                            _tps_LongInSelf.secondTrainId = _trainProjectModels[ij].secondTrainId;
-                                            _tps_LongInSelf.projectIndex = _trainProjectModels[ij].projectIndex;
-                                            _tps_LongInSelf.trainConnectType = 2;
-                                            _tps_LongInSelf.relatedMovingTime = "";
-                                            _pm.nextProject.Add(_tps_LongInSelf);
-                                            //此时对比长编车中的两个作业时间，取后来者为重联的发生时间，且统一后来者为两个车的结束时间
-                                            if (_trainProjectModels[ij].previousProject.Count == 2)
-                                            {
-                                                string timeA = _trainProjectModels[ij].previousProject[0].relatedMovingTime;
-                                                string timeB = _trainProjectModels[ij].previousProject[1].relatedMovingTime;
-                                                string indexA = _trainProjectModels[ij].previousProject[0].projectIndex;
-                                                string indexB = _trainProjectModels[ij].previousProject[1].projectIndex;
-                                                int timeA_INT, timeB_INT = 0;
-                                                int.TryParse(timeA.Replace(":", ""), out timeA_INT);
-                                                int.TryParse(timeB.Replace(":", ""), out timeB_INT);
-                                                //A大false还是B大true
-                                                bool AorB = false;
-                                                //注意0-8点排在19-23点前面
-                                                if (timeA_INT % 100 <= 8 && timeB_INT % 100 > 8)
+                                                //自身标记为-B钩
+                                                _pm.projectIndex = _pm.projectIndex + "-B";
+                                                //自身结束时间
+                                                _pm.endTime = _tpw.time;
+                                                //自身为短变长
+                                                _pm.trainWorkingMode = 1;
+                                                _pm.secondTrainId = "";
+                                                //添加到已存在长编车的代表自身短编的前序序列
+                                                TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
+                                                _tps_SelfInLong.trainId = _pm.trainId;
+                                                _tps_SelfInLong.trainConnectType = 0;
+                                                _tps_SelfInLong.projectIndex = _pm.projectIndex;
+                                                //这个时间为重联前的最后一次工作时间
+                                                if (_pm.trainProjectWorkingModel.Count > 0)
                                                 {
-                                                    AorB = false;
+                                                    _tps_SelfInLong.relatedMovingTime = _pm.trainProjectWorkingModel[_pm.trainProjectWorkingModel.Count - 1].time;
                                                 }
-                                                else if (timeA_INT % 100 > 8 && timeB_INT % 100 <= 8)
+                                                else
                                                 {
-                                                    AorB = true;
+                                                    _tps_SelfInLong.relatedMovingTime = "";
                                                 }
-                                                else if ((timeA_INT % 100 <= 8 && timeB_INT % 100 <= 8) ||
-                                                   (timeA_INT % 100 > 8 && timeB_INT % 100 > 8))
+                                                _trainProjectModels[ij].previousProject.Add(_tps_SelfInLong);
+                                                //添加到自身短编车的长编车所在后序序列
+                                                TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
+                                                _tps_LongInSelf.trainId = _trainProjectModels[ij].trainId;
+                                                _tps_LongInSelf.secondTrainId = _trainProjectModels[ij].secondTrainId;
+                                                _tps_LongInSelf.projectIndex = _trainProjectModels[ij].projectIndex;
+                                                _tps_LongInSelf.trainConnectType = 2;
+                                                _tps_LongInSelf.relatedMovingTime = "";
+                                                _pm.nextProject.Add(_tps_LongInSelf);
+                                                //此时对比长编车中的两个作业时间，取后来者为重联的发生时间，且统一后来者为两个车的结束时间
+                                                if (_trainProjectModels[ij].previousProject.Count == 2)
                                                 {
-                                                    if (timeA_INT > timeB_INT)
+                                                    string timeA = _trainProjectModels[ij].previousProject[0].relatedMovingTime;
+                                                    string timeB = _trainProjectModels[ij].previousProject[1].relatedMovingTime;
+                                                    string indexA = _trainProjectModels[ij].previousProject[0].projectIndex;
+                                                    string indexB = _trainProjectModels[ij].previousProject[1].projectIndex;
+                                                    int timeA_INT, timeB_INT = 0;
+                                                    int.TryParse(timeA.Replace(":", ""), out timeA_INT);
+                                                    int.TryParse(timeB.Replace(":", ""), out timeB_INT);
+                                                    //A大false还是B大true
+                                                    bool AorB = false;
+                                                    //注意0-8点排在19-23点前面
+                                                    if (timeA_INT % 100 <= 8 && timeB_INT % 100 > 8)
                                                     {
                                                         AorB = false;
                                                     }
-                                                    else
+                                                    else if (timeA_INT % 100 > 8 && timeB_INT % 100 <= 8)
                                                     {
                                                         AorB = true;
                                                     }
-                                                }
-                                                if (timeA.Equals(timeB))
-                                                {
-                                                    _trainProjectModels[ij].startTime = timeA;
-                                                }
-                                                else if (!AorB)
-                                                {
-                                                    _trainProjectModels[ij].startTime = timeA;
-                                                    //把B的结束时间替换为A的结束时间
-                                                    for (int k = 0; k < _trainProjectModels.Count; k++)
+                                                    else if ((timeA_INT % 100 <= 8 && timeB_INT % 100 <= 8) ||
+                                                       (timeA_INT % 100 > 8 && timeB_INT % 100 > 8))
                                                     {
-                                                        if (_trainProjectModels[k].projectIndex.Equals(indexB))
+                                                        if (timeA_INT > timeB_INT)
                                                         {
-                                                            _trainProjectModels[k].endTime = timeA;
+                                                            AorB = false;
+                                                        }
+                                                        else
+                                                        {
+                                                            AorB = true;
                                                         }
                                                     }
-                                                }
-                                                else if (AorB)
-                                                {
-                                                    _trainProjectModels[ij].startTime = timeB;
-                                                    //把A的结束时间替换为B的结束时间
-                                                    for (int k = 0; k < _trainProjectModels.Count; k++)
+                                                    if (timeA.Equals(timeB))
                                                     {
-                                                        if (_trainProjectModels[k].projectIndex.Equals(indexA))
+                                                        _trainProjectModels[ij].startTime = timeA;
+                                                    }
+                                                    else if (!AorB)
+                                                    {
+                                                        _trainProjectModels[ij].startTime = timeA;
+                                                        //把B的结束时间替换为A的结束时间
+                                                        for (int k = 0; k < _trainProjectModels.Count; k++)
                                                         {
-                                                            _trainProjectModels[k].endTime = timeB;
+                                                            if (_trainProjectModels[k].projectIndex.Equals(indexB))
+                                                            {
+                                                                _trainProjectModels[k].endTime = timeA;
+                                                            }
                                                         }
                                                     }
+                                                    else if (AorB)
+                                                    {
+                                                        _trainProjectModels[ij].startTime = timeB;
+                                                        //把A的结束时间替换为B的结束时间
+                                                        for (int k = 0; k < _trainProjectModels.Count; k++)
+                                                        {
+                                                            if (_trainProjectModels[k].projectIndex.Equals(indexA))
+                                                            {
+                                                                _trainProjectModels[k].endTime = timeB;
+                                                            }
+                                                        }
+                                                    }
+                                                    skipToNext = true;
+                                                    hasGotIt = true;
+                                                    break;
                                                 }
-                                                skipToNext = true;
-                                                hasGotIt = true;
-                                                break;
                                             }
                                         }
                                     }
-                                }
-                                if (hasGotIt)
-                                {
-                                    break;
-                                }
-                                /*短找长没找到时：
-                                将自身写作短变长，复制自身，
-                                将复制后的变成-A钩，自身的工作流清零，
-                                加入第二车次，写作重联，将复制后的后序写上自身，
-                                自身的前序加上复制后的，自身的开始时间为重联时间，
-                                复制后的结束时间为重联时间，继续寻找自身的。
-                                 */
-                                if (_pm.trainConnectType == 0 && _pm.sameTrain_ProjectIndex.Equals("-1"))
-                                {
-                                    //此时原有单组车存为重联车的一部分
-                                    //车号
-                                    try
+                                    if (hasGotIt)
                                     {
-                                        Regex regTrain = new Regex(@"\(([^)]*)\)");
-                                        //@"\(.*?\)"
-                                        MatchCollection mTrain = regTrain.Matches(_currentWork);
-                                        foreach (Match match in mTrain)
+                                        break;
+                                    }
+                                    /*短找长没找到时：
+                                    将自身写作短变长，复制自身，
+                                    将复制后的变成-A钩，自身的工作流清零，
+                                    加入第二车次，写作重联，将复制后的后序写上自身，
+                                    自身的前序加上复制后的，自身的开始时间为重联时间，
+                                    复制后的结束时间为重联时间，继续寻找自身的。
+                                     */
+                                    if (_pm.trainConnectType == 0 && _pm.sameTrain_ProjectIndex.Equals("-1"))
+                                    {
+                                        //此时原有单组车存为重联车的一部分
+                                        //车号
+                                        try
                                         {
-                                            string value = match.Value.Trim('(', ')');
-                                            if (!value.Contains("-"))
+                                            Regex regTrain = new Regex(@"\(([^)]*)\)");
+                                            //@"\(.*?\)"
+                                            MatchCollection mTrain = regTrain.Matches(_currentWork);
+                                            foreach (Match match in mTrain)
                                             {
-                                                continue;
-                                            }
-                                            if (!value.Split('-')[1].Equals(_pm.trainId) && value.Contains("CR"))
-                                            {
-                                                _pm.secondTrainId = value.Split('-')[1];
-                                                break;
+                                                string value = match.Value.Trim('(', ')');
+                                                if (!value.Contains("-"))
+                                                {
+                                                    continue;
+                                                }
+                                                if (!value.Split('-')[1].Equals(_pm.trainId) && value.Contains("CR"))
+                                                {
+                                                    _pm.secondTrainId = value.Split('-')[1];
+                                                    break;
+                                                }
                                             }
                                         }
+                                        catch (ArgumentException ex)
+                                        {
+                                            // Syntax error in the regular expression
+                                        }
+                                        //自身写作短变长
+                                        _pm.trainWorkingMode = 1;
+                                        //复制自身作为短编车，改为-A钩，相同车钩号改为自身，直接存储起来不记录后序工作流
+                                        TrainProjectModel _shortTPM = _pm.Clone() as TrainProjectModel;
+                                        _shortTPM.sameTrain_ProjectIndex = _shortTPM.projectIndex;
+                                        _shortTPM.projectIndex = _shortTPM.projectIndex + "-A";
+                                        _shortTPM.secondTrainId = "";
+                                        //结束时间为重联的前一个动作时间
+                                        _shortTPM.endTime = _tpw.time;
+                                        //在复制的短编车内标记自身长编车
+                                        TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
+                                        _tps_LongInSelf.trainId = _pm.trainId;
+                                        _tps_LongInSelf.secondTrainId = _pm.secondTrainId;
+                                        _tps_LongInSelf.trainConnectType = 2;
+                                        _tps_LongInSelf.projectIndex = _pm.projectIndex;
+                                        _tps_LongInSelf.relatedMovingTime = "";
+                                        _shortTPM.nextProject.Add(_tps_LongInSelf);
+                                        //在自身标记短编车
+                                        //添加到自身长编车的代表复制后短编的前序序列
+                                        TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
+                                        _tps_SelfInLong.trainId = _shortTPM.trainId;
+                                        _tps_SelfInLong.trainConnectType = 0;
+                                        _tps_SelfInLong.projectIndex = _shortTPM.projectIndex;
+                                        //这个时间为重联前的最后一次工作时间
+                                        if (_shortTPM.trainProjectWorkingModel.Count > 0)
+                                        {
+                                            _tps_SelfInLong.relatedMovingTime = _shortTPM.trainProjectWorkingModel[_shortTPM.trainProjectWorkingModel.Count - 1].time;
+                                        }
+                                        else
+                                        {
+                                            _tps_SelfInLong.relatedMovingTime = "";
+                                        }
+                                        _pm.previousProject.Add(_tps_SelfInLong);
+                                        //自身工作流清空
+                                        _pm.trainProjectWorkingModel.Clear();
+                                        //自身写作重联车
+                                        _pm.trainConnectType = 2;
+                                        //开始时间为重联时间
+                                        _pm.startTime = _tpw.time;
+                                        //存储短编车
+                                        _trainProjectModels.Add(_shortTPM);
+                                        /*已弃用的方法
+                                        TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
+                                        _pm.trainProjectWorkingModel.Clear();
+                                        _pm.trainConnectType = 2;
+                                        _pm.trainWorkingMode = 1;
+                                        _pm.connectedTrainProjectModels.Add(_itsOwn);
+                                        */
                                     }
-                                    catch (ArgumentException ex)
-                                    {
-                                        // Syntax error in the regular expression
+                                    if (_pm.trainConnectType == 2 && _pm.sameTrain_ProjectIndex.Equals("-1"))
+                                    {//长找长没找到
+                                        _pm.trainWorkingMode = 1;
                                     }
-                                    //自身写作短变长
-                                    _pm.trainWorkingMode = 1;
-                                    //复制自身作为短编车，改为-A钩，相同车钩号改为自身，直接存储起来不记录后序工作流
-                                    TrainProjectModel _shortTPM = _pm.Clone() as TrainProjectModel;
-                                    _shortTPM.sameTrain_ProjectIndex = _shortTPM.projectIndex;
-                                    _shortTPM.projectIndex = _shortTPM.projectIndex + "-A";
-                                    _shortTPM.secondTrainId = "";
-                                    //结束时间为重联的前一个动作时间
-                                    _shortTPM.endTime = _tpw.time;
-                                    //在复制的短编车内标记自身长编车
-                                    TrainProjectStruct _tps_LongInSelf = new TrainProjectStruct();
-                                    _tps_LongInSelf.trainId = _pm.trainId;
-                                    _tps_LongInSelf.secondTrainId = _pm.secondTrainId;
-                                    _tps_LongInSelf.trainConnectType = 2;
-                                    _tps_LongInSelf.projectIndex = _pm.projectIndex;
-                                    _tps_LongInSelf.relatedMovingTime = "";
-                                    _shortTPM.nextProject.Add(_tps_LongInSelf);
-                                    //在自身标记短编车
-                                    //添加到自身长编车的代表复制后短编的前序序列
-                                    TrainProjectStruct _tps_SelfInLong = new TrainProjectStruct();
-                                    _tps_SelfInLong.trainId = _shortTPM.trainId;
-                                    _tps_SelfInLong.trainConnectType = 0;
-                                    _tps_SelfInLong.projectIndex = _shortTPM.projectIndex;
-                                    //这个时间为重联前的最后一次工作时间
-                                    if (_shortTPM.trainProjectWorkingModel.Count > 0)
-                                    {
-                                        _tps_SelfInLong.relatedMovingTime = _shortTPM.trainProjectWorkingModel[_shortTPM.trainProjectWorkingModel.Count - 1].time;
-                                    }
-                                    else
-                                    {
-                                        _tps_SelfInLong.relatedMovingTime = "";
-                                    }
-                                    _pm.previousProject.Add(_tps_SelfInLong);
-                                    //自身工作流清空
-                                    _pm.trainProjectWorkingModel.Clear();
-                                    //自身写作重联车
-                                    _pm.trainConnectType = 2;
-                                    //开始时间为重联时间
-                                    _pm.startTime = _tpw.time;
-                                    //存储短编车
-                                    _trainProjectModels.Add(_shortTPM);
-                                    /*已弃用的方法
-                                    TrainProjectModel _itsOwn = (TrainProjectModel)_pm.Clone();
-                                    _pm.trainProjectWorkingModel.Clear();
-                                    _pm.trainConnectType = 2;
-                                    _pm.trainWorkingMode = 1;
-                                    _pm.connectedTrainProjectModels.Add(_itsOwn);
-                                    */
                                 }
-                                if (_pm.trainConnectType == 2 && _pm.sameTrain_ProjectIndex.Equals("-1"))
-                                {//长找长没找到
-                                    _pm.trainWorkingMode = 1;
-                                }
-                            }
-                                    //长找长找到了的 后面加完计划后再找
+                                //长找长找到了的 后面加完计划后再找
                                 //特殊情况：解编
                                 //解编时自身前半部分模型是公用的，后半部分各自引用
                                 if (_currentWork.Contains("进行解编") && _currentWork.Contains("道"))
@@ -6094,6 +6125,10 @@ namespace TimeTableAutoCompleteTool
                                     //大概率是还不知道是解编后的哪个车，因此后面如果获得了，就替换车次1，删除车次2
                                     if (_pm.sameTrain_ProjectIndex.Equals("-1"))
                                     {
+                                        if (_pm.trainId.Contains("5787") || _pm.trainId.Contains("5736"))
+                                        {
+                                            int sdc = 0;
+                                        }
                                         _pm.trainWorkingMode = 2;
                                         _pmBreak = (TrainProjectModel)_pm.Clone();
                                         _pmBreak.projectIndex = _pmBreak.projectIndex + "-A";
@@ -6110,6 +6145,7 @@ namespace TimeTableAutoCompleteTool
                                         _tps_LongInShort.trainConnectType = 2;
                                         _tps_LongInShort.projectIndex = _pm.projectIndex;
                                         //这个时间为解编前的最后一次工作时间
+
                                         if (_pm.trainProjectWorkingModel.Count > 0)
                                         {
                                             _tps_LongInShort.relatedMovingTime = _pm.trainProjectWorkingModel[_pm.trainProjectWorkingModel.Count - 1].time;
@@ -6215,72 +6251,222 @@ namespace TimeTableAutoCompleteTool
                                 {
                                     continue;
                                 }
-                        }
-                        //重联长找长，合并数据
-                        if (_pm.trainConnectType == 2 && !_pm.sameTrain_ProjectIndex.Equals("-1"))
-                        {
-                            for (int ij = 0; ij < _trainProjectModels.Count; ij++)
+                            }
+                            //重联长找长，合并数据
+                            if (_pm.trainConnectType == 2 && !_pm.sameTrain_ProjectIndex.Equals("-1") && _pm.nextProject.Count == 0)
                             {
-                                if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
+                                for (int ij = 0; ij < _trainProjectModels.Count; ij++)
                                 {
-                                    //检查入库车和出库车，最后将工作流添加进去
-                                    if (_trainProjectModels[ij].getInside_trainNum.Length == 0 && _pm.getInside_trainNum.Length != 0)
+                                    if (_trainProjectModels[ij].projectIndex.Equals(_pm.sameTrain_ProjectIndex))
                                     {
-                                        _trainProjectModels[ij].getInside_trainNum = _pm.getInside_trainNum;
-                                    }
-                                    if (_trainProjectModels[ij].getInside_track.Length == 0 && _pm.getInside_track.Length != 0)
-                                    {
-                                        _trainProjectModels[ij].getInside_track = _pm.getInside_track;
-                                    }
-                                    if (_trainProjectModels[ij].getInside_time.Length == 0 && _pm.getInside_time.Length != 0)
-                                    {
-                                        _trainProjectModels[ij].getInside_time = _pm.getInside_time;
-                                    }
-                                    if (_trainProjectModels[ij].getOutside_time.Length == 0 && _pm.getOutside_time.Length != 0)
-                                    {
-                                        _trainProjectModels[ij].getOutside_time = _pm.getOutside_time;
-                                    }
-                                    if (_trainProjectModels[ij].getOutside_track.Length == 0 && _pm.getOutside_track.Length != 0)
-                                    {
-                                        _trainProjectModels[ij].getOutside_track = _pm.getOutside_track;
-                                    }
-                                    if (_trainProjectModels[ij].getOutside_trainNum.Length == 0 && _pm.getOutside_trainNum.Length != 0)
-                                    {
-                                        _trainProjectModels[ij].getOutside_trainNum = _pm.getOutside_trainNum;
-                                    }
-                                    foreach (TrainProjectWorking _tpwm in _pm.trainProjectWorkingModel)
-                                    {//如果时间没有一样的就往里加
-                                        bool hasGotKey = false;
-                                        for (int ik = 0; ik < _trainProjectModels[ij].trainProjectWorkingModel.Count; ik++)
+                                        //检查入库车和出库车，最后将工作流添加进去
+                                        if (_trainProjectModels[ij].getInside_trainNum.Length == 0 && _pm.getInside_trainNum.Length != 0)
                                         {
-                                            if (_tpwm.time.Equals(_trainProjectModels[ij].trainProjectWorkingModel[ik].time))
+                                            _trainProjectModels[ij].getInside_trainNum = _pm.getInside_trainNum;
+                                        }
+                                        if (_trainProjectModels[ij].getInside_track.Length == 0 && _pm.getInside_track.Length != 0)
+                                        {
+                                            _trainProjectModels[ij].getInside_track = _pm.getInside_track;
+                                        }
+                                        if (_trainProjectModels[ij].getInside_time.Length == 0 && _pm.getInside_time.Length != 0)
+                                        {
+                                            _trainProjectModels[ij].getInside_time = _pm.getInside_time;
+                                        }
+                                        if (_trainProjectModels[ij].getOutside_time.Length == 0 && _pm.getOutside_time.Length != 0)
+                                        {
+                                            _trainProjectModels[ij].getOutside_time = _pm.getOutside_time;
+                                        }
+                                        if (_trainProjectModels[ij].getOutside_track.Length == 0 && _pm.getOutside_track.Length != 0)
+                                        {
+                                            _trainProjectModels[ij].getOutside_track = _pm.getOutside_track;
+                                        }
+                                        if (_trainProjectModels[ij].getOutside_trainNum.Length == 0 && _pm.getOutside_trainNum.Length != 0)
+                                        {
+                                            _trainProjectModels[ij].getOutside_trainNum = _pm.getOutside_trainNum;
+                                        }
+                                        foreach (TrainProjectWorking _tpwm in _pm.trainProjectWorkingModel)
+                                        {//如果时间没有一样的就往里加
+                                            bool hasGotKey = false;
+                                            for (int ik = 0; ik < _trainProjectModels[ij].trainProjectWorkingModel.Count; ik++)
                                             {
-                                                hasGotKey = true;
-                                                break;
+                                                if (_tpwm.time.Equals(_trainProjectModels[ij].trainProjectWorkingModel[ik].time))
+                                                {
+                                                    hasGotKey = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (hasGotKey)
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                _trainProjectModels[ij].trainProjectWorkingModel.Add(_tpwm);
                                             }
                                         }
-                                        if (hasGotKey)
-                                        {
-                                            continue;
-                                        }
-                                        else
-                                        {
-                                            _trainProjectModels[ij].trainProjectWorkingModel.Add(_tpwm);
-                                        }
+                                        //自身标记为3 默认不显示
+                                        _pm.trainWorkingMode = 3;
+                                        break;
                                     }
-                                    //自身标记为3 默认不显示
-                                    _pm.trainWorkingMode = 3;
-                                    break;
                                 }
                             }
                         }
+                        if (!hasBroken)
+                        {
+                            _trainProjectModels.Add(_pm);
+                        }
+                        else
+                        {
+                            _trainProjectModels.Add(_pmBreak);
+                        }
+
                     }
-                    _trainProjectModels.Add(_pm);
                 }
+                allTrainProjectModels = _trainProjectModels;
             }
-            allTrainProjectModels = _trainProjectModels;
+            catch(Exception trainProjectE)
+            {
+                MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + trainProjectE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
         }
 
+        private string checkEmptyTrack(List<TrainProjectModel> _trainProjectModels)
+        {//找计划中的空股道
+            try
+            {
+                string[] _allTracks = allEMUGarageTracks;
+                List<string> _emptyTracks = new List<string>();
+                for (int j = 0; j < _allTracks.Length; j++)
+                {
+                    string _t = _allTracks[j];
+                    _emptyTracks.Add(_t);
+                }
+                foreach (TrainProjectModel _tpm in _trainProjectModels)
+                {
+                    string track = "";
+                    if (_tpm.trainProjectWorkingModel.Count == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        track = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                        if (_tpm.trainId.Contains("5736") || _tpm.trainId.Contains("5787"))
+                        {
+                            int ass = 0;
+                        }
+                    }
+                    if (track != null && track.Length != 0)
+                    {//开始匹配
+                        if (!track.Contains("JC"))
+                        {
+                            bool hasGotIt = false;
+                            for (int i = 0; i < _emptyTracks.Count; i++)
+                            {//优先全字匹配
+                                if (track.Equals(_emptyTracks[i]))
+                                {
+                                    _emptyTracks.RemoveAt(i);
+                                    i--;
+                                    hasGotIt = true;
+                                    break;
+                                }
+                            }
+                            if (!hasGotIt)
+                            {
+                                for (int i = 0; i < _emptyTracks.Count; i++)
+                                {//如果匹配不上的话再split匹配
+                                    if (track.Split('G')[0].Equals(_emptyTracks[i]))
+                                    {
+                                        _emptyTracks.RemoveAt(i);
+                                        i--;
+                                        hasGotIt = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!hasGotIt)
+                            {//还没匹配上的话，自身为长编 但是可能停到了分割信号里
+                                for (int i = 0; i < _emptyTracks.Count; i++)
+                                {
+                                    if (track.Split('G')[0].Equals(_emptyTracks[i].Split('G')[0]))
+                                    {
+                                        _emptyTracks.RemoveAt(i);
+                                        i--;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {//最后一钩进检查线的车，判断进检查线的时间是否在0点后，是的话之前进的存场股道 不计为空股道
+                            int hours = -1;
+                            int.TryParse(_tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].time.Split(':')[0], out hours);
+                            if (hours < 8 && hours != -1)
+                            {
+                                bool hasGotIt = false;
+                                if (_tpm.trainProjectWorkingModel.Count > 1)
+                                {
+                                    if (_tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 2].track != null &&
+                                        _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 2].track.Length != 0 &&
+                                        !_tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 2].track.Contains("JC"))
+                                    {
+                                        track = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 2].track;
+                                    }
+                                }
+                                for (int i = 0; i < _emptyTracks.Count; i++)
+                                {//优先全字匹配
+                                    if (track.Equals(_emptyTracks[i]))
+                                    {
+                                        _emptyTracks.RemoveAt(i);
+                                        i--;
+                                        hasGotIt = true;
+                                        break;
+                                    }
+                                }
+                                if (!hasGotIt)
+                                {
+                                    for (int i = 0; i < _emptyTracks.Count; i++)
+                                    {//如果匹配不上的话再split匹配
+                                        if (track.Split('G')[0].Equals(_emptyTracks[i]))
+                                        {
+                                            _emptyTracks.RemoveAt(i);
+                                            i--;
+                                            hasGotIt = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!hasGotIt)
+                                {//还没匹配上的话，自身为长编 但是可能停到了分割信号里
+                                    for (int i = 0; i < _emptyTracks.Count; i++)
+                                    {
+                                        if (track.Split('G')[0].Equals(_emptyTracks[i].Split('G')[0]))
+                                        {
+                                            _emptyTracks.RemoveAt(i);
+                                            i--;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                string returnTracks = "";
+                foreach (string _t in _emptyTracks)
+                {
+                    returnTracks = returnTracks + _t + "  ";
+                }
+                return returnTracks;
+            }
+            catch (Exception checkEmpE)
+            {
+                MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + checkEmpE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            return "";
+
+        }
         private void matchTrackWithTrain_Project_btn_Click(object sender, EventArgs e)
         {
             trainTypeAutoComplete(true);
@@ -6292,11 +6478,11 @@ namespace TimeTableAutoCompleteTool
         {//判断是否启用调车作业辅助(测试版)
             if (hasTrainProjectFile)
             {
-                matchTrackWithTrain_Project_btn.Visible = true;
+                matchTrackWithTrain_Project_btn.Visible = false;
             }
             else
             {
-                matchTrackWithTrain_Project_btn.Visible = true;
+                matchTrackWithTrain_Project_btn.Visible = false;
             }
         }
 
