@@ -58,14 +58,15 @@ namespace TimeTableAutoCompleteTool
         //行车1，综控2，动车所3；
         public int modeSelect;
         float dpiX, dpiY;
+        string developer = "反馈请联系运转车间（或技术科）\n*亦可联系黄楠/高雅雯";
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
         string[] allEMUGarageTracks = {"1G", "2G", "3G", "4G1", "4G2", "5G1", "5G2", "6G1", "6G2", "7G1", "7G2", "8G1", "8G2", "9G1", "9G2", "10G1", "10G2", "11G1", "11G2", "12G1", "12G2", "13G1", "13G2",
         "14G", "15G","16G1", "16G2","17G1", "17G2","18G1", "18G2","19G", "20G","21G1", "21G2","22G", "23G","24G", "25G","26G", "27G","28G", "29G","30G", "31G","32G", "33G1", "33G2","34G1", "34G2",
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G"};
-        string build = "build 46 - v181119";
-        string readMe = "build46更新内容:\n" +
-            " 1、动车所增加调车计划识别功能，包含调车作业建议股道，钩数，走行线匹配检测以及空股道筛选（Beta）\n 2、(综控)现在可以识别17节400AF-B/400BF-B了。";
+        string build = "build 47 - v181122";
+        string readMe = "build47更新内容:\n" +
+            " 1、现在可以识别17节复兴号 400AF-B/400BF-B了。\n 2、(仅综控)修复了部分情况下，粘贴含有表格的客调命令导致识别错误问题。\n 3、修复了“～”符号导致车次无法识别的问题。";
 
         public Main()
         {
@@ -126,6 +127,7 @@ namespace TimeTableAutoCompleteTool
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件（----支持多选----）";
+                developerLabel.Text = "反馈请联系运转车间 - 罗思聪";
                 start_Btn.Text = "处理时刻表";
                 ExcelFile = new List<string>();
                 start_Btn.Enabled = false;
@@ -143,6 +145,7 @@ namespace TimeTableAutoCompleteTool
                 yesterdayCommandModel = new List<CommandModel>();
                 EMUGarage_YesterdayCommand_rtb.Text = "";
                 yesterdayCommand_rtb.Text = "";
+                developerLabel.Text = developer;
                 startBtnCheck();
                 radioButton4.Checked = true;
                 label111.Visible = false;
@@ -171,6 +174,7 @@ namespace TimeTableAutoCompleteTool
                 matchTrackWithTrain_Project_btn.Visible = false;
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
+                developerLabel.Text = "反馈请联系运转车间 - 罗思聪";
                 yesterdayCommandModel = new List<CommandModel>();
                 EMUGarage_YesterdayCommand_rtb.Text = "";
                 yesterdayCommand_rtb.Text = "";
@@ -813,6 +817,17 @@ namespace TimeTableAutoCompleteTool
             }
             List<string> commands = new List<string>();
             standardCommand = removing(standardCommand.Trim());
+            /*
+            if (!isYesterday)
+            {
+                command_rTb.Text = standardCommand;
+            }
+            else
+            {
+                yesterdayCommand_rtb.Text = standardCommand;
+                yesterdayCommandText = standardCommand;
+            }
+            */
             commands.Add(standardCommand.Trim());
             return commands;
         }
@@ -828,8 +843,38 @@ namespace TimeTableAutoCompleteTool
 
             if (standardCommand.Contains("~"))
                 standardCommand = standardCommand.Replace("~", "～");
-            if (standardCommand.Contains("~"))
-                standardCommand = standardCommand.Replace("~", "～");
+            if (standardCommand.Contains("1\t2"))
+                standardCommand = standardCommand.Replace("1\t2", "1、2");
+            if (standardCommand.Contains("2\t2"))
+                standardCommand = standardCommand.Replace("2\t2", "2、2");
+            if (standardCommand.Contains("3\t2"))
+                standardCommand = standardCommand.Replace("3\t2", "3、2");
+            if (standardCommand.Contains("4\t2"))
+                standardCommand = standardCommand.Replace("4\t2", "4、2");
+            if (standardCommand.Contains("5\t2"))
+                standardCommand = standardCommand.Replace("5\t2", "5、2");
+            if (standardCommand.Contains("6\t2"))
+                standardCommand = standardCommand.Replace("6\t2", "6、2");
+            if (standardCommand.Contains("7\t2"))
+                standardCommand = standardCommand.Replace("7\t2", "7、2");
+            if (standardCommand.Contains("8\t2"))
+                standardCommand = standardCommand.Replace("8\t2", "8、2");
+            if (standardCommand.Contains("9\t2"))
+                standardCommand = standardCommand.Replace("9\t2", "9、2");
+            if (standardCommand.Contains("0\t2"))
+                standardCommand = standardCommand.Replace("0\t2", "0、2");
+            string s1 = string.Empty;
+            foreach (char c in standardCommand)
+            {
+                if (c == '\t' )
+                {
+                    continue;
+                }
+                s1 += c;
+            }
+            standardCommand = s1;
+            if (standardCommand.Contains("～"))
+                standardCommand = standardCommand.Replace("～", "");
             if (standardCommand.Contains("签发："))
                 standardCommand = standardCommand.Replace("签发：", "");
             if (standardCommand.Contains("会签："))
@@ -870,6 +915,8 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("}", "）");
             if (standardCommand.Contains(" "))
                 standardCommand = standardCommand.Replace(" ", "");
+            if (standardCommand.Contains("人："))
+                standardCommand = standardCommand.Replace("人：", "");
             return standardCommand;
         }
 
@@ -2731,7 +2778,15 @@ namespace TimeTableAutoCompleteTool
             {
                 allResults = allResults + _str + "\n";
             }
-            comparedResult_rtb.Text = allResults;
+            if(allResults.Trim().Replace(" ","").Length == 0)
+            {
+                comparedResult_rtb.Text = "两天的命令似乎没有任何区别哦~\n(请注意检查一下，或者随便把车型改一改试试)";
+            }
+            else
+            {
+                comparedResult_rtb.Text = allResults;
+            }
+
 
         }
 
