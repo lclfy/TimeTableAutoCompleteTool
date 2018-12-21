@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace TimeTableAutoCompleteTool
 {
-    class DailySchedule : IComparable<DailySchedule>
+    class DailySchedule : IComparable<DailySchedule>, ICloneable
     {
         public int id { get; set; }
         public string trainNumber { get; set; }
@@ -36,6 +36,56 @@ namespace TimeTableAutoCompleteTool
         //南1-北0
         public int upOrDown { get; set; }
 
+        public DailySchedule()
+        {
+            id = -1;
+            trainNumber = "";
+            streamStatus = -1;
+            startStation = "";
+            stopStartStatus = -1;
+            stopStation = "";
+            startTime = "";
+            stopTime = "";
+            trainType = -1;
+            stopToStartTime = "";
+            trainBelongsTo = "";
+            trackNum = "";
+            trainConnectType = "";
+            ratedSeats = "";
+            trainModel = "";
+            extraText = "";
+            tipsText = "";
+            hasDifferentPart = false;
+            presaleTime = -1;
+            upOrDown = -1;
+        }
+
+        public object Clone()
+        {
+            DailySchedule _ds = new DailySchedule();
+            _ds.id =id;
+            _ds.trainNumber = trainNumber;
+            _ds.streamStatus = streamStatus;
+            _ds.startStation = startStation;
+            _ds.stopStartStatus = stopStartStatus;
+            _ds.stopStation = stopStation;
+            _ds.startTime = startTime;
+            _ds.stopTime = stopTime;
+            _ds.trainType = trainType;
+            _ds.stopToStartTime = stopToStartTime;
+            _ds.trainBelongsTo = trainBelongsTo;
+            _ds.trackNum = trackNum;
+            _ds.trainConnectType = trainConnectType;
+            _ds.ratedSeats = ratedSeats;
+            _ds.trainModel = trainModel;
+            _ds.extraText = extraText;
+            _ds.tipsText = tipsText;
+            _ds.hasDifferentPart = hasDifferentPart;
+            _ds.presaleTime = presaleTime;
+            _ds.upOrDown = upOrDown;
+
+            return _ds as object;//深复制
+        }
 
         public int CompareTo(DailySchedule other)
         {

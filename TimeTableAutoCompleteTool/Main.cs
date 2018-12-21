@@ -32,10 +32,14 @@ namespace TimeTableAutoCompleteTool
         private List<CommandModel> detectedCModel;
         private List<CaculatorModel> caculatorModel;
         private List<DailySchedule> allDailyScheduleModel;
+        private List<DailySchedule> yesterdayAllDailyScheduleModel;
+        private List<DailySchedule> comparingDailyScheduleModel;
         private List<EMUCheckModel> allEmuCheckModel;
         private List<TrainProjectModel> allTrainProjectModels;
         private List<EMUGarageTableModel> allEMUGarageTableModels;
         List<string> ExcelFile = new List<string>();
+        //综控班计划对比用的
+        string yesterdayExcelFile = "";
         List<string> EMUGarageFile = new List<string>();
         private string startPath = "";
         private string wrongTrain = "";
@@ -63,10 +67,12 @@ namespace TimeTableAutoCompleteTool
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
         string[] allEMUGarageTracks = {"1G", "2G", "3G", "4G1", "4G2", "5G1", "5G2", "6G1", "6G2", "7G1", "7G2", "8G1", "8G2", "9G1", "9G2", "10G1", "10G2", "11G1", "11G2", "12G1", "12G2", "13G1", "13G2",
         "14G", "15G","16G1", "16G2","17G1", "17G2","18G1", "18G2","19G", "20G","21G1", "21G2","22G", "23G","24G", "25G","26G", "27G","28G", "29G","30G", "31G","32G", "33G1", "33G2","34G1", "34G2",
-        "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G"};
-        string build = "build 47 - v181122";
-        string readMe = "build47更新内容:\n" +
-            " 1、现在可以识别17节复兴号 400AF-B/400BF-B了。\n 2、(仅综控)修复了部分情况下，粘贴含有表格的客调命令导致识别错误问题。\n 3、修复了“～”符号导致车次无法识别的问题。";
+        "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
+        ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
+        ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
+        string build = "build 49 - v181221";
+        string readMe = "build49更新内容:\n" +
+            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能 \n 3. 修复了选择文件后 再次选择时点击取消导致空指针的问题。";
 
         public Main()
         {
@@ -118,12 +124,14 @@ namespace TimeTableAutoCompleteTool
             if (radioButton1.Checked)
             {
                 EMUorEMUC_groupBox.Visible = false;
+                compareDailySchedue_btn.Visible = false;
                 label111.Visible = true;
                 label222.Visible = true;
                 rightGroupBox.Visible = true;
                 rightGroupBox_Compare.Visible = false;
                 rightGroupBox_EMUGarage.Visible = false;
                 FontSize_tb.Visible = true;
+                yesterdayExcelFile = "";
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件（----支持多选----）";
@@ -141,7 +149,9 @@ namespace TimeTableAutoCompleteTool
             else if (radioButton2.Checked)
             {
                 EMUorEMUC_groupBox.Visible = true;
+                compareDailySchedue_btn.Visible = true;
                 yesterdayCommandText = "";
+                yesterdayExcelFile = "";
                 yesterdayCommandModel = new List<CommandModel>();
                 EMUGarage_YesterdayCommand_rtb.Text = "";
                 yesterdayCommand_rtb.Text = "";
@@ -168,8 +178,10 @@ namespace TimeTableAutoCompleteTool
             {
                 //归零调车计划文件
                 trainProjectFile = "";
+                compareDailySchedue_btn.Visible = false;
                 hasTrainProjectFile = false;
                 trainProjectText = "";
+                yesterdayExcelFile = "";
                 trainPorjectFilePath_lbl.Text = "";
                 matchTrackWithTrain_Project_btn.Visible = false;
                 EMUorEMUC_groupBox.Visible = false;
@@ -320,6 +332,15 @@ namespace TimeTableAutoCompleteTool
             {
                 start_Btn.Enabled = false;
                 //TrainEarlyCaculator_Btn.Enabled = false;
+            }
+            //综控班计划对比
+            if (hasFilePath)
+            {
+                compareDailySchedue_btn.Enabled = true;
+            }
+            else
+            {
+                compareDailySchedue_btn.Enabled = false;
             }
             if (yesterdayCommandModel != null && yesterdayCommandModel.Count != 0 && hasFilePath && hasText && ExcelFile.Count > 0)
             {
@@ -1155,9 +1176,9 @@ namespace TimeTableAutoCompleteTool
 
 
         //使用NPOI进行Excel操作
-        private void SelectPath()
+        private void SelectPath(bool compareDailySchedue = false)
         {
-            ExcelFile = new List<string>();
+            yesterdayExcelFile = "";
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
             openFileDialog1.Filter = "Excel 文件 |*.xlsx;*.xls";
             openFileDialog1.InitialDirectory = Application.StartupPath + "\\" + startPath + "\\";
@@ -1174,23 +1195,35 @@ namespace TimeTableAutoCompleteTool
             openFileDialog1.RestoreDirectory = true;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                int fileCount = 0;
-                String fileNames = "已选择：";
-                foreach (string fileName in openFileDialog1.FileNames)
+                if (!compareDailySchedue)
                 {
-                    fileCount++;
-                    ExcelFile.Add(fileName);
-                }
+                    ExcelFile = new List<string>();
+                    int fileCount = 0;
+                    String fileNames = "已选择：";
+                    foreach (string fileName in openFileDialog1.FileNames)
+                    {
+                        fileCount++;
+                        ExcelFile.Add(fileName);
+                    }
 
-                if (radioButton1.Checked)
-                {
-                    this.filePathLBL.Text = "已选择：" + fileCount + "个文件";
+                    if (radioButton1.Checked || radioButton2.Checked)
+                    {
+                        this.filePathLBL.Text = "已选择：" + fileCount + "个文件";
+                    }
+                    else
+                    {
+                        this.filePathLBL.Text = "已选择：" + openFileDialog1.FileName;     //显示文件路径 
+                    }
+                    hasFilePath = true;
                 }
                 else
-                {
-                    this.filePathLBL.Text = "已选择：" + openFileDialog1.FileName;     //显示文件路径 
+                {//综控班计划对比
+                    foreach (string fileName in openFileDialog1.FileNames)
+                    {
+                        yesterdayExcelFile = fileName;
+                        compareDailySchedues();
+                    }
                 }
-                hasFilePath = true;
                 startBtnCheck();
             }
         }
@@ -1649,14 +1682,27 @@ namespace TimeTableAutoCompleteTool
     
 
         //读基本图-存模型
-        private void readBasicTrainTable(bool isComparing = false)
+        private void readBasicTrainTable(bool isComparing = false,bool isCompareingDailySchedues = false)
         {
             if (ExcelFile == null)
             {
                 MessageBox.Show("请重新选择班计划文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            string fileName = ExcelFile[0];
+            if(isCompareingDailySchedues && yesterdayExcelFile.Length == 0)
+            {
+                MessageBox.Show("请重新选择用于对比的班计划文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            string fileName = "";
+            if (!isCompareingDailySchedues)
+            {
+                fileName = ExcelFile[0];
+            }
+            else
+            {
+                fileName = yesterdayExcelFile;
+            }
             IWorkbook workbook = null;  //新建IWorkbook对象  
             basicTrainGraphTitle titleInfo = new basicTrainGraphTitle();
             List<DailySchedule> _dailyScheduleModel = new List<DailySchedule>();
@@ -1937,28 +1983,39 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
                 //验错
-                detectedCModel = new List<CommandModel>();
-                string unresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel,null, commandModel, commandText);
-                if (unresolvedTrains.Length != 0)
+                if (!isCompareingDailySchedues && yesterdayExcelFile.Length == 0)
                 {
-                    MessageBox.Show("请核对以下未识别车次：\n" + unresolvedTrains + "\n位于->今日客调命令(←已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                //下一步-处理数据
-                if (!isComparing)
-                {
-                    analyzeDailyScheduleData(_dailyScheduleModel);
-                }
-                else
-                {
-                    //查昨日错
-                    string yesterdayUnresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel,null, yesterdayCommandModel, yesterdayCommandText, true);
-                    if (yesterdayUnresolvedTrains.Length != 0)
+                    detectedCModel = new List<CommandModel>();
+                    string unresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, null, commandModel, commandText);
+                    if (unresolvedTrains.Length != 0)
                     {
-                        MessageBox.Show("请核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("请核对以下未识别车次：\n" + unresolvedTrains + "\n位于->今日客调命令(←已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
-                    compareWithYesterday(_dailyScheduleModel,null);
+                    //下一步-处理数据
+                    if (!isComparing)
+                    {
+                        analyzeDailyScheduleData(_dailyScheduleModel);
+                    }
+                    else
+                    {
+                        //查昨日错
+                        string yesterdayUnresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, null, yesterdayCommandModel, yesterdayCommandText, true);
+                        if (yesterdayUnresolvedTrains.Length != 0)
+                        {
+                            MessageBox.Show("请核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        compareWithYesterday(_dailyScheduleModel, null);
+                    }
                 }
-
+                //双班计划对比
+                else if(isCompareingDailySchedues)
+                {
+                    yesterdayAllDailyScheduleModel = _dailyScheduleModel;
+                }
+                else if (!isCompareingDailySchedues)
+                {
+                    allDailyScheduleModel = _dailyScheduleModel;
+                }
             }
             /*
             catch (Exception e)
@@ -3422,10 +3479,15 @@ namespace TimeTableAutoCompleteTool
         }
 
         //创建班计划
-        private void createDailySchedule()
+        private void createDailySchedule(bool isCompareingDailySchedues = false)
         {
-                //创建Excel文件名称
-                FileStream fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
+            //创建Excel文件名称
+            FileStream fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
+            if(isCompareingDailySchedues)
+            {
+                fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls");
+            }
+            
                 //创建工作薄
                 IWorkbook workbook = new HSSFWorkbook();
 
@@ -3670,7 +3732,7 @@ namespace TimeTableAutoCompleteTool
                                     DateTime dtStop;
                                     DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
                                     dtFormat.ShortDatePattern = "HH:mm";
-                                    if (allDailyScheduleModel[i - 2].stopTime != null)
+                                    if (allDailyScheduleModel[i - 2].stopTime != null && allDailyScheduleModel[i - 2].stopTime.Length != 0)
                                     {
                                         dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime, dtFormat);
                                         row.CreateCell(column).SetCellType(CellType.Numeric);
@@ -3685,7 +3747,7 @@ namespace TimeTableAutoCompleteTool
                                     DateTime dtStart;
                                     DateTimeFormatInfo dtFormat1 = new DateTimeFormatInfo();
                                     dtFormat1.ShortDatePattern = "HH:mm";
-                                    if (allDailyScheduleModel[i - 2].startTime != null)
+                                    if (allDailyScheduleModel[i - 2].startTime != null && allDailyScheduleModel[i - 2].startTime.Length != 0)
                                     {
                                         dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime, dtFormat1);
                                         row.CreateCell(column).SetCellType(CellType.Numeric);
@@ -3748,7 +3810,6 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         row.CreateCell(column).SetCellValue("停运");
                                     }
-
                                     break;
                             }
                             if (column > 1)
@@ -3797,8 +3858,15 @@ namespace TimeTableAutoCompleteTool
                 }
                 System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
                 //info.WorkingDirectory = Application.StartupPath;
+            if (!isCompareingDailySchedues)
+            {
                 info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls";
-                info.Arguments = "";
+            }
+            else
+            {
+                info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls";
+            }
+            info.Arguments = "";
                 try
                 {
                     System.Diagnostics.Process.Start(info);
@@ -4185,6 +4253,212 @@ namespace TimeTableAutoCompleteTool
                 MessageBox.Show(this, we.Message);
                 return;
             }
+        }
+
+        //综控班计划对比按钮
+        private void compareDailySchedue_btn_Click(object sender, EventArgs e)
+        {
+            SelectPath(true);
+        }
+
+        //综控班计划对比
+        private void compareDailySchedues()
+        {
+            List<DailySchedule> _compareingResult = new List<DailySchedule>();
+            //读原图
+            readBasicTrainTable();
+            //读对比图
+            readBasicTrainTable(false, true);
+            if(allDailyScheduleModel!=null && allDailyScheduleModel.Count!=0 &&
+                yesterdayAllDailyScheduleModel != null && yesterdayAllDailyScheduleModel.Count != 0)
+            {
+                //A有B也有的车，A有B没有的车
+                foreach(DailySchedule _ds in allDailyScheduleModel)
+                {
+                    bool hasGotIt = false;
+                    foreach (DailySchedule _dsCompare in yesterdayAllDailyScheduleModel)
+                    {
+                        DailySchedule originalDS = new DailySchedule();
+                        DailySchedule compareDS = new DailySchedule();
+                        if(_ds.trainNumber.Contains("/")&& _dsCompare.trainNumber.Contains("/"))
+                        {
+                            List<string> originalTrainNumber = splitTrainNumber(_ds.trainNumber);
+                            List<string> compareTrainNumber = splitTrainNumber(_dsCompare.trainNumber);
+                            if(originalTrainNumber.Count >1 && compareTrainNumber.Count > 1)
+                            {
+                                if (originalTrainNumber[0].Equals(compareTrainNumber[0]) ||
+                                    originalTrainNumber[0].Equals(compareTrainNumber[1]))
+                                {//相同车次
+                                    hasGotIt = true;
+                                    //去掉车型里面的汉字
+                                    if (_ds.startStation.Equals(_dsCompare.startStation) &&
+                                        _ds.stopStation.Equals(_dsCompare.stopStation) &&
+                                        _ds.stopTime.Equals(_dsCompare.stopTime) &&
+                                        _ds.startTime.Equals(_dsCompare.startTime) &&
+                                        _ds.stopToStartTime.Equals(_dsCompare.stopToStartTime) &&
+                                        _ds.stopStartStatus.Equals(_dsCompare.stopStartStatus) &&
+                                        _ds.trainBelongsTo.Equals(_dsCompare.trainBelongsTo) &&
+                                        _ds.trackNum.Equals(_dsCompare.trackNum) &&
+                                        _ds.trainConnectType.Equals(_dsCompare.trainConnectType) &&
+                                        _ds.ratedSeats.Equals(_dsCompare.ratedSeats) &&
+                                        Regex.Replace(_ds.trainModel, @"[\u4e00-\u9fa5]", "").Equals(Regex.Replace(_dsCompare.trainModel, @"[\u4e00-\u9fa5]", "")))
+                                    {//对比内容 始发站 终到站 到时 开时 站停时 始发终到状态 归属 股道 编组方式 定员 车型
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        DailySchedule _tempOriginalDS = new DailySchedule();
+                                        DailySchedule _tempCompareDS = new DailySchedule();
+                                        _tempOriginalDS = (DailySchedule)_ds.Clone();
+                                        _tempCompareDS = (DailySchedule)_dsCompare.Clone();
+                                        _tempOriginalDS.extraText = "原计划";
+                                        _tempCompareDS.extraText = "↑对比计划↑";
+                                        _compareingResult.Add(_tempOriginalDS);
+                                        _compareingResult.Add(_tempCompareDS);
+                                    }
+                                }
+                            }
+                        }
+                        else if(!_ds.trainNumber.Contains("/") && !_dsCompare.trainNumber.Contains("/"))
+                        {
+                            if (_ds.trainNumber.Equals(_dsCompare.trainNumber))
+                            {//相同车次
+                                hasGotIt = true;
+                                if (_ds.startStation.Equals(_dsCompare.startStation) &&
+                                    _ds.stopStation.Equals(_dsCompare.stopStation) &&
+                                       _ds.stopTime.Equals(_dsCompare.stopTime) &&
+                                       _ds.startTime.Equals(_dsCompare.startTime) &&
+                                       _ds.stopToStartTime.Equals(_dsCompare.stopToStartTime) &&
+                                       _ds.stopStartStatus.Equals(_dsCompare.stopStartStatus) &&
+                                       _ds.trainBelongsTo.Equals(_dsCompare.trainBelongsTo) &&
+                                       _ds.trackNum.Equals(_dsCompare.trackNum) &&
+                                       _ds.trainConnectType.Equals(_dsCompare.trainConnectType) &&
+                                       _ds.ratedSeats.Equals(_dsCompare.ratedSeats) &&
+                                       _ds.trainModel.Equals(_dsCompare.trainModel))
+                                {//对比内容 始发站 终到站 到时 开时 站停时 始发终到状态 归属 股道 编组方式 定员 车型
+                                    break;
+                                }
+                                else
+                                {
+                                    DailySchedule _tempOriginalDS = new DailySchedule();
+                                    DailySchedule _tempCompareDS = new DailySchedule();
+                                    _tempOriginalDS = (DailySchedule)_ds.Clone();
+                                    _tempCompareDS = (DailySchedule)_dsCompare.Clone();
+                                    _tempOriginalDS.extraText = "原计划";
+                                    _tempCompareDS.extraText = "↑对比计划↑";
+                                    _compareingResult.Add(_tempOriginalDS);
+                                    _compareingResult.Add(_tempCompareDS);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    if (!hasGotIt)
+                    {//A有B没有的车
+                        DailySchedule _tempOriginalDS = new DailySchedule();
+                        _tempOriginalDS = (DailySchedule)_ds.Clone();
+                        _tempOriginalDS.extraText = "原计划中新增车次";
+                        _compareingResult.Add(_tempOriginalDS);
+                    }
+                }
+                //B多的车
+                foreach (DailySchedule _ds in yesterdayAllDailyScheduleModel)
+                {
+                    bool hasGotIt = false;
+                    foreach (DailySchedule _dsCompare in allDailyScheduleModel)
+                    {
+                        DailySchedule originalDS = new DailySchedule();
+                        DailySchedule compareDS = new DailySchedule();
+                        if (_ds.trainNumber.Contains("/") && _dsCompare.trainNumber.Contains("/"))
+                        {
+                            List<string> originalTrainNumber = splitTrainNumber(_ds.trainNumber);
+                            List<string> compareTrainNumber = splitTrainNumber(_dsCompare.trainNumber);
+                            if (originalTrainNumber.Count > 1 && compareTrainNumber.Count > 1)
+                            {
+                                if (originalTrainNumber[0].Equals(compareTrainNumber[0]) ||
+                                    originalTrainNumber[0].Equals(compareTrainNumber[1]))
+                                {//相同车次
+                                    hasGotIt = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else if (!_ds.trainNumber.Contains("/") && !_dsCompare.trainNumber.Contains("/"))
+                        {
+                            if (_ds.trainNumber.Equals(_dsCompare.trainNumber))
+                            {//相同车次
+                                hasGotIt = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    if (hasGotIt)
+                    {
+                        continue;
+                    }
+                    else
+                    {//多的
+                        DailySchedule _tempOriginalDS = new DailySchedule();
+                        _tempOriginalDS = (DailySchedule)_ds.Clone();
+                        _tempOriginalDS.extraText = "对比计划中新增车次";
+                        _compareingResult.Add(_tempOriginalDS);
+                    }
+                }
+            }
+            //因为创建班计划写定了是用当日的班计划模型 所以改起来很麻烦 故采用赋值方式
+            List<DailySchedule> _tDSAllModel = new List<DailySchedule>();
+            foreach(DailySchedule _tDS in allDailyScheduleModel)
+            {
+                DailySchedule _cloneTDS = (DailySchedule)_tDS.Clone();
+                _tDSAllModel.Add(_cloneTDS);
+            }
+            allDailyScheduleModel = new List<DailySchedule>();
+            allDailyScheduleModel = _compareingResult;
+            createDailySchedule(true);
+            allDailyScheduleModel = _tDSAllModel;
+        }
+
+        //车次一拆为二
+        private List<string> splitTrainNumber(string trainNumber)
+        {
+            if(!trainNumber.Contains("/"))
+            {
+                return null;
+            }
+            string[] trainWithDoubleNumber = trainNumber.Split('/');
+            bool _hasGotIt = false;
+            string firstTrainWord = trainNumber.Split('/')[0];
+            string secondTrainWord = "";
+            for (int q = 0; q < firstTrainWord.Length; q++)
+            {
+                if (q < firstTrainWord.Length - trainWithDoubleNumber[1].Length)
+                {
+                    secondTrainWord = secondTrainWord + firstTrainWord[q];
+                }
+                else
+                {
+                    if (_hasGotIt != true)
+                    {
+                        secondTrainWord = secondTrainWord + trainWithDoubleNumber[1];
+                        _hasGotIt = true;
+                    }
+                }
+                if (_hasGotIt)
+                {
+                    break;
+                }
+            }
+            List<string> _values = new List<string>();
+            _values.Add(firstTrainWord);
+            _values.Add(secondTrainWord);
+            return _values;
         }
 
         //动车所填车型
@@ -6407,10 +6681,6 @@ namespace TimeTableAutoCompleteTool
                     else
                     {
                         track = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
-                        if (_tpm.trainId.Contains("5736") || _tpm.trainId.Contains("5787"))
-                        {
-                            int ass = 0;
-                        }
                     }
                     if (track != null && track.Length != 0)
                     {//开始匹配
@@ -6528,6 +6798,8 @@ namespace TimeTableAutoCompleteTool
             Form _displaySystem = new Display();
             _displaySystem.Show();
         }
+
+
 
         private void trainProjectBtnCheck()
         {//判断是否启用调车作业辅助(测试版)
