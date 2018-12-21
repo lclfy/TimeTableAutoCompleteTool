@@ -33,7 +33,6 @@ namespace TimeTableAutoCompleteTool
         private List<CaculatorModel> caculatorModel;
         private List<DailySchedule> allDailyScheduleModel;
         private List<DailySchedule> yesterdayAllDailyScheduleModel;
-        private List<DailySchedule> comparingDailyScheduleModel;
         private List<EMUCheckModel> allEmuCheckModel;
         private List<TrainProjectModel> allTrainProjectModels;
         private List<EMUGarageTableModel> allEMUGarageTableModels;
@@ -70,9 +69,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 49 - v181221";
-        string readMe = "build49更新内容:\n" +
-            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能 \n 3、修复了选择文件后 再次选择时点击取消导致空指针的问题。\n 4、修复了高dpi下显示异常问题。";
+        string build = "build 50 - v181222";
+        string readMe = "build50更新内容:\n" +
+            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能，对比标黄 \n 3、修复了选择文件后 再次选择时点击取消导致空指针的问题。\n 4、修复了高dpi下显示异常问题。\n 5、取消了综控室选择文件的默认文件夹";
 
         public Main()
         {
@@ -1182,7 +1181,11 @@ namespace TimeTableAutoCompleteTool
             yesterdayExcelFile = "";
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
             openFileDialog1.Filter = "Excel 文件 |*.xlsx;*.xls";
-            openFileDialog1.InitialDirectory = Application.StartupPath + "\\" + startPath + "\\";
+            if (!radioButton2.Checked)
+            {
+                openFileDialog1.InitialDirectory = Application.StartupPath + "\\" + startPath + "\\";
+            }
+
             //openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
             if (radioButton1.Checked)
             {
@@ -3533,7 +3536,32 @@ namespace TimeTableAutoCompleteTool
                 stoppedTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
                 stoppedTimeStyle.DataFormat = 20;
 
-                HSSFFont font = (HSSFFont)workbook.CreateFont();
+            //对比出不同的值时候的黄色
+            ICellStyle differentCellStyle = workbook.CreateCellStyle();
+            differentCellStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+            differentCellStyle.FillPattern = FillPattern.SolidForeground;
+            differentCellStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+            differentCellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentCellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentCellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentCellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentCellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            differentCellStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            differentCellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+            ICellStyle differentTimeStyle = workbook.CreateCellStyle();
+            differentTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+            differentTimeStyle.FillPattern = FillPattern.SolidForeground;
+            differentTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+            differentTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            differentTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            differentTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+            differentTimeStyle.DataFormat = 20;
+
+            HSSFFont font = (HSSFFont)workbook.CreateFont();
                 font.FontName = "宋体";//字体  
                 font.FontHeightInPoints = 10;//字号  
                 font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
@@ -3569,7 +3597,8 @@ namespace TimeTableAutoCompleteTool
                 fontNormal.FontHeightInPoints = 10;//字号  
                 normalStyle.SetFont(fontNormal);
                 normalTimeStyle.SetFont(fontNormal);
-
+                differentCellStyle.SetFont(fontNormal);
+                differentTimeStyle.SetFont(fontNormal);
 
                 //创建sheet
                 ISheet sheet = workbook.CreateSheet("基本图");
@@ -3589,7 +3618,14 @@ namespace TimeTableAutoCompleteTool
                         //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
                         sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, 15));
                         row.Height = 15 * 20;
+                    if (!isCompareingDailySchedues)
+                    {
                         row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日班计划");
+                    }
+                    else
+                    {
+                        row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日对比");
+                    }
                         row.GetCell(0).CellStyle = boldStyle;
                     }
                     else if (i == 1)
@@ -3724,10 +3760,26 @@ namespace TimeTableAutoCompleteTool
                                     row.CreateCell(column).SetCellValue(trainNumber);
                                     break;
                                 case 3:
+                                if(allDailyScheduleModel[i - 2].startStation.Contains("<difference>"))
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation.Split('<')[0]);
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation);
+                                }
                                     break;
                                 case 4:
+                                if (allDailyScheduleModel[i - 2].stopStation.Contains("<difference>"))
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation.Split('<')[0]);
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation);
+                                }
                                     break;
                                 case 5:
                                     DateTime dtStop;
@@ -3735,9 +3787,20 @@ namespace TimeTableAutoCompleteTool
                                     dtFormat.ShortDatePattern = "HH:mm";
                                     if (allDailyScheduleModel[i - 2].stopTime != null && allDailyScheduleModel[i - 2].stopTime.Length != 0)
                                     {
+                                    if(allDailyScheduleModel[i - 2].stopTime.Contains("<difference>"))
+                                    {
+                                        dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime.Split('<')[0], dtFormat);
+                                        row.CreateCell(column).SetCellType(CellType.Numeric);
+                                        row.CreateCell(column).SetCellValue(dtStop);
+                                        row.GetCell(column).CellStyle = differentTimeStyle;
+                                    }
+                                    else
+                                    {
                                         dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime, dtFormat);
                                         row.CreateCell(column).SetCellType(CellType.Numeric);
                                         row.CreateCell(column).SetCellValue(dtStop);
+                                    }
+
                                     }
                                     else
                                     {
@@ -3750,9 +3813,19 @@ namespace TimeTableAutoCompleteTool
                                     dtFormat1.ShortDatePattern = "HH:mm";
                                     if (allDailyScheduleModel[i - 2].startTime != null && allDailyScheduleModel[i - 2].startTime.Length != 0)
                                     {
+                                    if (allDailyScheduleModel[i - 2].startTime.Contains("<difference>"))
+                                    {
+                                        dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime.Split('<')[0], dtFormat1);
+                                        row.CreateCell(column).SetCellType(CellType.Numeric);
+                                        row.CreateCell(column).SetCellValue(dtStart);
+                                        row.GetCell(column).CellStyle = differentTimeStyle;
+                                    }
+                                    else
+                                    {
                                         dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime, dtFormat1);
                                         row.CreateCell(column).SetCellType(CellType.Numeric);
                                         row.CreateCell(column).SetCellValue(dtStart);
+                                    }
                                     }
                                     else
                                     {
@@ -3760,7 +3833,15 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     break;
                                 case 7:
+                                if (allDailyScheduleModel[i - 2].stopToStartTime.Contains("<difference>"))
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime.Split('<')[0]);
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime);
+                                }
                                     break;
                                 case 8:
                                     row.CreateCell(column);
@@ -3773,6 +3854,21 @@ namespace TimeTableAutoCompleteTool
                                     break;
                                 case 11:
                                     int outTrackNum = 0;
+                                if(allDailyScheduleModel[i - 2].trackNum.Contains("<difference>"))
+                                {
+                                    int.TryParse(allDailyScheduleModel[i - 2].trackNum.Split('<')[0], out outTrackNum);
+                                    if (outTrackNum == 0)
+                                    {
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum.Split('<')[0]);
+                                    }
+                                    else
+                                    {
+                                        row.CreateCell(column).SetCellValue(outTrackNum);
+                                    }
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     int.TryParse(allDailyScheduleModel[i - 2].trackNum, out outTrackNum);
                                     if (outTrackNum == 0)
                                     {
@@ -3782,9 +3878,25 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         row.CreateCell(column).SetCellValue(outTrackNum);
                                     }
+                                }
+
                                     break;
                                 case 12:
                                     int outConnectType = 0;
+                                if(allDailyScheduleModel[i - 2].trainConnectType.Contains("<difference>"))
+                                {
+                                    int.TryParse(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0], out outConnectType);
+                                    if (outConnectType == 0)
+                                    {
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0]);
+                                    }
+                                    else
+                                    {
+                                        row.CreateCell(column).SetCellValue(outConnectType);
+                                    }
+                                }
+                                else
+                                {
                                     int.TryParse(allDailyScheduleModel[i - 2].trainConnectType, out outConnectType);
                                     if (outConnectType == 0)
                                     {
@@ -3794,13 +3906,31 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         row.CreateCell(column).SetCellValue(outConnectType);
                                     }
+                                }
+
 
                                     break;
                                 case 13:
+                                if (allDailyScheduleModel[i - 2].trainModel.Contains("<difference>"))
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel.Split('<')[0]);
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel);
+                                }
                                     break;
                                 case 14:
+                                if (allDailyScheduleModel[i - 2].trainBelongsTo.Contains("<difference>"))
+                                {
+                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo.Split('<')[0]);
+                                    row.GetCell(column).CellStyle = differentCellStyle;
+                                }
+                                else
+                                {
                                     row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo);
+                                }
                                     break;
                                 case 15:
                                     if (allDailyScheduleModel[i - 2].streamStatus != 0)
@@ -3813,6 +3943,8 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     break;
                             }
+                        if (!isCompareingDailySchedues)
+                        {
                             if (column > 1)
                             {
                                 row.GetCell(column).CellStyle = normalStyle;
@@ -3836,6 +3968,8 @@ namespace TimeTableAutoCompleteTool
                                     row.GetCell(column).CellStyle = stoppedTrainStyle;
                                 }
                             }
+                        }
+
 
                         }
                     }
@@ -4312,8 +4446,58 @@ namespace TimeTableAutoCompleteTool
                                         DailySchedule _tempCompareDS = new DailySchedule();
                                         _tempOriginalDS = (DailySchedule)_ds.Clone();
                                         _tempCompareDS = (DailySchedule)_dsCompare.Clone();
-                                        _tempOriginalDS.extraText = "原计划";
-                                        _tempCompareDS.extraText = "↑对比计划↑";
+                                        if (!_ds.startStation.Equals(_dsCompare.startStation))
+                                        {
+                                            _tempOriginalDS.startStation = _tempOriginalDS.startStation + "<difference>";
+                                            _tempCompareDS.startStation = _tempCompareDS.startStation + "<difference>";
+                                        }
+                                        if (!_ds.stopStation.Equals(_dsCompare.stopStation))
+                                        {
+                                            _tempOriginalDS.stopStation = _tempOriginalDS.stopStation + "<difference>";
+                                            _tempCompareDS.stopStation = _tempCompareDS.stopStation + "<difference>";
+                                        }
+                                        if (!_ds.stopTime.Equals(_dsCompare.stopTime))
+                                        {
+                                            _tempOriginalDS.stopTime = _tempOriginalDS.stopTime + "<difference>";
+                                            _tempCompareDS.stopTime = _tempCompareDS.stopTime + "<difference>";
+                                        }
+                                        if (!_ds.startTime.Equals(_dsCompare.startTime))
+                                        {
+                                            _tempOriginalDS.startTime = _tempOriginalDS.startTime + "<difference>";
+                                            _tempCompareDS.startTime = _tempCompareDS.startTime + "<difference>";
+                                        }
+                                        if (!_ds.stopToStartTime.Equals(_dsCompare.stopToStartTime))
+                                        {
+                                            _tempOriginalDS.stopToStartTime = _tempOriginalDS.stopToStartTime + "<difference>";
+                                            _tempCompareDS.stopToStartTime = _tempCompareDS.stopToStartTime + "<difference>";
+                                        }
+                                        if (!_ds.trainBelongsTo.Equals(_dsCompare.trainBelongsTo))
+                                        {
+                                            _tempOriginalDS.trainBelongsTo = _tempOriginalDS.trainBelongsTo + "<difference>";
+                                            _tempCompareDS.trainBelongsTo = _tempCompareDS.trainBelongsTo + "<difference>";
+                                        }
+                                        if (!_ds.trackNum.Equals(_dsCompare.trackNum))
+                                        {
+                                            _tempOriginalDS.trackNum = _tempOriginalDS.trackNum + "<difference>";
+                                            _tempCompareDS.trackNum = _tempCompareDS.trackNum + "<difference>";
+                                        }
+                                        if (!_ds.trainConnectType.Equals(_dsCompare.trainConnectType))
+                                        {
+                                            _tempOriginalDS.trainConnectType = _tempOriginalDS.trainConnectType + "<difference>";
+                                            _tempCompareDS.trainConnectType = _tempCompareDS.trainConnectType + "<difference>";
+                                        }
+                                        if (!_ds.ratedSeats.Equals(_dsCompare.ratedSeats))
+                                        {
+                                            _tempOriginalDS.ratedSeats = _tempOriginalDS.ratedSeats + "<difference>";
+                                            _tempCompareDS.ratedSeats = _tempCompareDS.ratedSeats + "<difference>";
+                                        }
+                                        if(!Regex.Replace(_ds.trainModel, @"[\u4e00-\u9fa5]", "").Equals(Regex.Replace(_dsCompare.trainModel, @"[\u4e00-\u9fa5]", "")))
+                                        {
+                                            _tempOriginalDS.trainModel = _tempOriginalDS.trainModel + "<difference>";
+                                            _tempCompareDS.trainModel = _tempCompareDS.trainModel + "<difference>";
+                                        }
+                                        _tempOriginalDS.tipsText = "原计划";
+                                        _tempCompareDS.tipsText = "↑对比计划↑";
                                         _compareingResult.Add(_tempOriginalDS);
                                         _compareingResult.Add(_tempCompareDS);
                                     }
@@ -4345,8 +4529,58 @@ namespace TimeTableAutoCompleteTool
                                     DailySchedule _tempCompareDS = new DailySchedule();
                                     _tempOriginalDS = (DailySchedule)_ds.Clone();
                                     _tempCompareDS = (DailySchedule)_dsCompare.Clone();
-                                    _tempOriginalDS.extraText = "原计划";
-                                    _tempCompareDS.extraText = "↑对比计划↑";
+                                    if (!_ds.startStation.Equals(_dsCompare.startStation))
+                                    {
+                                        _tempOriginalDS.startStation = _tempOriginalDS.startStation + "<difference>";
+                                        _tempCompareDS.startStation = _tempCompareDS.startStation + "<difference>";
+                                    }
+                                    if (!_ds.stopStation.Equals(_dsCompare.stopStation))
+                                    {
+                                        _tempOriginalDS.stopStation = _tempOriginalDS.stopStation + "<difference>";
+                                        _tempCompareDS.stopStation = _tempCompareDS.stopStation + "<difference>";
+                                    }
+                                    if (!_ds.stopTime.Equals(_dsCompare.stopTime))
+                                    {
+                                        _tempOriginalDS.stopTime = _tempOriginalDS.stopTime + "<difference>";
+                                        _tempCompareDS.stopTime = _tempCompareDS.stopTime + "<difference>";
+                                    }
+                                    if (!_ds.startTime.Equals(_dsCompare.startTime))
+                                    {
+                                        _tempOriginalDS.startTime = _tempOriginalDS.startTime + "<difference>";
+                                        _tempCompareDS.startTime = _tempCompareDS.startTime + "<difference>";
+                                    }
+                                    if (!_ds.stopToStartTime.Equals(_dsCompare.stopToStartTime))
+                                    {
+                                        _tempOriginalDS.stopToStartTime = _tempOriginalDS.stopToStartTime + "<difference>";
+                                        _tempCompareDS.stopToStartTime = _tempCompareDS.stopToStartTime + "<difference>";
+                                    }
+                                    if (!_ds.trainBelongsTo.Equals(_dsCompare.trainBelongsTo))
+                                    {
+                                        _tempOriginalDS.trainBelongsTo = _tempOriginalDS.trainBelongsTo + "<difference>";
+                                        _tempCompareDS.trainBelongsTo = _tempCompareDS.trainBelongsTo + "<difference>";
+                                    }
+                                    if (!_ds.trackNum.Equals(_dsCompare.trackNum))
+                                    {
+                                        _tempOriginalDS.trackNum = _tempOriginalDS.trackNum + "<difference>";
+                                        _tempCompareDS.trackNum = _tempCompareDS.trackNum + "<difference>";
+                                    }
+                                    if (!_ds.trainConnectType.Equals(_dsCompare.trainConnectType))
+                                    {
+                                        _tempOriginalDS.trainConnectType = _tempOriginalDS.trainConnectType + "<difference>";
+                                        _tempCompareDS.trainConnectType = _tempCompareDS.trainConnectType + "<difference>";
+                                    }
+                                    if (!_ds.ratedSeats.Equals(_dsCompare.ratedSeats))
+                                    {
+                                        _tempOriginalDS.ratedSeats = _tempOriginalDS.ratedSeats + "<difference>";
+                                        _tempCompareDS.ratedSeats = _tempCompareDS.ratedSeats + "<difference>";
+                                    }
+                                    if (!Regex.Replace(_ds.trainModel, @"[\u4e00-\u9fa5]", "").Equals(Regex.Replace(_dsCompare.trainModel, @"[\u4e00-\u9fa5]", "")))
+                                    {
+                                        _tempOriginalDS.trainModel = _tempOriginalDS.trainModel + "<difference>";
+                                        _tempCompareDS.trainModel = _tempCompareDS.trainModel + "<difference>";
+                                    }
+                                    _tempOriginalDS.tipsText = "原计划";
+                                    _tempCompareDS.tipsText = "↑对比计划↑";
                                     _compareingResult.Add(_tempOriginalDS);
                                     _compareingResult.Add(_tempCompareDS);
                                 }
