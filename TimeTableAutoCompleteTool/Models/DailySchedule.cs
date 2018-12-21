@@ -95,9 +95,9 @@ namespace TimeTableAutoCompleteTool
             }
             string thisStartedTime = "";
             string otherStartedTime = "";
-            if(startTime == null)
+            if(startTime == null||startTime.Length==0)
             {
-                if (stopTime != null)
+                if (stopTime != null||stopTime.Length==0)
                     thisStartedTime = stopTime.Replace(":", "");
             }
             else
@@ -105,9 +105,9 @@ namespace TimeTableAutoCompleteTool
                 thisStartedTime = startTime.Replace(":", "");
             }
 
-            if (other.startTime == null)
+            if (other.startTime == null||other.startTime.Length==0)
             {
-                if(other.stopTime != null)
+                if(other.stopTime != null||other.stopTime.Length==0)
                 otherStartedTime = other.stopTime.Replace(":", "");
             }
             else

@@ -72,7 +72,7 @@ namespace TimeTableAutoCompleteTool
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 49 - v181221";
         string readMe = "build49更新内容:\n" +
-            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能 \n 3. 修复了选择文件后 再次选择时点击取消导致空指针的问题。";
+            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能 \n 3、修复了选择文件后 再次选择时点击取消导致空指针的问题。\n 4、修复了高dpi下显示异常问题。";
 
         public Main()
         {
@@ -84,6 +84,7 @@ namespace TimeTableAutoCompleteTool
             Graphics graphics = this.CreateGraphics();
             dpiX = graphics.DpiX;
             dpiY = graphics.DpiY;
+            this.Size = new Size((int)(1033*(dpiX/96)),(int)(595*(dpiY/96)));
             this.Text = "客调命令辅助工具";
             buildLBL.Text = build;
             start_Btn.Enabled = false;
@@ -1987,7 +1988,7 @@ namespace TimeTableAutoCompleteTool
                 {
                     detectedCModel = new List<CommandModel>();
                     string unresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, null, commandModel, commandText);
-                    if (unresolvedTrains.Length != 0)
+                    if (unresolvedTrains.Trim().Length != 0)
                     {
                         MessageBox.Show("请核对以下未识别车次：\n" + unresolvedTrains + "\n位于->今日客调命令(←已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
@@ -2000,7 +2001,7 @@ namespace TimeTableAutoCompleteTool
                     {
                         //查昨日错
                         string yesterdayUnresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, null, yesterdayCommandModel, yesterdayCommandText, true);
-                        if (yesterdayUnresolvedTrains.Length != 0)
+                        if (yesterdayUnresolvedTrains.Trim().Length != 0)
                         {
                             MessageBox.Show("请核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑已标红)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
@@ -3300,6 +3301,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 if (_ds.streamStatus != 0)
                                 {
+                                    _ds.id = -1;
                                     _ds.extraText = "人工核对-客调令多出";
                                     _ds.hasDifferentPart = true;
                                     counter++;
@@ -3309,13 +3311,12 @@ namespace TimeTableAutoCompleteTool
                         }
                     }
                 }
-
             }
             _dailyScheduleModel.Sort();
             int _counter = 1;
             for (int j = 0; j < _dailyScheduleModel.Count; j++)
             {
-                if (_dailyScheduleModel[j].startTime != null)
+                if (_dailyScheduleModel[j].startTime != null && _dailyScheduleModel[j].startTime.Length != 0)
                 {//预售时间
                     if (_dailyScheduleModel[j].startTime.Contains(":"))
                     {
@@ -3324,7 +3325,7 @@ namespace TimeTableAutoCompleteTool
                         _dailyScheduleModel[j].presaleTime = presaleTime;
                     }
                 }
-                else if (_dailyScheduleModel[j].stopTime != null)
+                else if (_dailyScheduleModel[j].stopTime != null && _dailyScheduleModel[j].stopTime.Length != 0)
                 {
                     if (_dailyScheduleModel[j].stopTime.Contains(":"))
                     {
@@ -3333,7 +3334,7 @@ namespace TimeTableAutoCompleteTool
                         _dailyScheduleModel[j].presaleTime = presaleTime;
                     }
                 }
-                if (_dailyScheduleModel[j].extraText != null)
+                if (_dailyScheduleModel[j].extraText != null && _dailyScheduleModel[j].extraText.Length != 0)
                 {//id
                     if (_dailyScheduleModel[j].extraText.Contains("客调"))
                     {
