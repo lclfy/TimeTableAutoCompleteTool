@@ -36,6 +36,28 @@ namespace TimeTableAutoCompleteTool
         //南1-北0
         public int upOrDown { get; set; }
 
+        //备注里的部分信息
+        public bool extraHasDifference { get; set; }
+        //1南2北
+        public int extra_stoppingPlace { get; set; }
+        //始发
+        public bool extra_original { get; set; }
+        public bool extra_terminal { get; set; }
+        //重联
+        public bool extra_doubleConnected { get; set; }
+        //高峰
+        public bool extra_rushHourTrain { get; set; }
+        //周末
+        public bool extra_weekendTrain { get; set; }
+        //反编
+        public bool extra_reversedTrain { get; set; }
+        //上水
+        public bool extra_plugingWater { get; set; }
+        //吸污
+        public bool extra_unloading { get; set; }
+
+
+
         public DailySchedule()
         {
             id = -1;
@@ -58,6 +80,7 @@ namespace TimeTableAutoCompleteTool
             hasDifferentPart = false;
             presaleTime = -1;
             upOrDown = -1;
+            extra_stoppingPlace = -1;
         }
 
         public object Clone()
@@ -83,6 +106,16 @@ namespace TimeTableAutoCompleteTool
             _ds.hasDifferentPart = hasDifferentPart;
             _ds.presaleTime = presaleTime;
             _ds.upOrDown = upOrDown;
+
+            _ds.extraHasDifference = extraHasDifference;
+            _ds.extra_doubleConnected = extra_doubleConnected;
+            _ds.extra_original = extra_original;
+            _ds.extra_plugingWater = extra_plugingWater;
+            _ds.extra_reversedTrain = extra_reversedTrain;
+            _ds.extra_rushHourTrain = extra_rushHourTrain;
+            _ds.extra_stoppingPlace = extra_stoppingPlace;
+            _ds.extra_unloading = extra_unloading;
+            _ds.extra_weekendTrain = extra_weekendTrain;
 
             return _ds as object;//深复制
         }
