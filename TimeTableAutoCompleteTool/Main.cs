@@ -3610,7 +3610,7 @@ namespace TimeTableAutoCompleteTool
                 if (isCompareingDailySchedues)
                 {
                     fs.Close();
-                    File.Delete(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
+                    //File.Delete(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
                     fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls");
                 }
 
