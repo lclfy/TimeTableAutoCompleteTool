@@ -69,9 +69,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 50 - v190101";
-        string readMe = "build50更新内容:\n" +
-            " 1、(动车所)存场改为72条股道。\n 2、(综控室)增加班计划对比功能，对比标黄 \n 3、修复了选择文件后 再次选择时点击取消导致空指针的问题。\n 4、修复了高dpi下显示异常问题。\n 5、取消了综控室选择文件的默认文件夹";
+        string build = "build 52 - v190104";
+        string readMe = "build52更新内容:\n" +
+            " 1、行车时刻表中'GF','ZM'可正确处理 \n 2、（行车室）自动增加加开车次 \n 3、（综控室）修复了空指针错误";
 
         public Main()
         {
@@ -1398,6 +1398,72 @@ namespace TimeTableAutoCompleteTool
                         title = DateTime.Now.AddDays(1).ToString("yyyy年MM月dd日-") + title;
                     }
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
+                    //寻找加开车次字样，没有的创建
+                    bool hasGotIt = false;
+                    int lastCell = 0;
+                    for(int searchRow = 0; searchRow <= sheet.LastRowNum; searchRow++)
+                    {
+                        if(!title.Contains("京广") && !title.Contains("徐兰"))
+                        {
+                            break;
+                        }
+                        IRow _searchRow = sheet.GetRow(searchRow);
+                        if(_searchRow.LastCellNum > lastCell)
+                        {
+                            lastCell = _searchRow.LastCellNum;
+                        }
+                        for(int searchColumn = 0; searchColumn <= _searchRow.LastCellNum; searchColumn++)
+                        {
+                            if (_searchRow.GetCell(searchColumn) != null)
+                            {
+                                if (_searchRow.GetCell(searchColumn).ToString().Contains("加开车次"))
+                                {
+                                    hasGotIt = true;
+                                }
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                            if (hasGotIt)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasGotIt)
+                    {
+                        int currentLast = sheet.LastRowNum;
+                        for(int createRow = 1; createRow < 8; createRow++)
+                        {
+                            IRow _createRow = sheet.CreateRow(createRow + currentLast);
+                            switch (createRow)
+                            {
+                                case 1:
+                                    for (int cell = 0; cell < lastCell; cell++)
+                                    {
+                                        if(cell == 0)
+                                        {
+                                            _createRow.CreateCell(cell).SetCellValue("加开车次");
+                                        }
+                                        else
+                                        {
+                                            _createRow.CreateCell(cell);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    for (int cell = 0; cell < lastCell; cell++)
+                                    {
+                                            _createRow.CreateCell(cell);
+                                    }
+                                    break;
+                            }
+                        }
+                        //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                        sheet.AddMergedRegion(new CellRangeAddress(currentLast + 1, currentLast + 1, 0, lastCell ));
+                        sheet.AddMergedRegion(new CellRangeAddress(currentLast + 2, sheet.LastRowNum, 0, lastCell));
+                    }
                     for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                     {
                         row = sheet.GetRow(i);   //row读入第i行数据  
@@ -1449,8 +1515,8 @@ namespace TimeTableAutoCompleteTool
                                         bool ContainsTrainNumber = false;
                                         foreach (CommandModel model in commandModel)
                                         {//根据客调命令刷单元格颜色
-                                            if (row.GetCell(j).ToString().Trim().Equals(model.trainNumber) ||
-                                                row.GetCell(j).ToString().Trim().Equals(model.secondTrainNumber))
+                                            if (row.GetCell(j).ToString().Trim().Replace("GF","").Replace("ZM","").Equals(model.trainNumber) ||
+                                                row.GetCell(j).ToString().Trim().Replace("GF", "").Replace("ZM", "").Equals(model.secondTrainNumber))
                                             {
                                                 ContainsTrainNumber = true;
                                                 //车次统计+1
@@ -1554,7 +1620,7 @@ namespace TimeTableAutoCompleteTool
                                                 string targetTrainNum = "";
                                                 if (originalTrainNumber != 0)
                                                 {
-                                                    bool hasGotIt = false;
+                                                    hasGotIt = false;
                                                     for (int ij = 0; ij < 4; ij++)
                                                     {//+1 -1 +3 -3分别试一遍(试该车次的第二个车号)
                                                         if (hasGotIt)
@@ -3544,6 +3610,7 @@ namespace TimeTableAutoCompleteTool
                 if (isCompareingDailySchedues)
                 {
                     fs.Close();
+                    File.Delete(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
                     fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls");
                 }
 
@@ -3762,7 +3829,18 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     break;
                             }
+                        if (count == 16)
+                        {
+                            if (isCompareingDailySchedues)
+                            {
+                                row.GetCell(count).CellStyle = boldStyle;
+                            }
+                        }
+                        else
+                        {
                             row.GetCell(count).CellStyle = boldStyle;
+                        }
+
                         }
                     }
                     else
@@ -4021,7 +4099,7 @@ namespace TimeTableAutoCompleteTool
                             }
                             if (!isCompareingDailySchedues)
                             {
-                                if (column > 1)
+                                if (column > 1 && column < 16)
                                 {
                                     row.GetCell(column).CellStyle = normalStyle;
                                 }
@@ -4039,7 +4117,7 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         row.GetCell(column).CellStyle = stoppedTimeStyle;
                                     }
-                                    else
+                                    else if(column < 16)
                                     {
                                         row.GetCell(column).CellStyle = stoppedTrainStyle;
                                     }
@@ -4088,10 +4166,12 @@ namespace TimeTableAutoCompleteTool
                     return;
                 }
 
-            }catch(Exception e1)
+            }
+            catch (Exception e1)
             {
                 MessageBox.Show("出现错误请重试~若持续错误请联系黄楠：" + e1.ToString().Split('。')[0] + "。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+
 
 
 
@@ -4693,14 +4773,14 @@ namespace TimeTableAutoCompleteTool
                                         _tempCompareDS.trainModel = _tempCompareDS.trainModel + "<difference>";
                                     }
                                     if (_ds.extra_doubleConnected != _dsCompare.extra_doubleConnected ||
-    _ds.extra_original != _dsCompare.extra_original ||
-    _ds.extra_plugingWater != _dsCompare.extra_plugingWater ||
-    _ds.extra_reversedTrain != _dsCompare.extra_reversedTrain ||
-    _ds.extra_rushHourTrain != _dsCompare.extra_rushHourTrain ||
-    _ds.extra_stoppingPlace != _dsCompare.extra_stoppingPlace ||
-    _ds.extra_terminal != _dsCompare.extra_terminal ||
-    _ds.extra_unloading != _dsCompare.extra_unloading ||
-    _ds.extra_weekendTrain != _dsCompare.extra_weekendTrain)
+                                        _ds.extra_original != _dsCompare.extra_original ||
+                                        _ds.extra_plugingWater != _dsCompare.extra_plugingWater ||
+                                        _ds.extra_reversedTrain != _dsCompare.extra_reversedTrain ||
+                                        _ds.extra_rushHourTrain != _dsCompare.extra_rushHourTrain ||
+                                        _ds.extra_stoppingPlace != _dsCompare.extra_stoppingPlace ||
+                                        _ds.extra_terminal != _dsCompare.extra_terminal ||
+                                        _ds.extra_unloading != _dsCompare.extra_unloading ||
+                                        _ds.extra_weekendTrain != _dsCompare.extra_weekendTrain)
                                     {
                                         _ds.extraHasDifference = true;
                                         _dsCompare.extraHasDifference = true;
@@ -7160,7 +7240,10 @@ namespace TimeTableAutoCompleteTool
             _displaySystem.Show();
         }
 
+        private void radioButton5_CheckedChanged_1(object sender, EventArgs e)
+        {
 
+        }
 
         private void trainProjectBtnCheck()
         {//判断是否启用调车作业辅助(测试版)
