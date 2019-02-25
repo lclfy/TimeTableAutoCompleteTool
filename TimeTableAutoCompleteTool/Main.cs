@@ -20,6 +20,7 @@ using Spire.Doc;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 using System.Collections.Specialized;
+using TimeTableAutoCompleteTool.Models;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -69,9 +70,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 54 - v190209";
-        string readMe = "build54更新内容:\n"+
-            " 1、部分无法识别的客调车次现已修复. \n 2、修复了动车所区分I II场的问题. \n 3、次日开行车次现用“明”表示";
+        string build = "build 55 - v190225";
+        string readMe = "build55更新内容:\n"+
+            " 1、关闭了“自动备份”\n 2、动车所增加作业计划排序";
 
         public Main()
         {
@@ -1270,6 +1271,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
+                            /*
                             if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
                                 MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1285,6 +1287,9 @@ namespace TimeTableAutoCompleteTool
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
                                 return;
                             }
+                            */
+                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
                         }
 
                     }
@@ -1296,6 +1301,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
+                            /*
                             if (File.Exists(Application.StartupPath + "\\时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
                                 MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1311,9 +1317,13 @@ namespace TimeTableAutoCompleteTool
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\时刻表\\");
                                 return;
                             }
+                            */
+                            MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
                         }
                     }
 
+                    /*
                     if (workbook != null && !fileName.Contains("自动备份-"))
                     {
                         string pLocalFilePath = fileName.ToString();//要复制的文件路径
@@ -1321,6 +1331,7 @@ namespace TimeTableAutoCompleteTool
                         File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                     }
+                    */
 
                     //表格样式
                     ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
@@ -1800,6 +1811,7 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
+                        /*
                         if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1815,6 +1827,10 @@ namespace TimeTableAutoCompleteTool
                             System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
                             return;
                         }
+                        */
+                        MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+
                     }
 
                 }
@@ -1826,6 +1842,7 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
+                        /*
                         if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                         {
                             MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1841,9 +1858,13 @@ namespace TimeTableAutoCompleteTool
                             System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
                             return;
                         }
+                        */
+                        MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
                     }
                 }
 
+                /*
                 if (workbook != null && !fileName.Contains("自动备份-"))
                 {
                     string pLocalFilePath = fileName.ToString();//要复制的文件路径
@@ -1851,6 +1872,7 @@ namespace TimeTableAutoCompleteTool
                     File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                 }
+                */
 
                 //找表头
                 ISheet sheet1 = workbook.GetSheetAt(0);
@@ -2193,6 +2215,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 catch (Exception e)
                 {
+                        /*
                     if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                     {
                         MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2208,7 +2231,10 @@ namespace TimeTableAutoCompleteTool
                         System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
                         return;
                     }
-                }
+                    */
+                        MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
 
             }
             else if (fileName.IndexOf(".xls") > 0) // 2003版本  
@@ -2219,6 +2245,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 catch (Exception e)
                 {
+                        /*
                     if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                     {
                         MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2234,9 +2261,13 @@ namespace TimeTableAutoCompleteTool
                         System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
                         return;
                     }
-                }
+                    */
+                        MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
             }
 
+            /*
             if (workbook != null && !fileName.Contains("自动备份-"))
             {
                 string pLocalFilePath = fileName.ToString();//要复制的文件路径
@@ -2244,6 +2275,7 @@ namespace TimeTableAutoCompleteTool
                 File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
             }
+            */
 
             //找表头
             ISheet sheet1 = workbook.GetSheetAt(0);
@@ -4984,6 +5016,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
+                            /*
                             if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
                                 MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -4999,6 +5032,9 @@ namespace TimeTableAutoCompleteTool
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
                                 return;
                             }
+                            */
+                            MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
                         }
                     }
                     else if (fileName.IndexOf(".xls") > 0) // 2003版本  
@@ -5009,6 +5045,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
+                            /*
                             if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
                             {
                                 MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -5024,9 +5061,13 @@ namespace TimeTableAutoCompleteTool
                                 System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
                                 return;
                             }
+                            */
+                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+
                         }
                     }
-
+                    /*
                     if (workbook != null && !fileName.Contains("自动备份-"))
                     {
                         string pLocalFilePath = fileName.ToString();//要复制的文件路径
@@ -5034,6 +5075,7 @@ namespace TimeTableAutoCompleteTool
                         File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
 
                     }
+                    */
 
                     //表格样式
                     ICellStyle normalStyle = workbook.CreateCellStyle();
@@ -5482,10 +5524,17 @@ namespace TimeTableAutoCompleteTool
                                                         //计算用
                                                         int trackNumInt = 0;
                                                         int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
-                                                        if (secondSection == 1 && trackNumInt < 44 && trackNumInt != 0)
+                                                        if (secondSection == 1 && (trackNumInt < 44 && trackNumInt != 0)
+                                                            || targetTrackNum.Trim().Equals("JC1G") 
+                                                            || targetTrackNum.Trim().Equals("JC2G")
+                                                            || targetTrackNum.Trim().Equals("JC3G")
+                                                            || targetTrackNum.Trim().Equals("JC4G")
+                                                            || targetTrackNum.Trim().Equals("JC5G")
+                                                            || targetTrackNum.Trim().Equals("JC6G"))
                                                         {//二场并且<44道
                                                             row.GetCell(j).CellStyle = stoppedTrainStyle;
                                                         }
+
                                                         if (j < firstTrackNumColumn)
                                                         {
                                                             if (row.GetCell(firstTrackNumColumn) == null)
@@ -5648,7 +5697,13 @@ namespace TimeTableAutoCompleteTool
                                                         //计算用
                                                         int trackNumInt = 0;
                                                         int.TryParse(targetTrackNum.Split('G')[0], out trackNumInt);
-                                                        if(secondSection == 1 && trackNumInt < 44 && trackNumInt != 0)
+                                                        if (secondSection == 1 && (trackNumInt < 44 && trackNumInt != 0)
+                                                            || targetTrackNum.Trim().Equals("JC1G")
+                                                            || targetTrackNum.Trim().Equals("JC2G")
+                                                            || targetTrackNum.Trim().Equals("JC3G")
+                                                            || targetTrackNum.Trim().Equals("JC4G")
+                                                            || targetTrackNum.Trim().Equals("JC5G")
+                                                            || targetTrackNum.Trim().Equals("JC6G"))
                                                         {//二场并且<44道
                                                             row.GetCell(j).CellStyle = stoppedTrainStyle;
                                                         }
@@ -6289,6 +6344,19 @@ namespace TimeTableAutoCompleteTool
                             if (!_currentWork.Contains("备开"))
                             {
                                 TrainProjectWorking _tpw = new TrainProjectWorking();
+                                string tempOriginalText = _currentWork;
+                                tempOriginalText = tempOriginalText.Replace("：", ":");
+                                tempOriginalText = Regex.Replace(tempOriginalText, @"[0-9]{2}(:)[0-9]{2}", "");
+                                tempOriginalText = Regex.Replace(tempOriginalText, @"[0-9]{1}(:)[0-9]{2}", "");
+                                if (_currentWork.Contains(")") && !_currentWork.Contains("重联") && !_currentWork.Contains("解编"))
+                                {
+                                    _tpw.originalText = tempOriginalText.Split(')')[1];
+                                }
+                                else
+                                {
+                                    _tpw.originalText = tempOriginalText;
+                                }
+
                                 //找时间
                                 Regex regWorkTime;
                                 Match mWorkTime;
@@ -6927,12 +6995,86 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
                 allTrainProjectModels = _trainProjectModels;
+                //调车作业计划排序
+                sortTrainProject(_trainProjectModels,morningOrNight);
             }
             catch(Exception trainProjectE)
             {
                 MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + trainProjectE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
+        }
+
+        //调车作业计划排序
+        //0白1夜
+        private void sortTrainProject(List<TrainProjectModel> _allTPM,int morningOrNight)
+        {
+            List<TrainProjectSortModel> _allTPSM = new List<TrainProjectSortModel>(); 
+            foreach (TrainProjectModel _tp in _allTPM)
+            {
+                int getInCount = 0;
+                foreach (TrainProjectWorking _tpw in _tp.trainProjectWorkingModel)
+                {
+                    TrainProjectSortModel _tps = new TrainProjectSortModel();
+                    _tps.getInside_trainNum = _tp.getInside_trainNum;
+                    _tps.getOutside_trainNum = _tp.getOutside_trainNum;
+                    _tps.trainNumA = _tp.trainId;
+                    _tps.trainNumB = _tp.secondTrainId;
+                    _tps.morningOrNight = morningOrNight;
+                    _tps.trainModel = _tp.trainModel;
+                    if (_tp.getInside_time.Length != 0 && getInCount == 0)
+                    {
+                        _tps.originalText = _tps.getInside_trainNum + "次入所-"+_tpw.originalText;
+                        getInCount = 1;
+                    }
+                    else
+                    {
+                        _tps.originalText = _tpw.originalText;
+                    }
+                    _tps.track = _tpw.track;
+                    _tps.time = _tpw.time;
+                    _allTPSM.Add(_tps);
+                }
+                if(_tp.getOutside_time.Length != 0)
+                {
+                    TrainProjectSortModel _tpsGetOutside = new TrainProjectSortModel();
+                    _tpsGetOutside.getInside_trainNum = _tp.getInside_trainNum;
+                    _tpsGetOutside.getOutside_trainNum = _tp.getOutside_trainNum;
+                    _tpsGetOutside.trainNumA = _tp.trainId;
+                    _tpsGetOutside.trainNumB = _tp.secondTrainId;
+                    _tpsGetOutside.originalText = _allTPSM[_allTPSM.Count - 1].track + "道" + _tp.getOutside_trainNum + "次出库";
+                    _tpsGetOutside.time = _tp.getOutside_time;
+                    _tpsGetOutside.trainModel = _tp.trainModel;
+                    _allTPSM.Add(_tpsGetOutside);
+                }
+
+            }
+            _allTPSM.Sort();
+            try
+            {
+                FileStream file = new FileStream(Application.StartupPath + "\\动车所时刻表\\" + "作业计划-" + DateTime.Now.ToString("yyyyMMdd") + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamWriter writer = new StreamWriter(file);
+                string tpsmString = "";
+                int count = 0;
+                foreach(TrainProjectSortModel _tps in _allTPSM)
+                {
+                    count++;
+                    tpsmString = tpsmString+ count + "、时间："+_tps.time + "     " + _tps.trainModel + "-" + _tps.trainNumA;
+                    if(_tps.trainNumB.Length != 0)
+                    {
+                        tpsmString = tpsmString + "+" + _tps.trainNumB;
+                    }
+                    tpsmString = tpsmString + "     " + _tps.originalText + "     " + _tps.getInside_trainNum + "     " + _tps.getOutside_trainNum + "\r\n";
+                }
+                writer.WriteLine(tpsmString);
+                writer.Close();
+                file.Close();
+            }
+            catch (Exception _e)
+            {
+
+            }
+            int ij = 0;
         }
 
         private string checkEmptyTrack(List<TrainProjectModel> _trainProjectModels)

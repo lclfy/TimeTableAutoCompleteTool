@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="DisplayModify\ModifyTrackPoint.Designer.cs" />
     <Compile Include="DisplayModels\PowerSupplyModel.cs" />
+    <Compile Include="Models\TrainProjectSortModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DisplayModels\Signal.cs" />
