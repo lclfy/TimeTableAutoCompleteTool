@@ -15,6 +15,7 @@ namespace TimeTableAutoCompleteTool.Models
          * 车型
         停放位置（股道）
         排序需要用到的白班夜班参数
+        钩号
         途径股道
         到达时间
         作业内容
@@ -28,6 +29,7 @@ namespace TimeTableAutoCompleteTool.Models
         public string trainModel { get; set; }
         public string track { get; set; }
         public int morningOrNight { get; set; }
+        public string projectIndex { get; set; }
         public string throughTrack { get; set; }
         public string time { get; set; }
         public string workingInformation { get; set; }
@@ -62,7 +64,8 @@ namespace TimeTableAutoCompleteTool.Models
             _w.trainModel = this.trainModel;
             _w.track = this.track;
             _w.throughTrack = this.throughTrack;
-            _w.time = this.time;
+            _w.projectIndex = this.projectIndex;
+        _w.time = this.time;
             _w.morningOrNight = this.morningOrNight;
             _w.workingInformation = this.workingInformation;
             _w.trainNumA = this.trainNumA;
@@ -97,18 +100,18 @@ namespace TimeTableAutoCompleteTool.Models
             {
                 otherStartedTime = other.time.Replace(":", "");
             }
-            int StartedTimeInt = 0;
+            int StartedTimeInt = -1;
             int.TryParse(thisStartedTime, out StartedTimeInt);
             if(this.morningOrNight == 0)
             {//白班 8点开始
-                if (StartedTimeInt != 0 &&
+                if (StartedTimeInt != -1 &&
                     StartedTimeInt < 800)
                 {
                     StartedTimeInt = StartedTimeInt + 2400;
                     thisStartedTime = StartedTimeInt.ToString();
                 }
                 int.TryParse(otherStartedTime, out StartedTimeInt);
-                if (StartedTimeInt != 0 &&
+                if (StartedTimeInt != -1 &&
                     StartedTimeInt < 800)
                 {
                     StartedTimeInt = StartedTimeInt + 2400;
@@ -117,14 +120,14 @@ namespace TimeTableAutoCompleteTool.Models
             }
             else if(this.morningOrNight == 1)
             {
-                if (StartedTimeInt != 0 &&
+                if (StartedTimeInt != -1 &&
                      StartedTimeInt < 1600)
                 {
                     StartedTimeInt = StartedTimeInt + 2400;
                     thisStartedTime = StartedTimeInt.ToString();
                 }
                 int.TryParse(otherStartedTime, out StartedTimeInt);
-                if (StartedTimeInt != 0 &&
+                if (StartedTimeInt != -1 &&
                     StartedTimeInt < 1600)
                 {
                     StartedTimeInt = StartedTimeInt + 2400;

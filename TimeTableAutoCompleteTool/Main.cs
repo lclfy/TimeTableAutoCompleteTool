@@ -7022,6 +7022,7 @@ namespace TimeTableAutoCompleteTool
                     _tps.trainNumB = _tp.secondTrainId;
                     _tps.morningOrNight = morningOrNight;
                     _tps.trainModel = _tp.trainModel;
+                    _tps.projectIndex = _tp.projectIndex;
                     if (_tp.getInside_time.Length != 0 && getInCount == 0)
                     {
                         _tps.originalText = _tps.getInside_trainNum + "次入所-"+_tpw.originalText;
@@ -7042,14 +7043,146 @@ namespace TimeTableAutoCompleteTool
                     _tpsGetOutside.getOutside_trainNum = _tp.getOutside_trainNum;
                     _tpsGetOutside.trainNumA = _tp.trainId;
                     _tpsGetOutside.trainNumB = _tp.secondTrainId;
-                    _tpsGetOutside.originalText = _allTPSM[_allTPSM.Count - 1].track + "道" + _tp.getOutside_trainNum + "次出库";
+                    _tpsGetOutside.originalText = _allTPSM[_allTPSM.Count - 1].track + "道" + _tp.getOutside_trainNum + "次出所";
                     _tpsGetOutside.time = _tp.getOutside_time;
                     _tpsGetOutside.trainModel = _tp.trainModel;
+                    _tpsGetOutside.projectIndex = _tp.projectIndex;
                     _allTPSM.Add(_tpsGetOutside);
                 }
 
             }
             _allTPSM.Sort();
+            /*
+            try
+            {
+            */
+                Document document = new Document();
+                Section section = document.AddSection();
+
+            Paragraph paraTitle = section.AddParagraph();
+            TextRange title = paraTitle.AppendText("动车所调车作业计划-" + DateTime.Now.ToString("yyyyMMdd"));
+
+            ParagraphStyle styleTitle = new ParagraphStyle(document);
+            styleTitle.Name = "titleStyle";
+            styleTitle.CharacterFormat.FontSize = 20;
+            styleTitle.CharacterFormat.TextColor = Color.Black;
+            styleTitle.CharacterFormat.FontName = "黑体";
+            //将自定义样式添加到文档
+            document.Styles.Add(styleTitle);
+            paraTitle.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
+            paraTitle.ApplyStyle(styleTitle.Name);
+
+            Table table = section.AddTable(true);
+                table.TableFormat.HorizontalAlignment = RowAlignment.Center;
+                table.TableFormat.LeftIndent = 34;
+            //序号，时间，车号，内容，入库，出库，钩号
+            table.ResetCells(_allTPSM.Count + 1, 7);
+
+                TableRow row = table.Rows[0];
+                row.IsHeader = true;
+
+                Paragraph para = row.Cells[0].AddParagraph();
+                    //设置自定义样式
+            ParagraphStyle style = new ParagraphStyle(document);
+            style.Name = "TableStyle";
+            style.CharacterFormat.FontSize = 10;
+            style.CharacterFormat.TextColor = Color.Black;
+            style.CharacterFormat.FontName = "宋体";
+            //将自定义样式添加到文档
+            document.Styles.Add(style);
+
+                TextRange TR = para.AppendText("序");
+                table.ApplyStyle(DefaultTableStyle.LightGridAccent1);
+
+                para = row.Cells[1].AddParagraph();
+            TR = para.AppendText("时间");
+
+                para = row.Cells[2].AddParagraph();
+            TR = para.AppendText("车号");
+
+                para = row.Cells[3].AddParagraph();
+            TR = para.AppendText("作业内容");
+
+                para = row.Cells[4].AddParagraph();
+            TR = para.AppendText("入库");
+
+                para = row.Cells[5].AddParagraph();
+            TR = para.AppendText("出库");
+
+            para = row.Cells[6].AddParagraph();
+            TR = para.AppendText("钩");
+
+            for (int i = 0; i < _allTPSM.Count; i++)
+                {
+                    TableRow rowData = table.Rows[i+1];
+                rowData.IsHeader = false;
+
+                    Paragraph paraData = rowData.Cells[0].AddParagraph();
+                    TextRange TRData = paraData.AppendText((i+1).ToString());
+
+                paraData = rowData.Cells[1].AddParagraph();
+                if ((_allTPSM[i].morningOrNight == 0 && _allTPSM[i].time.Equals("8:00")) ||
+                    (_allTPSM[i].morningOrNight == 1 && _allTPSM[i].time.Equals("16:00")))
+                {
+                    TRData = paraData.AppendText("已办理");
+                }
+                else
+                {
+                    TRData = paraData.AppendText(_allTPSM[i].time);
+                }
+
+                string trainString = _allTPSM[i].trainModel + "-" + _allTPSM[i].trainNumA;
+                if (_allTPSM[i].trainNumB.Length != 0)
+                {
+                    trainString = trainString + "+" + _allTPSM[i].trainNumB;
+                }
+                paraData = rowData.Cells[2].AddParagraph();
+                TRData = paraData.AppendText(trainString);
+
+                paraData = rowData.Cells[3].AddParagraph();
+                TRData = paraData.AppendText(_allTPSM[i].originalText.Trim().Replace("\n","").Replace("\r\n",""));
+
+                paraData = rowData.Cells[4].AddParagraph();
+                TRData = paraData.AppendText(_allTPSM[i].getInside_trainNum);
+
+                paraData = rowData.Cells[5].AddParagraph();
+                TRData = paraData.AppendText(_allTPSM[i].getOutside_trainNum);
+
+                paraData = rowData.Cells[6].AddParagraph();
+                TRData = paraData.AppendText(_allTPSM[i].projectIndex.Split('-')[0]);
+            }
+
+                for(int j = 0; j < table.Rows.Count; j++)
+            {
+                //获取第一个表格
+                Table selectedTable = section.Tables[0] as Table;
+                TableRow selectedRow = selectedTable.Rows[j];
+                selectedRow.Cells[0].Width = 5;
+                selectedRow.Cells[1].Width = 50;
+                selectedRow.Cells[2].Width = 120;
+                selectedRow.Cells[3].Width = 180;
+                selectedRow.Cells[4].Width = 40;
+                selectedRow.Cells[5].Width = 40;
+                selectedRow.Cells[6].Width = 5;
+                for (int l = 0; l < 7; l++)
+                {//默认7列
+                    selectedTable[j, l].Paragraphs[0].Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
+                    selectedTable[j, l].Paragraphs[0].Format.TextAlignment = Spire.Doc.Documents.TextAlignment.Center;
+                    table[j, l].Paragraphs[0].ApplyStyle(style.Name);
+                }
+
+            }
+
+                document.SaveToFile(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
+                System.Diagnostics.Process.Start(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
+            /*
+    }
+
+    catch(Exception e)
+    {
+        int lk = 0;
+    }
+    */
             try
             {
                 FileStream file = new FileStream(Application.StartupPath + "\\动车所时刻表\\" + "作业计划-" + DateTime.Now.ToString("yyyyMMdd") + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
