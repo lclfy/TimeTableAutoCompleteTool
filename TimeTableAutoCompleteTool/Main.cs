@@ -72,7 +72,7 @@ namespace TimeTableAutoCompleteTool
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 55 - v190228";
         string readMe = "build55更新内容:\n"+
-            " 0、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误的问题和备开车次问题\n 1、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
+            " 0、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误问题和备开车次日期错误问题\n 1、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
 
         public Main()
         {
@@ -4976,8 +4976,10 @@ namespace TimeTableAutoCompleteTool
         //动车所填车型
         private void trainTypeAutoComplete(bool isProjectHelper = false)
         {
+            /*
             try
             {
+            */
                 if (ExcelFile == null || ExcelFile.Count == 0)
                 {
                     MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -5005,8 +5007,10 @@ namespace TimeTableAutoCompleteTool
                 int firstTrackNumColumn = -1;
                 int secondTrackNumColumn = -1;
                 string fileName = ExcelFile[0];
+                /*
                 try
                 {
+                */
                     FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
                     {
@@ -5213,6 +5217,7 @@ namespace TimeTableAutoCompleteTool
                                         row.GetCell(0).ToString().Contains("II场") ||
                                         row.GetCell(0).ToString().Contains("2场"))
                                     {
+                                        nightStart = i;
                                         secondSection = 1;
                                     }
                                 }
@@ -5461,17 +5466,43 @@ namespace TimeTableAutoCompleteTool
                                                     string projectNum = "";
                                                     if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
                                                     {
+                                                        int _tpmCount = 0;
                                                         foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                         {
                                                             if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                             {
                                                                 if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
                                                                 {//是该项目的入库车
-                                                                    projectNum = _tpm.projectIndex;
-                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//入库股道
-                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm,_tpm.getInside_time,false,morningOrNight).track;
-                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    //判断还有没有另外的符合条件的
+                                                                    bool hasSameOne = false;
+                                                                    int _sameTPM;
+                                                                    for (_sameTPM = _tpmCount+1; _sameTPM < allTrainProjectModels.Count; _sameTPM++) {
+                                                                        if(allTrainProjectModels[_sameTPM].getInside_trainNum != null && allTrainProjectModels[_sameTPM].getInside_trainNum.Length != 0)
+                                                                        {
+                                                                            if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getInside_trainNum))
+                                                                            {//判断用哪个
+                                                                                hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if(!hasSameOne)
+                                                                    {
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//用新计划
+                                                                        projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                        if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
                                                                     }
                                                                     break;
                                                                 }
@@ -5480,15 +5511,42 @@ namespace TimeTableAutoCompleteTool
                                                             {
                                                                 if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
                                                                 {//是该项目的出库车
-                                                                    projectNum = _tpm.projectIndex;
-                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//出库股道
-                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
-                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                 //判断还有没有另外的符合条件的
+                                                                    bool hasSameOne = false;
+                                                                     int _sameTPM;
+                                                                    for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                    {
+                                                                        if (allTrainProjectModels[_sameTPM].getOutside_trainNum != null && allTrainProjectModels[_sameTPM].getOutside_trainNum.Length != 0)
+                                                                        {
+                                                                            if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getOutside_trainNum))
+                                                                            {//判断用哪个
+                                                                                hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if (!hasSameOne)
+                                                                    {
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//用新计划
+                                                                        projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                        if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
                                                                     }
                                                                     break;
                                                                 }
                                                             }
+                                                            _tpmCount++;
                                                         }
                                                         if (targetTrackNum.Length == 0)
                                                         {
@@ -5498,11 +5556,37 @@ namespace TimeTableAutoCompleteTool
                                                                 {
                                                                     if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
                                                                     {//是该项目的入库车
-                                                                        projectNum = _tpm.projectIndex;
-                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//入库股道
-                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
-                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                     //判断还有没有另外的符合条件的
+                                                                        bool hasSameOne = false;
+                                                                         int _sameTPM;
+                                                                        for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                        {
+                                                                            if (allTrainProjectModels[_sameTPM].getInside_trainNum != null && allTrainProjectModels[_sameTPM].getInside_trainNum.Length != 0)
+                                                                            {
+                                                                                if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getInside_trainNum))
+                                                                                {//判断用哪个
+                                                                                    hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                    break;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (!hasSameOne)
+                                                                        {
+                                                                            projectNum = _tpm.projectIndex;
+                                                                            if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                            {//入库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {//用新计划
+                                                                            projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                            if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                            {//入库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getInside_time, false, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
                                                                         }
                                                                         break;
                                                                     }
@@ -5511,11 +5595,37 @@ namespace TimeTableAutoCompleteTool
                                                                 {
                                                                     if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
                                                                     {//是该项目的出库车
-                                                                        projectNum = _tpm.projectIndex;
-                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//出库股道
-                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
-                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                     //判断还有没有另外的符合条件的
+                                                                        bool hasSameOne = false;
+                                                                         int _sameTPM;
+                                                                        for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                        {
+                                                                            if (allTrainProjectModels[_sameTPM].getOutside_trainNum != null && allTrainProjectModels[_sameTPM].getOutside_trainNum.Length != 0)
+                                                                            {
+                                                                                if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getOutside_trainNum))
+                                                                                {//判断用哪个
+                                                                                    hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                            break;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (!hasSameOne)
+                                                                        {
+                                                                            projectNum = _tpm.projectIndex;
+                                                                            if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                            {//出库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {//用新计划
+                                                                            projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                            if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                            {//出库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getOutside_time, true, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
                                                                         }
                                                                         break;
                                                                     }
@@ -5638,17 +5748,44 @@ namespace TimeTableAutoCompleteTool
                                                     string projectNum = "";
                                                     if (allTrainProjectModels != null && allTrainProjectModels.Count > 0)
                                                     {
+                                                        int _tpmCount = 0;
                                                         foreach (TrainProjectModel _tpm in allTrainProjectModels)
                                                         {
                                                             if (_tpm.getInside_trainNum != null && _tpm.getInside_trainNum.Length != 0)
                                                             {
                                                                 if (row.GetCell(j).ToString().Trim().Equals(_tpm.getInside_trainNum))
                                                                 {//是该项目的入库车
-                                                                    projectNum = _tpm.projectIndex;
-                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//入库股道
-                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
-                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    //判断还有没有另外的符合条件的
+                                                                    bool hasSameOne = false;
+                                                                    int _sameTPM;
+                                                                    for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                    {
+                                                                        if (allTrainProjectModels[_sameTPM].getInside_trainNum != null && allTrainProjectModels[_sameTPM].getInside_trainNum.Length != 0)
+                                                                        {
+                                                                            if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getInside_trainNum))
+                                                                            {
+                                                                                hasSameOne =project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if (!hasSameOne)
+                                                                    {
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//用新计划
+                                                                        projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                        if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
                                                                     }
                                                                     break;
                                                                 }
@@ -5657,15 +5794,42 @@ namespace TimeTableAutoCompleteTool
                                                             {
                                                                 if (row.GetCell(j).ToString().Trim().Equals(_tpm.getOutside_trainNum))
                                                                 {//是该项目的出库车
-                                                                    projectNum = _tpm.projectIndex;
-                                                                    if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//出库股道
-                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
-                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                 //判断还有没有另外的符合条件的
+                                                                    bool hasSameOne = false;
+                                                                    int _sameTPM;
+                                                                    for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                    {
+                                                                        if (allTrainProjectModels[_sameTPM].getOutside_trainNum != null && allTrainProjectModels[_sameTPM].getOutside_trainNum.Length != 0)
+                                                                        {
+                                                                            if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getOutside_trainNum))
+                                                                            {
+                                                                                hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    if (!hasSameOne)
+                                                                    {
+                                                                        projectNum = _tpm.projectIndex;
+                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//用新计划
+                                                                        projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                        if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        }
                                                                     }
                                                                     break;
                                                                 }
                                                             }
+                                                            _tpmCount++;
                                                         }
                                                         if (targetTrackNum.Length == 0)
                                                         {
@@ -5675,11 +5839,36 @@ namespace TimeTableAutoCompleteTool
                                                                 {
                                                                     if (model.trainNumber.Trim().Equals(_tpm.getInside_trainNum))
                                                                     {//是该项目的入库车
-                                                                        projectNum = _tpm.projectIndex;
-                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//入库股道
-                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
-                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                     //判断还有没有另外的符合条件的
+                                                                        bool hasSameOne = false;
+                                                                        int _sameTPM;
+                                                                        for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                        {
+                                                                            if (allTrainProjectModels[_sameTPM].getInside_trainNum != null && allTrainProjectModels[_sameTPM].getInside_trainNum.Length != 0)
+                                                                            {
+                                                                                if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getInside_trainNum))
+                                                                                {
+                                                                                    hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (!hasSameOne)
+                                                                        {
+                                                                            projectNum = _tpm.projectIndex;
+                                                                            if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                            {//入库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {//用新计划
+                                                                            projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                            if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                            {//入库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getInside_time, false, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
                                                                         }
                                                                         break;
                                                                     }
@@ -5688,11 +5877,36 @@ namespace TimeTableAutoCompleteTool
                                                                 {
                                                                     if (model.trainNumber.Trim().Equals(_tpm.getOutside_trainNum))
                                                                     {//是该项目的出库车
-                                                                        projectNum = _tpm.projectIndex;
-                                                                        if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//出库股道
-                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
-                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                     //判断还有没有另外的符合条件的
+                                                                        bool hasSameOne = false;
+                                                                        int _sameTPM;
+                                                                        for (_sameTPM = _tpmCount + 1; _sameTPM < allTrainProjectModels.Count; _sameTPM++)
+                                                                        {
+                                                                            if (allTrainProjectModels[_sameTPM].getOutside_trainNum != null && allTrainProjectModels[_sameTPM].getOutside_trainNum.Length != 0)
+                                                                            {
+                                                                                if (row.GetCell(j).ToString().Trim().Equals(allTrainProjectModels[_sameTPM].getOutside_trainNum))
+                                                                                {//判断用哪个
+                                                                                    hasSameOne = project_day_analyse(_tpm.getOutside_day, allTrainProjectModels[_sameTPM].getOutside_day);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (!hasSameOne)
+                                                                        {
+                                                                            projectNum = _tpm.projectIndex;
+                                                                            if (_tpm.trainProjectWorkingModel.Count > 0)
+                                                                            {//出库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {//用新计划
+                                                                            projectNum = allTrainProjectModels[_sameTPM].projectIndex;
+                                                                            if (allTrainProjectModels[_sameTPM].trainProjectWorkingModel.Count > 0)
+                                                                            {//出库股道
+                                                                                targetTrackNum = findGetInOrOutsideTPW(allTrainProjectModels[_sameTPM], allTrainProjectModels[_sameTPM].getOutside_time, true, morningOrNight).track;
+                                                                                //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                            }
                                                                         }
                                                                         break;
                                                                     }
@@ -5820,18 +6034,54 @@ namespace TimeTableAutoCompleteTool
                         MessageBox.Show(this, we.Message);
                         return;
                     }
+                            /*
                 }
+
                 catch (IOException)
                 {
                     MessageBox.Show("时刻表文件正在使用中，请关闭后重试", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
+
             }
+
             catch(Exception autoCompleteE)
             {
                 MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + autoCompleteE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+                            */
 
+        }
+
+        //判断动车段时刻表应该用哪趟车
+        private bool project_day_analyse(string str_originalDay, string str_sameDay)
+        {
+            //有两天的车都在计划里，这时候应该…用前一天的车
+            int originalDay = -1;
+            int sameDay = -1;
+            int.TryParse(str_originalDay, out originalDay);
+            int.TryParse(str_sameDay, out sameDay);
+            if (originalDay == -1 || sameDay == -1)
+            {//此时还是用原来的计划内容
+                return false;
+            }
+            if (originalDay == (sameDay - 1))
+            {
+                return false;
+            }
+            else if (originalDay == (sameDay + 1))
+            {//此时应该用新计划
+                return true;
+            }
+            else if (originalDay - sameDay > 1)
+            {//30 1号切换的时候,用原计划
+                return false;
+            }
+            else if (sameDay - originalDay > 1)
+            {//用新计划
+                return true;
+            }
+            return false;
         }
 
         private void contextMenuForTextBox_Opening(object sender, CancelEventArgs e)
@@ -6261,12 +6511,12 @@ namespace TimeTableAutoCompleteTool
                                             if (!hasBroken)
                                             {//分为解编后和解编前
                                                 _pm.getOutside_trainNum = _trainNum;
-                                                _pm.getOutside_day = _day + "日";
+                                                _pm.getOutside_day = _day;
                                             }
                                             else
                                             {
                                                 _pmBreak.getOutside_trainNum = _trainNum;
-                                                _pmBreak.getOutside_day = _day + "日";
+                                                _pmBreak.getOutside_day = _day;
                                             }
                                             break;
                                         }
@@ -7069,7 +7319,7 @@ namespace TimeTableAutoCompleteTool
                     _tpsGetOutside.trainNumB = _tp.secondTrainId;
                     //找出库车的真正股道
                     _tpsGetOutside.track = findGetInOrOutsideTPW(_tp, _tp.getOutside_time, true, morningOrNight).track;
-                    _tpsGetOutside.originalText ="("+_tp.getOutside_day+")"+ _tpsGetOutside.track + "道" + _tp.getOutside_trainNum + "次出所";
+                    _tpsGetOutside.originalText ="("+_tp.getOutside_day+"日)"+ _tpsGetOutside.track + "道" + _tp.getOutside_trainNum + "次出所";
                     _tpsGetOutside.time = _tp.getOutside_time;
                     _tpsGetOutside.trainModel = _tp.trainModel;
                     _tpsGetOutside.projectIndex = _tp.projectIndex;
@@ -7082,7 +7332,15 @@ namespace TimeTableAutoCompleteTool
                 Section section = document.AddSection();
 
             Paragraph paraTitle = section.AddParagraph();
-            TextRange title = paraTitle.AppendText("动车所调车作业计划-" + DateTime.Now.ToString("yyyyMMdd"));
+            string morNightStr = "";
+            if (morningOrNight == 0)
+            {
+                morNightStr = "（白班）";
+            }else if(morningOrNight == 1)
+            {
+                morNightStr = "（夜班）";
+            }
+            TextRange title = paraTitle.AppendText("动车所调车作业计划"+morNightStr+"-" + DateTime.Now.ToString("yyyyMMdd"));
 
             ParagraphStyle styleTitle = new ParagraphStyle(document);
             styleTitle.Name = "titleStyle";
@@ -7195,8 +7453,8 @@ namespace TimeTableAutoCompleteTool
 
             }
 
-                document.SaveToFile(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
-                System.Diagnostics.Process.Start(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
+                document.SaveToFile(Application.StartupPath + "\\动车所-调车作业计划\\" + "已整理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
+                System.Diagnostics.Process.Start(Application.StartupPath + "\\动车所-调车作业计划\\" + "已整理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
         }
 
         //寻找入库出库股道和所在的计划（通过时间排序）
