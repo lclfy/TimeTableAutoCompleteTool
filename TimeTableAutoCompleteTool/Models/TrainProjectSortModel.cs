@@ -101,8 +101,10 @@ namespace TimeTableAutoCompleteTool.Models
                 otherStartedTime = other.time.Replace(":", "");
             }
             int StartedTimeInt = -1;
+            int OtherStartedTimeInt = -1;
             int.TryParse(thisStartedTime, out StartedTimeInt);
-            if(this.morningOrNight == 0)
+            int.TryParse(otherStartedTime, out OtherStartedTimeInt);
+            if (this.morningOrNight == 0)
             {//白班 8点开始
                 if (StartedTimeInt != -1 &&
                     StartedTimeInt < 800)
@@ -110,12 +112,12 @@ namespace TimeTableAutoCompleteTool.Models
                     StartedTimeInt = StartedTimeInt + 2400;
                     thisStartedTime = StartedTimeInt.ToString();
                 }
-                int.TryParse(otherStartedTime, out StartedTimeInt);
-                if (StartedTimeInt != -1 &&
-                    StartedTimeInt < 800)
+
+                if (OtherStartedTimeInt != -1 &&
+                    OtherStartedTimeInt < 800)
                 {
-                    StartedTimeInt = StartedTimeInt + 2400;
-                    otherStartedTime = StartedTimeInt.ToString();
+                    OtherStartedTimeInt = OtherStartedTimeInt + 2400;
+                    otherStartedTime = OtherStartedTimeInt.ToString();
                 }
             }
             else if(this.morningOrNight == 1)
@@ -126,12 +128,11 @@ namespace TimeTableAutoCompleteTool.Models
                     StartedTimeInt = StartedTimeInt + 2400;
                     thisStartedTime = StartedTimeInt.ToString();
                 }
-                int.TryParse(otherStartedTime, out StartedTimeInt);
-                if (StartedTimeInt != -1 &&
-                    StartedTimeInt < 1600)
+                if (OtherStartedTimeInt != -1 &&
+                    OtherStartedTimeInt < 1600)
                 {
-                    StartedTimeInt = StartedTimeInt + 2400;
-                    otherStartedTime = StartedTimeInt.ToString();
+                    OtherStartedTimeInt = OtherStartedTimeInt + 2400;
+                    otherStartedTime = OtherStartedTimeInt.ToString();
                 }
             }
 

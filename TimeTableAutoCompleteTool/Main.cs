@@ -70,9 +70,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 55 - v190225";
+        string build = "build 55 - v190228";
         string readMe = "build55更新内容:\n"+
-            " 1、关闭了“自动备份”\n 2、动车所增加作业计划排序";
+            " 0、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误的问题和备开车次问题\n 1、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
 
         public Main()
         {
@@ -184,7 +184,6 @@ namespace TimeTableAutoCompleteTool
                 trainProjectText = "";
                 yesterdayExcelFile = "";
                 trainPorjectFilePath_lbl.Text = "";
-                matchTrackWithTrain_Project_btn.Visible = false;
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
                 developerLabel.Text = "反馈请联系运转车间 - 罗思聪";
@@ -202,11 +201,12 @@ namespace TimeTableAutoCompleteTool
                 startPath = "动车所时刻表";
                 //<作业计划优化辅助工具>\n（首先补全车型-并在右侧选择计划）
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
-                hint_label.Text = "时刻表中浅黄色标注为在43G条件下，最佳出库走行线与存场股道不匹配的车。\n夜班空股道为：除去在晚间占用过的，或回库后存放超过凌晨的，或在凌晨后才进入检修库的车之后，剩余的股道。";
+                hint_label.Text = "时刻表中浅黄色标注为在43G条件下，最佳出库走行线与存场股道不匹配的车。\n夜班空股道为：在晚间未占用过的，回库后存放没有超过凌晨的，在凌晨之前就进入检修库的车所占用的股道。";
                 start_Btn.Text = "补全车辆信息";
                 label18.Text = "动车所：选择动车段给出的计划文件\n(请从值班室拷贝word,可在时刻表中标记股道)";
                 ExcelFile = new List<string>();
                 filePathLBL.Text = "已选择：";
+                matchTrackWithTrain_Project_btn.Enabled = false;
             }
         }
 
@@ -5469,8 +5469,9 @@ namespace TimeTableAutoCompleteTool
                                                                 {//是该项目的入库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//第一项工作的股道
-                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    {//入库股道
+                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm,_tpm.getInside_time,false,morningOrNight).track;
+                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                     }
                                                                     break;
                                                                 }
@@ -5481,8 +5482,9 @@ namespace TimeTableAutoCompleteTool
                                                                 {//是该项目的出库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//最后一项工作的股道
-                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                    {//出库股道
+                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
                                                                     }
                                                                     break;
                                                                 }
@@ -5498,8 +5500,9 @@ namespace TimeTableAutoCompleteTool
                                                                     {//是该项目的入库车
                                                                         projectNum = _tpm.projectIndex;
                                                                         if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//第一项工作的股道
-                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                         }
                                                                         break;
                                                                     }
@@ -5510,8 +5513,9 @@ namespace TimeTableAutoCompleteTool
                                                                     {//是该项目的出库车
                                                                         projectNum = _tpm.projectIndex;
                                                                         if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//最后一项工作的股道
-                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
                                                                         }
                                                                         break;
                                                                     }
@@ -5642,8 +5646,9 @@ namespace TimeTableAutoCompleteTool
                                                                 {//是该项目的入库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//第一项工作的股道
-                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                    {//入库股道
+                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                     }
                                                                     break;
                                                                 }
@@ -5654,8 +5659,9 @@ namespace TimeTableAutoCompleteTool
                                                                 {//是该项目的出库车
                                                                     projectNum = _tpm.projectIndex;
                                                                     if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                    {//最后一项工作的股道
-                                                                        targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                    {//出库股道
+                                                                        targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                        //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
                                                                     }
                                                                     break;
                                                                 }
@@ -5671,8 +5677,9 @@ namespace TimeTableAutoCompleteTool
                                                                     {//是该项目的入库车
                                                                         projectNum = _tpm.projectIndex;
                                                                         if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//第一项工作的股道
-                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
+                                                                        {//入库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getInside_time, false, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[0].track;
                                                                         }
                                                                         break;
                                                                     }
@@ -5683,8 +5690,9 @@ namespace TimeTableAutoCompleteTool
                                                                     {//是该项目的出库车
                                                                         projectNum = _tpm.projectIndex;
                                                                         if (_tpm.trainProjectWorkingModel.Count > 0)
-                                                                        {//最后一项工作的股道
-                                                                            targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
+                                                                        {//出库股道
+                                                                            targetTrackNum = findGetInOrOutsideTPW(_tpm, _tpm.getOutside_time, true, morningOrNight).track;
+                                                                            //targetTrackNum = _tpm.trainProjectWorkingModel[_tpm.trainProjectWorkingModel.Count - 1].track;
                                                                         }
                                                                         break;
                                                                     }
@@ -6072,6 +6080,7 @@ namespace TimeTableAutoCompleteTool
                     if(allTrainProjectModels != null && allTrainProjectModels.Count != 0)
                     {
                         emptyTrackList_rtb.Text = checkEmptyTrack(allTrainProjectModels);
+                        matchTrackWithTrain_Project_btn.Enabled = true;
                     }
                     else
                     {
@@ -6234,6 +6243,8 @@ namespace TimeTableAutoCompleteTool
                                     _currentWork.Contains("0D") ||
                                     _currentWork.Contains("00")))
                             {
+                                //日期
+                                string _day = _currentWork.Split('备')[1].Split('开')[1].Split('日')[0];
                                 //车次
                                 string _trainNum = "";
                                 char[] _workToChar = _currentWork.Replace("次", "").ToCharArray();
@@ -6250,10 +6261,12 @@ namespace TimeTableAutoCompleteTool
                                             if (!hasBroken)
                                             {//分为解编后和解编前
                                                 _pm.getOutside_trainNum = _trainNum;
+                                                _pm.getOutside_day = _day + "日";
                                             }
                                             else
                                             {
                                                 _pmBreak.getOutside_trainNum = _trainNum;
+                                                _pmBreak.getOutside_day = _day + "日";
                                             }
                                             break;
                                         }
@@ -6996,7 +7009,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 allTrainProjectModels = _trainProjectModels;
                 //调车作业计划排序
-                sortTrainProject(_trainProjectModels,morningOrNight);
+                //sortTrainProject(_trainProjectModels,morningOrNight);
             }
             catch(Exception trainProjectE)
             {
@@ -7013,8 +7026,14 @@ namespace TimeTableAutoCompleteTool
             foreach (TrainProjectModel _tp in _allTPM)
             {
                 int getInCount = 0;
+                //避免找到重复的入库信息
+                string getInOriginalText = "";
                 foreach (TrainProjectWorking _tpw in _tp.trainProjectWorkingModel)
                 {
+                    if(getInOriginalText.Length !=0 && getInOriginalText.Equals(_tpw.originalText))
+                    {//找到重复的入库信息
+                        continue;
+                    }
                     TrainProjectSortModel _tps = new TrainProjectSortModel();
                     _tps.getInside_trainNum = _tp.getInside_trainNum;
                     _tps.getOutside_trainNum = _tp.getOutside_trainNum;
@@ -7024,16 +7043,20 @@ namespace TimeTableAutoCompleteTool
                     _tps.trainModel = _tp.trainModel;
                     _tps.projectIndex = _tp.projectIndex;
                     if (_tp.getInside_time.Length != 0 && getInCount == 0)
-                    {
-                        _tps.originalText = _tps.getInside_trainNum + "次入所-"+_tpw.originalText;
+                    {//找入库车
+                        TrainProjectWorking _getInTPW = findGetInOrOutsideTPW(_tp,_tp.getInside_time,false,morningOrNight);
+                        _tps.originalText = _tps.getInside_trainNum + "次入所-" + _getInTPW.originalText;
+                        _tps.track = _getInTPW.track;
+                        _tps.time = _getInTPW.time;
+                        getInOriginalText = _getInTPW.originalText;
                         getInCount = 1;
                     }
                     else
                     {
                         _tps.originalText = _tpw.originalText;
+                        _tps.track = _tpw.track;
+                        _tps.time = _tpw.time;
                     }
-                    _tps.track = _tpw.track;
-                    _tps.time = _tpw.time;
                     _allTPSM.Add(_tps);
                 }
                 if(_tp.getOutside_time.Length != 0)
@@ -7041,9 +7064,12 @@ namespace TimeTableAutoCompleteTool
                     TrainProjectSortModel _tpsGetOutside = new TrainProjectSortModel();
                     _tpsGetOutside.getInside_trainNum = _tp.getInside_trainNum;
                     _tpsGetOutside.getOutside_trainNum = _tp.getOutside_trainNum;
+                    _tpsGetOutside.morningOrNight = morningOrNight;
                     _tpsGetOutside.trainNumA = _tp.trainId;
                     _tpsGetOutside.trainNumB = _tp.secondTrainId;
-                    _tpsGetOutside.originalText = _allTPSM[_allTPSM.Count - 1].track + "道" + _tp.getOutside_trainNum + "次出所";
+                    //找出库车的真正股道
+                    _tpsGetOutside.track = findGetInOrOutsideTPW(_tp, _tp.getOutside_time, true, morningOrNight).track;
+                    _tpsGetOutside.originalText ="("+_tp.getOutside_day+")"+ _tpsGetOutside.track + "道" + _tp.getOutside_trainNum + "次出所";
                     _tpsGetOutside.time = _tp.getOutside_time;
                     _tpsGetOutside.trainModel = _tp.trainModel;
                     _tpsGetOutside.projectIndex = _tp.projectIndex;
@@ -7052,10 +7078,6 @@ namespace TimeTableAutoCompleteTool
 
             }
             _allTPSM.Sort();
-            /*
-            try
-            {
-            */
                 Document document = new Document();
                 Section section = document.AddSection();
 
@@ -7175,39 +7197,150 @@ namespace TimeTableAutoCompleteTool
 
                 document.SaveToFile(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
                 System.Diagnostics.Process.Start(Application.StartupPath + "\\动车所-调车作业计划\\" + "已处理-" + DateTime.Now.ToString("yyyyMMdd") + ".docx");
-            /*
-    }
+        }
 
-    catch(Exception e)
-    {
-        int lk = 0;
-    }
-    */
-            try
+        //寻找入库出库股道和所在的计划（通过时间排序）
+        //从目标时间开始往前（后）找，直至找到第一个时间为止（碰到24点换日）
+        //In == false Out == true
+        private TrainProjectWorking findGetInOrOutsideTPW(TrainProjectModel _tpm,string time,bool InOrOut,int morningOrNight)
+        {
+            TrainProjectWorking _targetTPW = new TrainProjectWorking();
+            string trackNumber = "";
+            int targetTimeInt = -1;
+            int.TryParse(time.Replace(":", ""), out targetTimeInt);
+            int nearestTimeInt = -1;
+            if(targetTimeInt == -1)
             {
-                FileStream file = new FileStream(Application.StartupPath + "\\动车所时刻表\\" + "作业计划-" + DateTime.Now.ToString("yyyyMMdd") + ".txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamWriter writer = new StreamWriter(file);
-                string tpsmString = "";
-                int count = 0;
-                foreach(TrainProjectSortModel _tps in _allTPSM)
+                return null;
+            }
+            if (InOrOut && morningOrNight == 0)
+            {//白班出库，找与目标时间最接近的前序时间
+                foreach(TrainProjectWorking _tpw in _tpm.trainProjectWorkingModel)
                 {
-                    count++;
-                    tpsmString = tpsmString+ count + "、时间："+_tps.time + "     " + _tps.trainModel + "-" + _tps.trainNumA;
-                    if(_tps.trainNumB.Length != 0)
+                    int compareTimeInt = -1;
+                    int.TryParse(_tpw.time.Replace(":", ""), out compareTimeInt);
+                    if(compareTimeInt == -1 || (compareTimeInt > targetTimeInt))
                     {
-                        tpsmString = tpsmString + "+" + _tps.trainNumB;
+                        continue;
                     }
-                    tpsmString = tpsmString + "     " + _tps.originalText + "     " + _tps.getInside_trainNum + "     " + _tps.getOutside_trainNum + "\r\n";
+                    else if(nearestTimeInt == -1)
+                    {
+                        nearestTimeInt = compareTimeInt;
+                        trackNumber = _tpw.track;
+                        _targetTPW = _tpw;
+                    }
+                    else
+                    //比较
+                    {
+                        if ((targetTimeInt - compareTimeInt) < (targetTimeInt - nearestTimeInt))
+                        {
+                            nearestTimeInt = compareTimeInt;
+                            trackNumber = _tpw.track;
+                            _targetTPW = _tpw;
+                        }
+                    }
                 }
-                writer.WriteLine(tpsmString);
-                writer.Close();
-                file.Close();
             }
-            catch (Exception _e)
-            {
-
+            else if(InOrOut && morningOrNight == 1)
+            {//夜班出库，以16点为基准时间
+                if(targetTimeInt < 1600)
+                {
+                    targetTimeInt = targetTimeInt + 2400;
+                }
+                foreach (TrainProjectWorking _tpw in _tpm.trainProjectWorkingModel)
+                {
+                    int compareTimeInt = -1;
+                    int.TryParse(_tpw.time.Replace(":", ""), out compareTimeInt);
+                    if(compareTimeInt < 1600 && compareTimeInt != -1)
+                    {
+                        compareTimeInt = compareTimeInt + 2400;
+                    }
+                    if (compareTimeInt == -1 || (compareTimeInt > targetTimeInt))
+                    {
+                        continue;
+                    }else if (nearestTimeInt == -1)
+                    {
+                        nearestTimeInt = compareTimeInt;
+                        trackNumber = _tpw.track;
+                        _targetTPW = _tpw;
+                    }
+                    else
+                    //比较
+                    {
+                        if ((targetTimeInt - compareTimeInt) < (targetTimeInt - nearestTimeInt))
+                        {
+                            nearestTimeInt = compareTimeInt;
+                            trackNumber = _tpw.track;
+                            _targetTPW = _tpw;
+                        }
+                    }
+                }
             }
-            int ij = 0;
+            else if (!InOrOut && morningOrNight == 0)
+            {//白班入库，找与目标时间最接近的后序时间
+                foreach (TrainProjectWorking _tpw in _tpm.trainProjectWorkingModel)
+                {
+                    int compareTimeInt = -1;
+                    int.TryParse(_tpw.time.Replace(":", ""), out compareTimeInt);
+                    if (compareTimeInt == -1 || (compareTimeInt < targetTimeInt))
+                    {
+                        continue;
+                    }
+                    else if (nearestTimeInt == -1)
+                    {
+                        nearestTimeInt = compareTimeInt;
+                        trackNumber = _tpw.track;
+                        _targetTPW = _tpw;
+                    }
+                    else
+                    //比较
+                    {
+                        if ((compareTimeInt - targetTimeInt) < (nearestTimeInt - targetTimeInt))
+                        {
+                            nearestTimeInt = compareTimeInt;
+                            trackNumber = _tpw.track;
+                            _targetTPW = _tpw;
+                        }
+                    }
+                }
+            }
+            else if (!InOrOut && morningOrNight == 1)
+            {//夜班入库，以16点为基准时间
+                if (targetTimeInt < 1600)
+                {
+                    targetTimeInt = targetTimeInt + 2400;
+                }
+                foreach (TrainProjectWorking _tpw in _tpm.trainProjectWorkingModel)
+                {
+                    int compareTimeInt = -1;
+                    int.TryParse(_tpw.time.Replace(":", ""), out compareTimeInt);
+                    if (compareTimeInt < 1600 && compareTimeInt != -1)
+                    {
+                        compareTimeInt = compareTimeInt + 2400;
+                    }
+                    if (compareTimeInt == -1 || (compareTimeInt < targetTimeInt))
+                    {
+                        continue;
+                    }
+                    else if (nearestTimeInt == -1)
+                    {
+                        nearestTimeInt = compareTimeInt;
+                        trackNumber = _tpw.track;
+                        _targetTPW = _tpw;
+                    }
+                    else
+                    //比较
+                    {
+                        if ((compareTimeInt - targetTimeInt) < (nearestTimeInt - targetTimeInt))
+                        {
+                            nearestTimeInt = compareTimeInt;
+                            trackNumber = _tpw.track;
+                            _targetTPW = _tpw;
+                        }
+                    }
+                }
+            }
+            return _targetTPW;
         }
 
         private string checkEmptyTrack(List<TrainProjectModel> _trainProjectModels)
@@ -7344,9 +7477,13 @@ namespace TimeTableAutoCompleteTool
         }
         private void matchTrackWithTrain_Project_btn_Click(object sender, EventArgs e)
         {
+            sortTrainProject(allTrainProjectModels, morningOrNight);
+            /*
             trainTypeAutoComplete(true);
             Form _displaySystem = new Display();
             _displaySystem.Show();
+            */
+
         }
 
         private void radioButton5_CheckedChanged_1(object sender, EventArgs e)
@@ -7358,11 +7495,11 @@ namespace TimeTableAutoCompleteTool
         {//判断是否启用调车作业辅助(测试版)
             if (hasTrainProjectFile)
             {
-                matchTrackWithTrain_Project_btn.Visible = false;
+                matchTrackWithTrain_Project_btn.Enabled = true;
             }
             else
             {
-                matchTrackWithTrain_Project_btn.Visible = false;
+                matchTrackWithTrain_Project_btn.Enabled = false;
             }
         }
 

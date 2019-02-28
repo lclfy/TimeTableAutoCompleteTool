@@ -69,6 +69,8 @@ namespace TimeTableAutoCompleteTool
         public string getOutside_trainNum { get; set; }
         public string getOutside_track { get; set; }
         public string getOutside_time { get; set; }
+        //出库日期
+        public string getOutside_day { get; set; }
 
         public string originalText { get; set; }
         public string tips { get; set; }
@@ -97,7 +99,7 @@ namespace TimeTableAutoCompleteTool
             this.getOutside_trainNum = "";
             this.getOutside_track = "";
             this.getOutside_time = "";
-
+            this.getOutside_day = "";
             this.originalText = "";
             this.tips = "";
         }
@@ -126,6 +128,7 @@ namespace TimeTableAutoCompleteTool
             _P.getOutside_trainNum = this.getOutside_trainNum;
             _P.getOutside_track = this.getOutside_track;
             _P.getOutside_time = this.getOutside_time;
+            _P.getOutside_day = this.getOutside_day;
 
             _P.originalText = this.originalText;
             _P.tips = this.tips;
