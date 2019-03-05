@@ -70,9 +70,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 55 - v190228";
-        string readMe = "build55更新内容:\n"+
-            " 0、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误问题和备开车次日期错误问题\n 1、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
+        string build = "build 56 - v190305";
+        string readMe = "build56更新内容:\n"+
+            " 0、Bug fixes && 动车所增加表头时间\n 1、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误问题和备开车次日期错误问题\n 1、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
 
         public Main()
         {
@@ -865,7 +865,6 @@ namespace TimeTableAutoCompleteTool
             //standardCommand = Regex.Replace(standardCommand, @"\d+：\d", "");
             standardCommand = Regex.Replace(standardCommand,@"[0-9]{2}(：)[0-9]{2}","");
             standardCommand = Regex.Replace(standardCommand, @"[0-9]{1}(：)[0-9]{2}", "");
-
             if (standardCommand.Contains("1\t2"))
                 standardCommand = standardCommand.Replace("1\t2", "1、2");
             if (standardCommand.Contains("2\t2"))
@@ -886,6 +885,33 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("9\t2", "9、2");
             if (standardCommand.Contains("0\t2"))
                 standardCommand = standardCommand.Replace("0\t2", "0、2");
+            if (standardCommand.Contains("1道"))
+                standardCommand = standardCommand.Replace("1道", "");
+            if (standardCommand.Contains("I道"))
+                standardCommand = standardCommand.Replace("I道", "");
+            if (standardCommand.Contains("2道"))
+                standardCommand = standardCommand.Replace("2道", "");
+            if (standardCommand.Contains("3道"))
+                standardCommand = standardCommand.Replace("3道", "");
+            if (standardCommand.Contains("4道"))
+                standardCommand = standardCommand.Replace("4道", "");
+            if (standardCommand.Contains("5道"))
+                standardCommand = standardCommand.Replace("5道", "");
+            if (standardCommand.Contains("6道"))
+                standardCommand = standardCommand.Replace("6道", "");
+            if (standardCommand.Contains("7道"))
+                standardCommand = standardCommand.Replace("7道", "");
+            if (standardCommand.Contains("8道"))
+                standardCommand = standardCommand.Replace("8道", "");
+            if (standardCommand.Contains("9道"))
+                standardCommand = standardCommand.Replace("9道", "");
+            if (standardCommand.Contains("0道"))
+                standardCommand = standardCommand.Replace("0道", "");
+            if (standardCommand.Contains("V道"))
+                standardCommand = standardCommand.Replace("V道", "");
+            if (standardCommand.Contains("X道"))
+                standardCommand = standardCommand.Replace("X道", "");
+
             string s1 = string.Empty;
             foreach (char c in standardCommand)
             {
@@ -4976,10 +5002,8 @@ namespace TimeTableAutoCompleteTool
         //动车所填车型
         private void trainTypeAutoComplete(bool isProjectHelper = false)
         {
-            /*
             try
             {
-            */
                 if (ExcelFile == null || ExcelFile.Count == 0)
                 {
                     MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -5211,6 +5235,14 @@ namespace TimeTableAutoCompleteTool
                                         }
                                     }
                                 }
+                            if (i == 0&& row.GetCell(0).ToString().Contains("-") && row.GetCell(0).ToString().Contains("动车所"))
+                            {
+                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0] + DateTime.Now.ToString("yyyy.MM.dd"));
+                            }
+                            else if(i == 0 && row.GetCell(0).ToString().Contains("动车所"))
+                            {
+                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString() + "-"+DateTime.Now.ToString("yyyy.MM.dd"));
+                            }
                                 if(secondSection == -1)
                                 {//是否二场
                                     if(row.GetCell(0).ToString().Contains("二场") ||
@@ -6034,22 +6066,11 @@ namespace TimeTableAutoCompleteTool
                         MessageBox.Show(this, we.Message);
                         return;
                     }
-                            /*
-                }
-
-                catch (IOException)
-                {
-                    MessageBox.Show("时刻表文件正在使用中，请关闭后重试", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-
             }
-
             catch(Exception autoCompleteE)
             {
                 MessageBox.Show("运行出现错误，请重试，若持续错误请联系车间。\n" + autoCompleteE.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-                            */
 
         }
 
