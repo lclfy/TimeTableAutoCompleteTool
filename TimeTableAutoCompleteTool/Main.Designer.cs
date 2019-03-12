@@ -342,7 +342,7 @@
             this.compareDailySchedue_btn.NormlBack = null;
             this.compareDailySchedue_btn.Size = new System.Drawing.Size(190, 82);
             this.compareDailySchedue_btn.TabIndex = 31;
-            this.compareDailySchedue_btn.Text = " 班计划对比";
+            this.compareDailySchedue_btn.Text = "计划文件对比";
             this.compareDailySchedue_btn.UseVisualStyleBackColor = false;
             this.compareDailySchedue_btn.Click += new System.EventHandler(this.compareDailySchedue_btn_Click);
             // 
