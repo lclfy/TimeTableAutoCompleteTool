@@ -21,6 +21,7 @@ using Spire.Doc.Documents;
 using Spire.Doc.Fields;
 using System.Collections.Specialized;
 using TimeTableAutoCompleteTool.Models;
+using SiEncrypt;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -70,17 +71,32 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 57 - v190312";
-        string readMe = "build57更新内容:\n"+
-            " 0、Bug fixes && 动车所增加表头时间\n 1、（重要更新）动车所优化了识别算法，修复了计划中出入库股道错误问题和备开车次日期错误问题\n 2、关闭了“自动备份”\n 2、动车所增加作业计划自动整理功能 \n";
+        string build = "build 58 - v190410";
+        string readMe = "build58更新内容:\n"+
+            " 1、增加授权模块";
 
         public Main()
         {
             InitializeComponent();
         }
 
+        //检查激活状态
+        private void checkRegist()
+        {
+            SiEncryptForm _encryptForm = new SiEncryptForm();
+            _encryptForm.Show();
+            _encryptForm.Hide();
+            if (!_encryptForm.isRegist)
+            {
+                _encryptForm.ShowDialog();
+                System.Environment.Exit(System.Environment.ExitCode);
+                this.Hide();
+            }
+        }
+
         private void Main_Load(object sender, EventArgs e)
         {
+            checkRegist();
             Graphics graphics = this.CreateGraphics();
             dpiX = graphics.DpiX;
             dpiY = graphics.DpiY;

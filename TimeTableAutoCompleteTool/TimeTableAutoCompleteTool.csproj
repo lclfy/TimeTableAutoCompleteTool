@@ -73,6 +73,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\AutomaticTimeTableMakingTools\AutomaticTimeTableMakingTools\NPOI\Net20\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="SiEncrypt">
+      <HintPath>.\SiEncrypt.dll</HintPath>
+    </Reference>
     <Reference Include="Spire.Doc, Version=6.3.0.41020, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Spire.Doc\Spire.Doc.dll</HintPath>
