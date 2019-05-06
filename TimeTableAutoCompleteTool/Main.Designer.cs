@@ -98,6 +98,7 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.EMUGarage_YesterdayCommand_rtb = new System.Windows.Forms.RichTextBox();
+            this.dataAnalyse_btn = new CCWin.SkinControl.SkinButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.EMUorEMUC_groupBox.SuspendLayout();
@@ -212,7 +213,7 @@
             this.outputTB.Margin = new System.Windows.Forms.Padding(6);
             this.outputTB.Name = "outputTB";
             this.outputTB.ReadOnly = true;
-            this.outputTB.Size = new System.Drawing.Size(416, 606);
+            this.outputTB.Size = new System.Drawing.Size(416, 506);
             this.outputTB.TabIndex = 9;
             this.outputTB.Text = "";
             // 
@@ -279,7 +280,7 @@
             this.searchResult_tb.Margin = new System.Windows.Forms.Padding(6);
             this.searchResult_tb.Name = "searchResult_tb";
             this.searchResult_tb.ReadOnly = true;
-            this.searchResult_tb.Size = new System.Drawing.Size(416, 606);
+            this.searchResult_tb.Size = new System.Drawing.Size(416, 506);
             this.searchResult_tb.TabIndex = 14;
             this.searchResult_tb.Text = "";
             // 
@@ -314,10 +315,10 @@
             this.groupBox1.Controls.Add(this.FontSize_tb);
             this.groupBox1.Controls.Add(this.label222);
             this.groupBox1.Controls.Add(this.label111);
+            this.groupBox1.Controls.Add(this.start_Btn);
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.secondStepText_lbl);
-            this.groupBox1.Controls.Add(this.start_Btn);
             this.groupBox1.Location = new System.Drawing.Point(62, 154);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
@@ -469,7 +470,7 @@
             this.start_Btn.DownBack = null;
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.start_Btn.ForeColor = System.Drawing.Color.White;
-            this.start_Btn.Location = new System.Drawing.Point(18, 792);
+            this.start_Btn.Location = new System.Drawing.Point(19, 792);
             this.start_Btn.Margin = new System.Windows.Forms.Padding(6);
             this.start_Btn.MouseBack = null;
             this.start_Btn.Name = "start_Btn";
@@ -482,6 +483,7 @@
             // 
             // rightGroupBox
             // 
+            this.rightGroupBox.Controls.Add(this.dataAnalyse_btn);
             this.rightGroupBox.Controls.Add(this.search_tb);
             this.rightGroupBox.Controls.Add(this.groupBox3);
             this.rightGroupBox.Controls.Add(this.outputTB);
@@ -517,7 +519,7 @@
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.AllPsngerTrainsCountLBL);
             this.groupBox3.Controls.Add(this.AllTrainsCountLBL);
-            this.groupBox3.Location = new System.Drawing.Point(38, 664);
+            this.groupBox3.Location = new System.Drawing.Point(32, 570);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
@@ -955,6 +957,26 @@
             this.EMUGarage_YesterdayCommand_rtb.Text = "";
             this.EMUGarage_YesterdayCommand_rtb.TextChanged += new System.EventHandler(this.EMUGarage_YesterdayCommand_rtb_TextChanged);
             // 
+            // dataAnalyse_btn
+            // 
+            this.dataAnalyse_btn.BackColor = System.Drawing.Color.Transparent;
+            this.dataAnalyse_btn.BaseColor = System.Drawing.Color.DeepPink;
+            this.dataAnalyse_btn.BorderColor = System.Drawing.Color.DeepPink;
+            this.dataAnalyse_btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.dataAnalyse_btn.DownBack = null;
+            this.dataAnalyse_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataAnalyse_btn.ForeColor = System.Drawing.Color.White;
+            this.dataAnalyse_btn.Location = new System.Drawing.Point(36, 792);
+            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(6);
+            this.dataAnalyse_btn.MouseBack = null;
+            this.dataAnalyse_btn.Name = "dataAnalyse_btn";
+            this.dataAnalyse_btn.NormlBack = null;
+            this.dataAnalyse_btn.Size = new System.Drawing.Size(848, 86);
+            this.dataAnalyse_btn.TabIndex = 28;
+            this.dataAnalyse_btn.Text = "数据分析";
+            this.dataAnalyse_btn.UseVisualStyleBackColor = false;
+            this.dataAnalyse_btn.Click += new System.EventHandler(this.dataAnalyse_btn_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
@@ -1074,6 +1096,7 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.RichTextBox emptyTrackList_rtb;
         private CCWin.SkinControl.SkinButton compareDailySchedue_btn;
+        private CCWin.SkinControl.SkinButton dataAnalyse_btn;
     }
 }
 

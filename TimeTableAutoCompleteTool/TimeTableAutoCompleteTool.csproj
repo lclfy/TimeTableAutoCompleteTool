@@ -97,6 +97,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAnalyse.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataAnalyse.designer.cs">
+      <DependentUpon>DataAnalyse.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisplayModels\Ubinder.cs" />
     <Compile Include="Models\basicTrainGraphTitle.cs" />
     <Compile Include="Models\CaculatorModel.cs" />
@@ -160,6 +166,9 @@
     <Compile Include="Welcome.Designer.cs">
       <DependentUpon>Welcome.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DataAnalyse.resx">
+      <DependentUpon>DataAnalyse.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Display.resx">
       <DependentUpon>Display.cs</DependentUpon>
     </EmbeddedResource>

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeTableAutoCompleteTool
 {
-    class CommandModel
+    public class CommandModel
     {
         //第几行
         public string trainIndex { get; set; }
@@ -22,6 +22,15 @@ namespace TimeTableAutoCompleteTool
         public int trainConnectType { get; set; }
         //上-下行
         public int upOrDown { get; set; }
-        
+        //判断是否匹配上时刻表车次
+        public bool MatchedWithTimeTable { get; set; }
+        //列车类型-1旅客列车-0其他列车
+        public bool psngerTrain { get; set; }
+
+        public CommandModel()
+        {
+            upOrDown = -1;
+        }
+
     }
 }

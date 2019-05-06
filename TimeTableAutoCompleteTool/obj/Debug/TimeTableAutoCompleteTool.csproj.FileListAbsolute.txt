@@ -131,3 +131,4 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyTrackPoint.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Display.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\SiEncrypt.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DataAnalyse.resources
