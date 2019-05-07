@@ -75,7 +75,7 @@ namespace TimeTableAutoCompleteTool
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 59 - v190506";
         string readMe = "build59更新内容:\n"+
-            " 1、行车增加数据统计模块，修改打印颜色";
+            " 1、行车增加数据统计模块，修复统计错误，修改打印颜色";
 
         public Main()
         {

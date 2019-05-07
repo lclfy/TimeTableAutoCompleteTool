@@ -58,9 +58,10 @@
             this.FontSize_tb = new CCWin.SkinControl.SkinWaterTextBox();
             this.label222 = new CCWin.SkinControl.SkinLabel();
             this.label111 = new CCWin.SkinControl.SkinLabel();
-            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
             this.start_Btn = new CCWin.SkinControl.SkinButton();
+            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
             this.rightGroupBox = new System.Windows.Forms.GroupBox();
+            this.dataAnalyse_btn = new CCWin.SkinControl.SkinButton();
             this.search_tb = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.AllTrainsInTimeTableLBL = new System.Windows.Forms.Label();
@@ -98,7 +99,6 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.EMUGarage_YesterdayCommand_rtb = new System.Windows.Forms.RichTextBox();
-            this.dataAnalyse_btn = new CCWin.SkinControl.SkinButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.EMUorEMUC_groupBox.SuspendLayout();
@@ -441,26 +441,6 @@
             this.label111.TabIndex = 1;
             this.label111.Text = "时刻表车次字体大小";
             // 
-            // importTimeTable_Btn
-            // 
-            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
-            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.importTimeTable_Btn.DownBack = null;
-            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(758, 624);
-            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(6);
-            this.importTimeTable_Btn.MouseBack = null;
-            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
-            this.importTimeTable_Btn.NormlBack = null;
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(190, 82);
-            this.importTimeTable_Btn.TabIndex = 7;
-            this.importTimeTable_Btn.Text = "导入";
-            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
-            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
-            // 
             // start_Btn
             // 
             this.start_Btn.BackColor = System.Drawing.Color.Transparent;
@@ -481,6 +461,26 @@
             this.start_Btn.UseVisualStyleBackColor = false;
             this.start_Btn.Click += new System.EventHandler(this.start_Btn_Click);
             // 
+            // importTimeTable_Btn
+            // 
+            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
+            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.importTimeTable_Btn.DownBack = null;
+            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(758, 624);
+            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(6);
+            this.importTimeTable_Btn.MouseBack = null;
+            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
+            this.importTimeTable_Btn.NormlBack = null;
+            this.importTimeTable_Btn.Size = new System.Drawing.Size(190, 82);
+            this.importTimeTable_Btn.TabIndex = 7;
+            this.importTimeTable_Btn.Text = "导入";
+            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
+            this.importTimeTable_Btn.Click += new System.EventHandler(this.importTimeTable_Btn_Click);
+            // 
             // rightGroupBox
             // 
             this.rightGroupBox.Controls.Add(this.dataAnalyse_btn);
@@ -497,6 +497,26 @@
             this.rightGroupBox.Size = new System.Drawing.Size(928, 904);
             this.rightGroupBox.TabIndex = 20;
             this.rightGroupBox.TabStop = false;
+            // 
+            // dataAnalyse_btn
+            // 
+            this.dataAnalyse_btn.BackColor = System.Drawing.Color.Transparent;
+            this.dataAnalyse_btn.BaseColor = System.Drawing.Color.DeepPink;
+            this.dataAnalyse_btn.BorderColor = System.Drawing.Color.DeepPink;
+            this.dataAnalyse_btn.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.dataAnalyse_btn.DownBack = null;
+            this.dataAnalyse_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.dataAnalyse_btn.ForeColor = System.Drawing.Color.White;
+            this.dataAnalyse_btn.Location = new System.Drawing.Point(36, 792);
+            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(6);
+            this.dataAnalyse_btn.MouseBack = null;
+            this.dataAnalyse_btn.Name = "dataAnalyse_btn";
+            this.dataAnalyse_btn.NormlBack = null;
+            this.dataAnalyse_btn.Size = new System.Drawing.Size(848, 86);
+            this.dataAnalyse_btn.TabIndex = 28;
+            this.dataAnalyse_btn.Text = "统计数据";
+            this.dataAnalyse_btn.UseVisualStyleBackColor = false;
+            this.dataAnalyse_btn.Click += new System.EventHandler(this.dataAnalyse_btn_Click);
             // 
             // search_tb
             // 
@@ -819,7 +839,7 @@
             this.rightGroupBox_EMUGarage.Controls.Add(this.label20);
             this.rightGroupBox_EMUGarage.Controls.Add(this.label21);
             this.rightGroupBox_EMUGarage.Controls.Add(this.EMUGarage_YesterdayCommand_rtb);
-            this.rightGroupBox_EMUGarage.Location = new System.Drawing.Point(1042, 150);
+            this.rightGroupBox_EMUGarage.Location = new System.Drawing.Point(1065, 150);
             this.rightGroupBox_EMUGarage.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.rightGroupBox_EMUGarage.Name = "rightGroupBox_EMUGarage";
             this.rightGroupBox_EMUGarage.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
@@ -957,26 +977,6 @@
             this.EMUGarage_YesterdayCommand_rtb.Text = "";
             this.EMUGarage_YesterdayCommand_rtb.TextChanged += new System.EventHandler(this.EMUGarage_YesterdayCommand_rtb_TextChanged);
             // 
-            // dataAnalyse_btn
-            // 
-            this.dataAnalyse_btn.BackColor = System.Drawing.Color.Transparent;
-            this.dataAnalyse_btn.BaseColor = System.Drawing.Color.DeepPink;
-            this.dataAnalyse_btn.BorderColor = System.Drawing.Color.DeepPink;
-            this.dataAnalyse_btn.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.dataAnalyse_btn.DownBack = null;
-            this.dataAnalyse_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dataAnalyse_btn.ForeColor = System.Drawing.Color.White;
-            this.dataAnalyse_btn.Location = new System.Drawing.Point(36, 792);
-            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(6);
-            this.dataAnalyse_btn.MouseBack = null;
-            this.dataAnalyse_btn.Name = "dataAnalyse_btn";
-            this.dataAnalyse_btn.NormlBack = null;
-            this.dataAnalyse_btn.Size = new System.Drawing.Size(848, 86);
-            this.dataAnalyse_btn.TabIndex = 28;
-            this.dataAnalyse_btn.Text = "数据分析";
-            this.dataAnalyse_btn.UseVisualStyleBackColor = false;
-            this.dataAnalyse_btn.Click += new System.EventHandler(this.dataAnalyse_btn_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
@@ -997,9 +997,9 @@
             this.Controls.Add(this.filePath_lbl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.rightGroupBox_EMUGarage);
             this.Controls.Add(this.rightGroupBox_Compare);
             this.Controls.Add(this.rightGroupBox);
+            this.Controls.Add(this.rightGroupBox_EMUGarage);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6);

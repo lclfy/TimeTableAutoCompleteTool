@@ -261,25 +261,27 @@
             // Match
             // 
             this.Match.Text = "位于";
+            this.Match.Width = 40;
             // 
             // trainIndex
             // 
             this.trainIndex.Text = "匹配";
+            this.trainIndex.Width = 40;
             // 
             // trainNumber
             // 
             this.trainNumber.Text = "车次";
-            this.trainNumber.Width = 100;
+            this.trainNumber.Width = 70;
             // 
             // secondTrainNumber
             // 
             this.secondTrainNumber.Text = "车次(2)";
-            this.secondTrainNumber.Width = 100;
+            this.secondTrainNumber.Width = 70;
             // 
             // _upOrDown
             // 
             this._upOrDown.Text = "上下行";
-            this._upOrDown.Width = 80;
+            this._upOrDown.Width = 70;
             // 
             // _trainType
             // 
