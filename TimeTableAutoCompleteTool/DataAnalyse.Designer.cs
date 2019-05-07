@@ -249,6 +249,8 @@
             this._trainModel,
             this._trainID});
             this.data_lv.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.data_lv.FullRowSelect = true;
+            this.data_lv.GridLines = true;
             this.data_lv.Location = new System.Drawing.Point(72, 160);
             this.data_lv.Name = "data_lv";
             this.data_lv.Size = new System.Drawing.Size(1083, 622);
