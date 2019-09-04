@@ -35,7 +35,6 @@ D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoComplete
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 D:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
-<<<<<<< HEAD
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
@@ -54,7 +53,6 @@ D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTable
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 D:\Codes\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
-=======
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
@@ -73,7 +71,6 @@ C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteT
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 C:\Users\lclfy\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
->>>>>>> 9ebf2ba080e11a602174c0d4a665d3bb989ab800
 C:\Users\罗思聪\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
 C:\Users\罗思聪\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.manifest
 C:\Users\罗思聪\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.application
@@ -124,7 +121,6 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Pdf.dll
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.xml
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.xml
-\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\DisplaySystem.Display.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyPowerSupplyModel.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifySignal.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyTrackLine.resources
@@ -132,3 +128,43 @@ D:\时刻表工具\Code\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoComplet
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Display.resources
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\SiEncrypt.dll
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DataAnalyse.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.config
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe.manifest
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.application
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.exe
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\TimeTableAutoCompleteTool.pdb
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OOXML.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXml4Net.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXmlFormats.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\SiEncrypt.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Pdf.dll
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\CSkin.xml
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.xml
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.xml
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.xml
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csprojResolveAssemblyReference.cache
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DataAnalyse.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Display.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Main.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyPowerSupplyModel.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifySignal.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyTrackLine.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DisplayModify.ModifyTrackPoint.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Properties.Resources.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrainEarlyCaculator.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Welcome.resources
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.GenerateResource.Cache
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
+C:\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\ICSharpCode.SharpZipLib.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OOXML.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXml4Net.dll
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.OpenXmlFormats.dll
