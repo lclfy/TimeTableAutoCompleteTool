@@ -73,15 +73,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-<<<<<<< HEAD
         string build = "build 62 - v190904";
         string readMe = "build62更新内容:\n"+
             " 1、修复了因为加开车次问题无法核对的bug";
-=======
-        string build = "build 60 - v190715";
-        string readMe = "build60更新内容:\n"+
-            " 1、动车所修复日期打印问题。\n  2、动车所现可建议60G情况下发车的停放股道 \n ";
->>>>>>> 7e234fbedf9f355470b3ff2a896f68a4ff972105
 
         public Main()
         {
@@ -228,11 +222,7 @@ namespace TimeTableAutoCompleteTool
                 startPath = "动车所时刻表";
                 //<作业计划优化辅助工具>\n（首先补全车型-并在右侧选择计划）
                 secondStepText_lbl.Text = "2.选择动车所时刻表";
-<<<<<<< HEAD
                 hint_label.Text = "时刻表中浅黄色标注为在60G条件下，最佳出库走行线与存场股道不匹配的车。\n夜班空股道为：在晚间未占用过的股道；或回库后存放没有超过凌晨的，在凌晨之前就进入检修库的车所曾占用但夜间空闲的股道。";
-=======
-                hint_label.Text = "时刻表中浅黄色标注为在60G条件下，最佳出库走行线与存场股道不匹配的车。\n夜班空股道为：在晚间未占用过的，回库后存放没有超过凌晨的，在凌晨之前就进入检修库的车所占用的股道。";
->>>>>>> 7e234fbedf9f355470b3ff2a896f68a4ff972105
                 start_Btn.Text = "补全车辆信息";
                 label18.Text = "动车所：选择动车段给出的计划文件\n(请从值班室拷贝word,可在时刻表中标记股道)";
                 ExcelFile = new List<string>();
@@ -5370,11 +5360,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                             if (i == 0&& row.GetCell(0).ToString().Contains("-") && row.GetCell(0).ToString().Contains("动车所"))
                             {
-<<<<<<< HEAD
                                 row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0] + "-" + DateTime.Now.ToString("yyyy.MM.dd"));
-=======
-                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0] + "-" +DateTime.Now.ToString("yyyy.MM.dd"));
->>>>>>> 7e234fbedf9f355470b3ff2a896f68a4ff972105
                             }
                             else if(i == 0 && row.GetCell(0).ToString().Contains("动车所"))
                             {
@@ -6860,7 +6846,7 @@ namespace TimeTableAutoCompleteTool
                                 string throughTrack = "";
                                 if (_currentWork.Split('道').Length == 2)
                                 {
-                                    for (int tNum = 1; tNum <= 65; tNum++)
+                                    for (int tNum = 1; tNum <= 72; tNum++)
                                     {
                                         if (_currentWork.Contains(tNum + "道"))
                                         {
@@ -6885,7 +6871,7 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         throughTrack = throughTrack + "2";
                                     }
-                                    for (int tNum = 1; tNum <= 65; tNum++)
+                                    for (int tNum = 1; tNum <= 72; tNum++)
                                     {
                                         if ((_currentWork.Split('道')[1] + "道").Contains(tNum + "道"))
                                         {
