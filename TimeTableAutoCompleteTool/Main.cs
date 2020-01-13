@@ -2018,7 +2018,21 @@ namespace TimeTableAutoCompleteTool
                         DataAnalyse _daForm = new DataAnalyse(commandModel);
                         _daForm.Show();
                     }
-                    title = "(" +title.Split('-')[0]+ ",开"+(allTrainsInTimeTable-stoppedTrainsCount).ToString()+"列,停"+stoppedTrainsCount.ToString()+"列,高峰"+rushHourTrain.ToString()+"列,临客"+tempTrain.ToString()+"列,周末"+weekendTrain.ToString()+"列)"+ title.Replace(title.Split('-')[0],"");
+                    string titleEnd = title.Replace(title.Split('-')[0], "");
+                    title = "(" + title.Split('-')[0] + ",开" + (allTrainsInTimeTable - stoppedTrainsCount).ToString() + "列,停" + stoppedTrainsCount.ToString() + "列";
+                    if (rushHourTrain > 0)
+                    {
+                        title += ",高峰" + rushHourTrain.ToString() + "列";
+                    }
+                    if(tempTrain > 0)
+                    {
+                        title += ",临客" + tempTrain.ToString() + "列";
+                    }
+                    if(weekendTrain > 0)
+                    {
+                        title += ",周末" + weekendTrain.ToString() + "列";
+                    }
+                    title += ")" + titleEnd;
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
                     /*重新修改文件指定单元格样式*/
                     FileStream fs1 = File.OpenWrite(fileName);
