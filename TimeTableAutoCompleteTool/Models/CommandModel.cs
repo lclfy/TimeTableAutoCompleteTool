@@ -29,6 +29,11 @@ namespace TimeTableAutoCompleteTool
 
         public CommandModel()
         {
+            trainIndex = "";
+            trainNumber = "";
+            secondTrainNumber = "";
+            trainModel = "";
+            trainId = "";
             upOrDown = -1;
         }
 

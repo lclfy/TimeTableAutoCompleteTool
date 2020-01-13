@@ -73,9 +73,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 64 - v200108";
-        string readMe = "build64更新内容:\n"+
-            " 1、在表头加入车次统计，修复一些可能出现的bugs";
+        string build = "build 65 - v200113";
+        string readMe = "build65更新内容:\n"+
+            " 1、现有更为准确的高峰/周末/临客线识别（逐车识别）并添加到大表内";
 
         public Main()
         {
@@ -157,7 +157,7 @@ namespace TimeTableAutoCompleteTool
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件（----支持多选----）";
-                developerLabel.Text = "反馈请联系运转车间 - 罗思聪";
+                developerLabel.Text = "反馈请联系运转车间-罗思聪";
                 start_Btn.Text = "处理时刻表";
                 ExcelFile = new List<string>();
                 start_Btn.Enabled = false;
@@ -207,7 +207,7 @@ namespace TimeTableAutoCompleteTool
                 trainPorjectFilePath_lbl.Text = "";
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
-                developerLabel.Text = "反馈请联系运转车间 - 罗思聪";
+                developerLabel.Text = " ";
                 yesterdayCommandModel = new List<CommandModel>();
                 EMUGarage_YesterdayCommand_rtb.Text = "";
                 yesterdayCommand_rtb.Text = "";
@@ -430,9 +430,9 @@ namespace TimeTableAutoCompleteTool
         {   //分析客调命令
             //删除不需要的标点符号-字符
             int addedTrainCount = 0;   
-            try
-            {
             
+            //try
+            {
                 string wrongNumber = "";
                 List<string> _commands = removeUnuseableWord(isYesterday);
                 String[] AllCommand;
@@ -768,6 +768,150 @@ namespace TimeTableAutoCompleteTool
                         }
                     }
                 }
+                //高峰车次精确查找 20200110
+                int rushHourTrain = 0;
+                int tempTrain = 0;
+                int weekendTrain = 0;
+                if (AllModels != null && AllModels.Count > 0)
+                {
+                    //重新遍历命令，先选出之前标注为高峰临客的车逐一寻找并确定
+                    for(int cmCount = 0; cmCount < AllModels.Count; cmCount++)
+                    {
+                        CommandModel _tempCM = AllModels[cmCount];
+                        if(_tempCM.trainType == 0)
+                        {
+                            continue;
+                        }
+                        //找命令
+                        for(int ij = 0; ij < AllCommand.Length; ij++)
+                        {
+                            bool hasGotIt = false;
+                            string[] command;
+                            /*
+                            243、2018年10月27日，CRH380AL-2595：G74-G9782(高峰线)-G9781(高峰线)-0G9782(高峰线)，0G74(停运)。
+                             252、2019年06月01日，CRH380AL - 2595：G74 - 0G74(停运) - G9196(高峰线) - G9195(高峰线) - 0G9196(高峰线)
+                            303、2019年06月01日，CRH380B - 5754：高峰线 - G4292 - G4291。
+                            311、2019年07月10日，CRH380AL-2606：高峰线-0G4567-G4568-G4567-0G4568。
+                            296、2019年07月10日，CRH380A-2664+2705：周末线0G9201(高峰线)-G9202(高峰线)-0G6695(停运)-G6695-G6696-G6697-G6698-G6699-G6700-0G6700。
+                             296、2019年07月10日，CRH380A-2664+2705：0G9201(高峰线)-G9202(高峰线)-0G6695(停运)-G6695-G6696-G6697-G6698-G6699-G6700(高峰线)-0G6700。
+                            */
+                            //先切块
+                            command = AllCommand[ij].Split('：');
+                            if (command.Length > 1)
+                            {//非常规情况找车次
+                                if (!command[1].Contains("G") &&
+                                !command[1].Contains("D") &&
+                                !command[1].Contains("C") &&
+                                !command[1].Contains("J"))
+                                {                //特殊数据
+                                                 //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
+                                                 //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
+                                    for (int r = 0; r < command.Length; r++)
+                                    {//从后往前开始找车次
+                                        if (command[command.Length - r - 1].Contains("G") ||
+                                            command[command.Length - r - 1].Contains("D") ||
+                                            command[command.Length - r - 1].Contains("C") ||
+                                            command[command.Length - r - 1].Contains("J"))
+                                        {//找到了就用该项作为车次
+                                            command[1] = command[command.Length - r - 1];
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (command[1].Contains("，"))
+                                {//有逗号-逗号换横杠
+                                    command[1] = command[1].Replace('，', '-');
+                                }
+                                command[1] = command[1].Trim();
+                                if (command[1].Contains(_tempCM.trainNumber) || command[1].Contains(_tempCM.secondTrainNumber))
+                                {//找到对应行，先看下车次本身是否有标注，有标注的直接标记并跳过，无标注的判断是否一整行都是，是的话保留标注，否则取消标注
+                                    string[] spCommand = command[1].Split('-');
+                                    for (int spCount = 0; spCount < spCommand.Length; spCount++)
+                                    {
+                                        if (spCommand[spCount].Split('（')[0].Split('/')[0].Equals(_tempCM.trainNumber) || spCommand[spCount].Split('（')[0].Split('/')[0].Equals(_tempCM.secondTrainNumber))
+                                        {
+                                            if (spCommand[spCount].Contains("（高峰"))
+                                            {//当前车次被标注
+                                                AllModels[cmCount].trainType = 1;
+                                                rushHourTrain++;
+                                                hasGotIt = true;
+                                                break;
+                                            }
+                                            else if (spCommand[spCount].Contains("（临客"))
+                                            {
+                                                AllModels[cmCount].trainType = 2;
+                                                tempTrain++;
+                                                hasGotIt = true;
+                                                break;
+                                            }
+                                            else if (spCommand[spCount].Contains("（周末"))
+                                            {
+                                                AllModels[cmCount].trainType = 3;
+                                                weekendTrain++;
+                                                hasGotIt = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!hasGotIt)
+                                    {
+                                        if (command[1].Contains("高峰-") ||
+                                   command[1].Contains("高峰G") ||
+                                   command[1].Contains("高峰D") ||
+                                   command[1].Contains("高峰C") ||
+                                   command[1].Contains("高峰0") ||
+                                   command[1].Contains("高峰线-") ||
+                                   command[1].Contains("高峰线G") ||
+                                   command[1].Contains("高峰线D") ||
+                                   command[1].Contains("高峰线C") ||
+                                   command[1].Contains("高峰线0"))
+                                        {//有整行标注
+                                            AllModels[cmCount].trainType = 1;
+                                            rushHourTrain++;
+                                        }
+                                        else if (command[1].Contains("周末-") ||
+                                   command[1].Contains("周末G") ||
+                                   command[1].Contains("周末D") ||
+                                   command[1].Contains("周末C") ||
+                                   command[1].Contains("周末0") ||
+                                   command[1].Contains ("周末线-") ||
+                                   command[1].Contains("周末线G") ||
+                                   command[1].Contains("周末线D") ||
+                                   command[1].Contains("周末线C") ||
+                                   command[1].Contains("周末线0"))
+                                        {
+                                            AllModels[cmCount].trainType = 3;
+                                            weekendTrain++;
+                                        }
+                                        else if ( command[1].Contains("临客G") ||
+                                   command[1].Contains("临客D") ||
+                                   command[1].Contains("临客C") ||
+                                   command[1].Contains("临客0") ||
+                                   command[1].Contains("临客-") ||
+                                   command[1].Contains("临客线-") ||
+                                   command[1].Contains("临客线G") ||
+                                   command[1].Contains("临客线D") ||
+                                   command[1].Contains("临客线C") ||
+                                   command[1].Contains("临客线0"))
+                                        {
+                                            AllModels[cmCount].trainType = 2;
+                                            tempTrain++;
+                                        }
+                                        else
+                                        {//不是整行标注，则取消标注
+                                            AllModels[cmCount].trainType = 0;
+                                        }
+                                        hasGotIt = true;
+                                    }
+                                }
+                            }
+                            if (hasGotIt)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
                 //右方显示框内容
                 String commands = "";
                 foreach (CommandModel model in AllModels)
@@ -832,9 +976,9 @@ namespace TimeTableAutoCompleteTool
                     //analyseCommand();
                 }
             }
-            catch (Exception e)
+            //catch (Exception e)
             {
-                MessageBox.Show("出现错误：" + e.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //MessageBox.Show("出现错误：" + e.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
 
@@ -973,6 +1117,9 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("签发：", "");
             if (standardCommand.Contains("会签："))
                 standardCommand = standardCommand.Replace("会签：", "");
+            if (standardCommand.Contains("–"))
+                standardCommand = standardCommand.Replace("–", "-");
+            
             if (standardCommand.Contains("("))
                 standardCommand = standardCommand.Replace("(", "（");
             if (standardCommand.Contains(")"))
@@ -1353,6 +1500,10 @@ namespace TimeTableAutoCompleteTool
                 int allPsngerTrainsCount = 0;
                 int stoppedTrainsCount = 0;
                 int allTrainsInTimeTable = 0;
+                //高峰临客周末统计
+                int rushHourTrain = 0;
+                int tempTrain = 0;
+                int weekendTrain = 0;
                 string checkedText = "";
                 try
                 {
@@ -1708,14 +1859,17 @@ namespace TimeTableAutoCompleteTool
                                                 if (commandModel[ij].trainType == 1)
                                                 {
                                                     row.GetCell(j).SetCellValue("高峰" + row.GetCell(j).ToString().Trim());
+                                                    rushHourTrain++;
                                                 }
                                                 else if (commandModel[ij].trainType == 2)
                                                 {
                                                     row.GetCell(j).SetCellValue("临客" + row.GetCell(j).ToString().Trim());
+                                                    tempTrain++;
                                                 }
                                                 else if (commandModel[ij].trainType == 3)
                                                 {
                                                     row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString().Trim());
+                                                    weekendTrain++;
                                                 }
                                                 if (commandModel[ij].streamStatus == 1)
                                                 {
@@ -1730,7 +1884,7 @@ namespace TimeTableAutoCompleteTool
                                                 }
                                                 else if (commandModel[ij].streamStatus == 2)
                                                 {
-                                                    row.GetCell(j).SetCellValue("明√" + row.GetCell(j).ToString().Trim());
+                                                    row.GetCell(j).SetCellValue("次日√" + row.GetCell(j).ToString().Trim());
                                                     row.GetCell(j).CellStyle = tomorrowlTrainStyle;
                                                 }
 
@@ -1864,7 +2018,7 @@ namespace TimeTableAutoCompleteTool
                         DataAnalyse _daForm = new DataAnalyse(commandModel);
                         _daForm.Show();
                     }
-                    title = title.Split('-')[0]+ "(开行"+(allTrainsInTimeTable-stoppedTrainsCount).ToString()+"列，停运"+stoppedTrainsCount.ToString()+"列)"+ title.Replace(title.Split('-')[0],"");
+                    title = "(" +title.Split('-')[0]+ ",开"+(allTrainsInTimeTable-stoppedTrainsCount).ToString()+"列,停"+stoppedTrainsCount.ToString()+"列,高峰"+rushHourTrain.ToString()+"列,临客"+tempTrain.ToString()+"列,周末"+weekendTrain.ToString()+"列)"+ title.Replace(title.Split('-')[0],"");
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
                     /*重新修改文件指定单元格样式*/
                     FileStream fs1 = File.OpenWrite(fileName);
