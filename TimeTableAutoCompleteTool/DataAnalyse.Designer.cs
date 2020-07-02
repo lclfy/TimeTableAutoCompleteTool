@@ -50,7 +50,7 @@
             this._trainType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._trainModel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._trainID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.operationChanged_rtb = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this._normalOrAdded = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -59,8 +59,18 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.importTimeTable_Btn = new CCWin.SkinControl.SkinButton();
             this.skinButton1 = new CCWin.SkinControl.SkinButton();
+            this.label7 = new System.Windows.Forms.Label();
+            this.unrecognizedTrain_rtb = new System.Windows.Forms.RichTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.复制toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.notInCommand_rtb = new System.Windows.Forms.RichTextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // start_cb
@@ -312,13 +322,15 @@
             this._trainID.Text = "车号";
             this._trainID.Width = 120;
             // 
-            // richTextBox1
+            // operationChanged_rtb
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(1236, 160);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1066, 180);
-            this.richTextBox1.TabIndex = 36;
-            this.richTextBox1.Text = "";
+            this.operationChanged_rtb.ContextMenuStrip = this.contextMenuStrip1;
+            this.operationChanged_rtb.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.operationChanged_rtb.Location = new System.Drawing.Point(1236, 160);
+            this.operationChanged_rtb.Name = "operationChanged_rtb";
+            this.operationChanged_rtb.Size = new System.Drawing.Size(508, 686);
+            this.operationChanged_rtb.TabIndex = 36;
+            this.operationChanged_rtb.Text = "";
             // 
             // label2
             // 
@@ -328,9 +340,9 @@
             this.label2.Location = new System.Drawing.Point(1230, 99);
             this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(178, 42);
+            this.label2.Size = new System.Drawing.Size(266, 42);
             this.label2.TabIndex = 37;
-            this.label2.Text = "调图统计：";
+            this.label2.Text = "调图(每日)统计：";
             // 
             // label3
             // 
@@ -392,14 +404,14 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.Tomato;
             this.label4.Location = new System.Drawing.Point(70, 861);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(146, 42);
+            this.label4.Size = new System.Drawing.Size(976, 36);
             this.label4.TabIndex = 41;
-            this.label4.Text = "筛选类型";
+            this.label4.Text = "筛选类型(示例:已核对 并 开行 的 普通 旅客列车，为当日在图非临客载客列车)";
             // 
             // label5
             // 
@@ -421,51 +433,132 @@
             this.label6.TabIndex = 43;
             this.label6.Text = "的";
             // 
-            // importTimeTable_Btn
-            // 
-            this.importTimeTable_Btn.BackColor = System.Drawing.Color.Transparent;
-            this.importTimeTable_Btn.BaseColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.importTimeTable_Btn.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.importTimeTable_Btn.DownBack = null;
-            this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(1237, 920);
-            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(6);
-            this.importTimeTable_Btn.MouseBack = null;
-            this.importTimeTable_Btn.Name = "importTimeTable_Btn";
-            this.importTimeTable_Btn.NormlBack = null;
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(512, 82);
-            this.importTimeTable_Btn.TabIndex = 44;
-            this.importTimeTable_Btn.Text = "打开时刻表";
-            this.importTimeTable_Btn.UseVisualStyleBackColor = false;
-            // 
             // skinButton1
             // 
             this.skinButton1.BackColor = System.Drawing.Color.Transparent;
-            this.skinButton1.BaseColor = System.Drawing.Color.Tomato;
-            this.skinButton1.BorderColor = System.Drawing.Color.Tomato;
+            this.skinButton1.BaseColor = System.Drawing.Color.DarkGreen;
+            this.skinButton1.BorderColor = System.Drawing.Color.ForestGreen;
             this.skinButton1.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.skinButton1.DownBack = null;
             this.skinButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.skinButton1.ForeColor = System.Drawing.Color.White;
-            this.skinButton1.Location = new System.Drawing.Point(1785, 921);
+            this.skinButton1.Location = new System.Drawing.Point(1227, 920);
             this.skinButton1.Margin = new System.Windows.Forms.Padding(6);
             this.skinButton1.MouseBack = null;
             this.skinButton1.Name = "skinButton1";
             this.skinButton1.NormlBack = null;
-            this.skinButton1.Size = new System.Drawing.Size(517, 82);
+            this.skinButton1.Size = new System.Drawing.Size(1067, 82);
             this.skinButton1.TabIndex = 45;
             this.skinButton1.Text = "创建统计Excel文件";
             this.skinButton1.UseVisualStyleBackColor = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.ForeColor = System.Drawing.Color.DarkGreen;
+            this.label7.Location = new System.Drawing.Point(1230, 861);
+            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(707, 36);
+            this.label7.TabIndex = 46;
+            this.label7.Text = "“创建统计Excel文件”可创建便于调图分析的Excel文件";
+            // 
+            // unrecognizedTrain_rtb
+            // 
+            this.unrecognizedTrain_rtb.ContextMenuStrip = this.contextMenuStrip1;
+            this.unrecognizedTrain_rtb.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.unrecognizedTrain_rtb.Location = new System.Drawing.Point(1786, 160);
+            this.unrecognizedTrain_rtb.Name = "unrecognizedTrain_rtb";
+            this.unrecognizedTrain_rtb.ReadOnly = true;
+            this.unrecognizedTrain_rtb.Size = new System.Drawing.Size(508, 304);
+            this.unrecognizedTrain_rtb.TabIndex = 47;
+            this.unrecognizedTrain_rtb.Text = "";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label8.Location = new System.Drawing.Point(1779, 99);
+            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(306, 41);
+            this.label8.TabIndex = 48;
+            this.label8.Text = "客调内不在图车次：";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.复制toolStripMenuItem1,
+            this.粘贴ToolStripMenuItem,
+            this.清空ToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(137, 118);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // 复制toolStripMenuItem1
+            // 
+            this.复制toolStripMenuItem1.Name = "复制toolStripMenuItem1";
+            this.复制toolStripMenuItem1.Size = new System.Drawing.Size(136, 38);
+            this.复制toolStripMenuItem1.Text = "复制";
+            // 
+            // 粘贴ToolStripMenuItem
+            // 
+            this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
+            this.粘贴ToolStripMenuItem.Text = "粘贴";
+            // 
+            // 清空ToolStripMenuItem
+            // 
+            this.清空ToolStripMenuItem.Name = "清空ToolStripMenuItem";
+            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
+            this.清空ToolStripMenuItem.Text = "清空";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // notInCommand_rtb
+            // 
+            this.notInCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
+            this.notInCommand_rtb.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.notInCommand_rtb.Location = new System.Drawing.Point(1786, 546);
+            this.notInCommand_rtb.Name = "notInCommand_rtb";
+            this.notInCommand_rtb.ReadOnly = true;
+            this.notInCommand_rtb.Size = new System.Drawing.Size(508, 300);
+            this.notInCommand_rtb.TabIndex = 50;
+            this.notInCommand_rtb.Text = "";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label9.Location = new System.Drawing.Point(1779, 484);
+            this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(338, 41);
+            this.label9.TabIndex = 51;
+            this.label9.Text = "客调不含的在图车次：";
             // 
             // DataAnalyse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2384, 1108);
+            this.BackColor = System.Drawing.Color.White;
+            this.BorderColor = System.Drawing.Color.White;
+            this.CaptionBackColorBottom = System.Drawing.Color.White;
+            this.CaptionBackColorTop = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(2384, 1112);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.notInCommand_rtb);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.unrecognizedTrain_rtb);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.skinButton1);
-            this.Controls.Add(this.importTimeTable_Btn);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -473,7 +566,7 @@
             this.Controls.Add(this.stop_cb);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.operationChanged_rtb);
             this.Controls.Add(this.data_lv);
             this.Controls.Add(this.search_tb);
             this.Controls.Add(this.secondListTitle_lbl);
@@ -490,6 +583,7 @@
             this.Name = "DataAnalyse";
             this.Text = "核对数据";
             this.Load += new System.EventHandler(this.DataAnalyse_Load);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -517,7 +611,7 @@
         private System.Windows.Forms.ColumnHeader _trainType;
         private System.Windows.Forms.ColumnHeader _trainModel;
         private System.Windows.Forms.ColumnHeader _trainID;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox operationChanged_rtb;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ColumnHeader _normalOrAdded;
@@ -526,7 +620,16 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private CCWin.SkinControl.SkinButton importTimeTable_Btn;
         private CCWin.SkinControl.SkinButton skinButton1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RichTextBox unrecognizedTrain_rtb;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 复制toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 清空ToolStripMenuItem;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.RichTextBox notInCommand_rtb;
+        private System.Windows.Forms.Label label9;
     }
 }

@@ -11,7 +11,7 @@ namespace TimeTableAutoCompleteTool
         //车次号
         public string trainNumber { get; set; }
         public string secondTrainNumber { get; set; }
-        //停运状态(0停开，1开行，2次日)，高峰临客
+        //停运状态(0停开，1开行，2次日，3客调不含的停运)
         public int streamStatus { get; set; }
         //0为普通-1为高峰-2为临客-3为周末-4为加开
         public int trainType { get; set; }
