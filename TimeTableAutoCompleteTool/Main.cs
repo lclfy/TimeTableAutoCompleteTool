@@ -66,16 +66,16 @@ namespace TimeTableAutoCompleteTool
         public int modeSelect;
         float dpiX, dpiY;
         string developer = "反馈请联系运转车间（或技术科）\n*亦可联系黄楠/高雅雯";
-        string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（ 合肥南 肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
-        string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州东 郏县 平顶山西 方城 邓州东 南阳卧龙 襄阳东津 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵南 扶沟南 西华 周口东 淮阳 沈丘北 界首南 临泉 阜阳西）";
+        string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
+        string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州 郏县 平顶山西 方城 邓州东 南阳东 襄阳东 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵 扶沟南 西华 周口东 淮阳南 沈丘北 界首南 临泉 阜阳西）";
         string[] allEMUGarageTracks = {"1G", "2G", "3G", "4G1", "4G2", "5G1", "5G2", "6G1", "6G2", "7G1", "7G2", "8G1", "8G2", "9G1", "9G2", "10G1", "10G2", "11G1", "11G2", "12G1", "12G2", "13G1", "13G2",
         "14G", "15G","16G1", "16G2","17G1", "17G2","18G1", "18G2","19G", "20G","21G1", "21G2","22G", "23G","24G", "25G","26G", "27G","28G", "29G","30G", "31G","32G", "33G1", "33G2","34G1", "34G2",
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 65 - v200113";
-        string readMe = "build65更新内容:\n"+
-            " 1、现有更为准确的高峰/周末/临客线识别（逐车识别）并添加到大表内";
+        string build = "build 66 - v200120";
+        string readMe = "build66更新内容:\n"+
+            " 1、现有更为准确的高峰/周末/临客线识别（逐车识别）并添加到大表内。\n2、次日开行列车写法优化。";
 
         public Main()
         {
@@ -772,6 +772,7 @@ namespace TimeTableAutoCompleteTool
                 int rushHourTrain = 0;
                 int tempTrain = 0;
                 int weekendTrain = 0;
+                int addedTrain = 0;
                 if (AllModels != null && AllModels.Count > 0)
                 {
                     //重新遍历命令，先选出之前标注为高峰临客的车逐一寻找并确定
@@ -830,24 +831,31 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         if (spCommand[spCount].Split('（')[0].Split('/')[0].Equals(_tempCM.trainNumber) || spCommand[spCount].Split('（')[0].Split('/')[0].Equals(_tempCM.secondTrainNumber))
                                         {
-                                            if (spCommand[spCount].Contains("（高峰"))
+                                            if (spCommand[spCount].Contains("高峰"))
                                             {//当前车次被标注
                                                 AllModels[cmCount].trainType = 1;
                                                 rushHourTrain++;
                                                 hasGotIt = true;
                                                 break;
                                             }
-                                            else if (spCommand[spCount].Contains("（临客"))
+                                            else if (spCommand[spCount].Contains("临客"))
                                             {
                                                 AllModels[cmCount].trainType = 2;
                                                 tempTrain++;
                                                 hasGotIt = true;
                                                 break;
                                             }
-                                            else if (spCommand[spCount].Contains("（周末"))
+                                            else if (spCommand[spCount].Contains("周末"))
                                             {
                                                 AllModels[cmCount].trainType = 3;
                                                 weekendTrain++;
+                                                hasGotIt = true;
+                                                break;
+                                            }
+                                            else if (spCommand[spCount].Contains("加开"))
+                                            {
+                                                AllModels[cmCount].trainType = 4;
+                                                addedTrain++;
                                                 hasGotIt = true;
                                                 break;
                                             }
@@ -1504,6 +1512,7 @@ namespace TimeTableAutoCompleteTool
                 int rushHourTrain = 0;
                 int tempTrain = 0;
                 int weekendTrain = 0;
+                int addedTrain = 0;
                 string checkedText = "";
                 try
                 {
@@ -1809,8 +1818,18 @@ namespace TimeTableAutoCompleteTool
                                             //时刻表中车次+1
                                             allTrainsInTimeTable++;
                                             //去中文后再找-去掉高峰-周末-临客等字
+                                            //去除次日的XX日
+                                            string tomorrowTrain = "";
+                                            if (row.GetCell(j).ToString().Split('√').Length > 0)
+                                            {
+                                                tomorrowTrain = row.GetCell(j).ToString().Split('√')[0];
+                                            }
+                                            if(!tomorrowTrain.Contains("日") || tomorrowTrain.Length == 0)
+                                            {
+                                                tomorrowTrain += "日";
+                                            }
                                             row.GetCell(j).CellStyle = removeColors;
-                                            row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString().Replace("√", "").Replace("×", "").Replace("(", "").Replace(")", ""), @"[\u4e00-\u9fa5]", ""));
+                                            row.GetCell(j).SetCellValue(Regex.Replace(row.GetCell(j).ToString().Replace(tomorrowTrain,"").Replace("√", "").Replace("×", "").Replace("(", "").Replace(")", ""), @"[\u4e00-\u9fa5]", ""));
                                         }
                                         else
                                         {
@@ -1821,6 +1840,8 @@ namespace TimeTableAutoCompleteTool
                                         bool ContainsTrainNumber = false;
                                         for (int ij = 0; ij < commandModel.Count; ij++)
                                         {
+                                            if (row.GetCell(j).ToString().Trim().Contains("GF") || row.GetCell(j).ToString().Trim().Contains("ZM"))
+                                                row.GetCell(j).SetCellValue(row.GetCell(j).ToString().Replace("GF", "").Replace("ZM", ""));
                                             if (row.GetCell(j).ToString().Trim().Replace("GF", "").Replace("ZM", "").Equals(commandModel[ij].trainNumber) ||
                                             row.GetCell(j).ToString().Trim().Replace("GF", "").Replace("ZM", "").Equals(commandModel[ij].secondTrainNumber))
                                             {
@@ -1859,17 +1880,26 @@ namespace TimeTableAutoCompleteTool
                                                 if (commandModel[ij].trainType == 1)
                                                 {
                                                     row.GetCell(j).SetCellValue("高峰" + row.GetCell(j).ToString().Trim());
-                                                    rushHourTrain++;
+                                                    if(commandModel[ij].streamStatus != 0)
+                                                         rushHourTrain++;
                                                 }
                                                 else if (commandModel[ij].trainType == 2)
                                                 {
                                                     row.GetCell(j).SetCellValue("临客" + row.GetCell(j).ToString().Trim());
-                                                    tempTrain++;
+                                                    if (commandModel[ij].streamStatus != 0)
+                                                        tempTrain++;
                                                 }
                                                 else if (commandModel[ij].trainType == 3)
                                                 {
                                                     row.GetCell(j).SetCellValue("周末" + row.GetCell(j).ToString().Trim());
-                                                    weekendTrain++;
+                                                    if (commandModel[ij].streamStatus != 0)
+                                                        weekendTrain++;
+                                                }
+                                                else if (commandModel[ij].trainType == 4)
+                                                {
+                                                    row.GetCell(j).SetCellValue("加开" + row.GetCell(j).ToString().Trim());
+                                                    if (commandModel[ij].streamStatus != 0)
+                                                        addedTrain++;
                                                 }
                                                 if (commandModel[ij].streamStatus == 1)
                                                 {
@@ -1884,7 +1914,16 @@ namespace TimeTableAutoCompleteTool
                                                 }
                                                 else if (commandModel[ij].streamStatus == 2)
                                                 {
-                                                    row.GetCell(j).SetCellValue("次日√" + row.GetCell(j).ToString().Trim());
+                                                    string date = "";
+                                                    if (hour >= 0 && hour <= 16)
+                                                    {
+                                                        date = DateTime.Now.AddDays(1).ToString("dd日");
+                                                    }
+                                                    else
+                                                    {
+                                                        date = DateTime.Now.AddDays(2).ToString("dd日");
+                                                    }
+                                                    row.GetCell(j).SetCellValue(date+"√" + row.GetCell(j).ToString().Trim());
                                                     row.GetCell(j).CellStyle = tomorrowlTrainStyle;
                                                 }
 
@@ -2022,15 +2061,19 @@ namespace TimeTableAutoCompleteTool
                     title = "(" + title.Split('-')[0] + ",开" + (allTrainsInTimeTable - stoppedTrainsCount).ToString() + "列,停" + stoppedTrainsCount.ToString() + "列";
                     if (rushHourTrain > 0)
                     {
-                        title += ",高峰" + rushHourTrain.ToString() + "列";
+                        title += ",开高峰" + rushHourTrain.ToString() + "列";
                     }
                     if(tempTrain > 0)
                     {
-                        title += ",临客" + tempTrain.ToString() + "列";
+                        title += ",开临客" + tempTrain.ToString() + "列";
                     }
                     if(weekendTrain > 0)
                     {
-                        title += ",周末" + weekendTrain.ToString() + "列";
+                        title += ",开周末" + weekendTrain.ToString() + "列";
+                    }
+                    if(addedTrain > 0)
+                    {
+                        title += ",加开" + addedTrain.ToString() + "列";
                     }
                     title += ")" + titleEnd;
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
@@ -2138,23 +2181,6 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
-                        /*
-                        if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                        {
-                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                            string pSaveFilePath = fileName;//指定存储的路径
-                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                            fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                        }
-                        else
-                        {
-                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
-                            return;
-                        }
-                        */
                         MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
 
@@ -2169,37 +2195,11 @@ namespace TimeTableAutoCompleteTool
                     }
                     catch (Exception e)
                     {
-                        /*
-                        if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                        {
-                            MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                            string pSaveFilePath = fileName;//指定存储的路径
-                            File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                            fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                            workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                        }
-                        else
-                        {
-                            MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
-                            return;
-                        }
-                        */
+
                         MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
                     }
                 }
-
-                /*
-                if (workbook != null && !fileName.Contains("自动备份-"))
-                {
-                    string pLocalFilePath = fileName.ToString();//要复制的文件路径
-                    string pSaveFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//指定存储的路径
-                    File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-
-                }
-                */
 
                 //找表头
                 ISheet sheet1 = workbook.GetSheetAt(0);

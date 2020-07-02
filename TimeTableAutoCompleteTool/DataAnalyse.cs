@@ -29,17 +29,19 @@ namespace TimeTableAutoCompleteTool
 
         private void init()
         {
-            up_cb.Checked = true;
-            down_cb.Checked = true;
+            start_cb.Checked = true;
+            stop_cb.Checked = true;
+            normal_cb.Checked = true;
+            temp_cb.Checked = true;
             psngerTrain_cb.Checked = true;
             nonPsngerTrain_cb.Checked = true;
-            up_cb.Checked = true;
+            start_cb.Checked = true;
             checked_cb.Checked = true;
             nonChecked_cb.Checked = true;
 
             AllTrainsInCommand_lbl.Text = allCommandModels.Count.ToString();
 
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            getSelectedTrains(start_cb.Checked,stop_cb.Checked, normal_cb.Checked,temp_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
         }
 
         private void RefreshList(List<CommandModel> _tempCM)
@@ -90,20 +92,28 @@ namespace TimeTableAutoCompleteTool
                 {
                     _lvi.SubItems.Add(" ");
                 }
-
-                if (_tempCM[j].upOrDown == 0)
+                switch (_tempCM[j].trainType)
                 {
-                    _lvi.SubItems.Add("上行");
+                    case 0:
+                            _lvi.SubItems.Add("普通");
+                        break;
+                    case 1:
+                        _lvi.SubItems.Add("高峰");
+                        break;
+                    case 2:
+                        _lvi.SubItems.Add("临客");
+                        break;
+                    case 3:
+                        _lvi.SubItems.Add("周末");
+                        break;
+                    case 4:
+                        _lvi.SubItems.Add("加开");
+                        break;
                 }
-                else if (_tempCM[j].upOrDown == 1)
-                {
-                    _lvi.SubItems.Add("下行");
-                }
+                if(_tempCM[j].streamStatus != 0)
+                    _lvi.SubItems.Add("开");
                 else
-                {
-                    _lvi.SubItems.Add(" ");
-                }
-
+                    _lvi.SubItems.Add("停");
                 if (_tempCM[j].psngerTrain)
                 {
                     _lvi.SubItems.Add("载客");
@@ -137,7 +147,7 @@ namespace TimeTableAutoCompleteTool
             data_lv.EndUpdate();
         }
 
-        private void getSelectedTrains(bool up, bool down, bool psnger, bool nonPsnger, bool hasChecked, bool nonChecked)
+        private void getSelectedTrains(bool trainOperationTrue, bool trainOperationFalse, bool normalTrain, bool tempTrain, bool psnger, bool nonPsnger, bool hasChecked, bool nonChecked)
         {
             List<CommandModel> _tempCM = new List<CommandModel>();
             //条件筛选
@@ -146,43 +156,37 @@ namespace TimeTableAutoCompleteTool
                 //先确定最外层-筛选-未筛选
                 if ((allCommandModels[i].MatchedWithTimeTable == true &&
                     hasChecked == true))
-                {//再确定上下行
-                    if ((allCommandModels[i].upOrDown == 0 && up == true) ||
-                    (allCommandModels[i].upOrDown == 1 && down == true))
-                    {//最后确定列车类型
-                        if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
-                    (allCommandModels[i].psngerTrain == false && nonPsnger == true))
-                        {
-                            _tempCM.Add(allCommandModels[i]);
-                        }
-                    }
-                    else if (allCommandModels[i].upOrDown == -1)
+                {//再确定开/停
+                    if ((allCommandModels[i].streamStatus != 0 && trainOperationTrue == true) ||
+                    (allCommandModels[i].streamStatus == 0 && trainOperationFalse == true))
+                    //确定是否为普通列车
                     {
-                        if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
-                            (allCommandModels[i].psngerTrain == false && nonPsnger == true))
-                        {
-                            _tempCM.Add(allCommandModels[i]);
+                        if((allCommandModels[i].trainType == 0 && normalTrain == true) ||
+                    (allCommandModels[i].trainType != 0 && tempTrain == true))
+                        {//最后确定是否载客
+                            if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
+                                (allCommandModels[i].psngerTrain == false && nonPsnger == true))
+                            {
+                                _tempCM.Add(allCommandModels[i]);
+                            }
                         }
+
                     }
                 }
                 else if (allCommandModels[i].MatchedWithTimeTable == false &&
                     nonChecked == true)
                 {//未筛选的可能有上下行未知的情况
-                    if ((allCommandModels[i].upOrDown == 0 && up == true) ||
-                    (allCommandModels[i].upOrDown == 1 && down == true))
+                    if ((allCommandModels[i].streamStatus != 0 && trainOperationTrue == true) ||
+                    (allCommandModels[i].streamStatus == 0 && trainOperationFalse == true))
                     {
-                        if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
+                        if ((allCommandModels[i].trainType == 0 && normalTrain == true) ||
+                   (allCommandModels[i].trainType != 0 && tempTrain == true))
+                        {//最后确定是否载客
+                            if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
                             (allCommandModels[i].psngerTrain == false && nonPsnger == true))
-                        {
-                            _tempCM.Add(allCommandModels[i]);
-                        }
-                    }
-                    else if (allCommandModels[i].upOrDown == -1)
-                    {
-                        if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
-                        (allCommandModels[i].psngerTrain == false && nonPsnger == true))
-                        {
-                            _tempCM.Add(allCommandModels[i]);
+                            {
+                                _tempCM.Add(allCommandModels[i]);
+                            }
                         }
                     }
                 }
@@ -205,35 +209,40 @@ namespace TimeTableAutoCompleteTool
             }
             RefreshList(_tempCM);
         }
+        private void checkedChanged()
+        {
+            
+            getSelectedTrains(start_cb.Checked, stop_cb.Checked, normal_cb.Checked, temp_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+        }
 
         private void up_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void down_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void psngerTrain_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void nonPsngerTrain_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void checked_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void nonChecked_cb_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+            checkedChanged();
         }
 
         private void search_tb_TextChanged(object sender, EventArgs e)
@@ -244,8 +253,18 @@ namespace TimeTableAutoCompleteTool
             }
             else
             {
-                getSelectedTrains(up_cb.Checked, down_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
+                checkedChanged();
             }
+        }
+
+        private void stop_cb_CheckedChanged(object sender, EventArgs e)
+        {
+            checkedChanged();
+        }
+
+        private void temp_cb_CheckedChanged(object sender, EventArgs e)
+        {
+            checkedChanged();
         }
     }
 }

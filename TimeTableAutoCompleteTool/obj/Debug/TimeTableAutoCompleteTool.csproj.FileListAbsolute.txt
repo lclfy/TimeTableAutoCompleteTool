@@ -34,3 +34,4 @@
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CopyComplete
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 \\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+\\Mac\Home\Documents\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CoreCompileInputs.cache
