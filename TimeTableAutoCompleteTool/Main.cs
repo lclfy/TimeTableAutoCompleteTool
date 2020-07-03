@@ -390,48 +390,65 @@ namespace TimeTableAutoCompleteTool
 
         private void start_Btn_Click(object sender, EventArgs e)
         {
-            if (commandModel.Count != 0 && radioButton1.Checked)
+            try
             {
-                if (FontSize_tb.Text.Length == 0)
+                //把streamstatus为4的清除
+                foreach (CommandModel _cm in commandModel)
                 {
-                    FontSize_tb.Text = "12";
+                    if (_cm.streamStatus == 4)
+                    {
+                        commandModel.Remove(_cm);
+                    }
                 }
-                fileCounter = 0;
-                updateTimeTable();
+                if (commandModel.Count != 0 && radioButton1.Checked)
+                {
+                    if (FontSize_tb.Text.Length == 0)
+                    {
+                        FontSize_tb.Text = "12";
+                    }
+                    fileCounter = 0;
+                    updateTimeTable();
 
+                }
+                else if (commandModel.Count != 0 && radioButton2.Checked)
+                {
+                    if (radioButton4.Checked)
+                    {
+                        readBasicTrainTable();
+                    }
+                    else if (radioButton5.Checked)
+                    {
+                        readEMUCTable();
+                    }
+                }
+                else if (commandModel.Count != 0 && radioButton3.Checked)
+                {
+                    if (EMUGarage_YesterdayCommand_rtb.Text.Length == 0)
+                    {
+                        EMUGarage_hasYesterdayText = false;
+                        MessageBox.Show("新功能：复制昨天的命令至右边的对话框中，可以将两天命令制成同一张表。（前日车次为斜体下划线）\n", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                    else if (yesterdayCommandModel.Count != 0)
+                    {
+                        EMUGarage_hasYesterdayText = true;
+                    }
+                    //动车所的初版 受代码所限暂时先这么写…带true的是获取车次 开车方向和动车走行线的部分
+                    if (allTrainProjectModels != null && allTrainProjectModels.Count != 0)
+                    {
+                        trainTypeAutoComplete(true);
+                    }
+                    trainTypeAutoComplete();
+                }
+                else
+                {
+                    MessageBox.Show("未检测到任何车次信息", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
-            else if (commandModel.Count != 0 && radioButton2.Checked)
+            catch (Exception ee)
             {
-                if (radioButton4.Checked)
-                {
-                    readBasicTrainTable();
-                }else if (radioButton5.Checked)
-                {
-                    readEMUCTable();
-                }
+                MessageBox.Show("出现错误：" + e.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            else if (commandModel.Count != 0 && radioButton3.Checked)
-            {
-                if(EMUGarage_YesterdayCommand_rtb.Text.Length == 0)
-                {
-                    EMUGarage_hasYesterdayText = false;
-                    MessageBox.Show("新功能：复制昨天的命令至右边的对话框中，可以将两天命令制成同一张表。（前日车次为斜体下划线）\n", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-                else if(yesterdayCommandModel.Count != 0)
-                {
-                    EMUGarage_hasYesterdayText = true;
-                }
-                //动车所的初版 受代码所限暂时先这么写…带true的是获取车次 开车方向和动车走行线的部分
-                if(allTrainProjectModels != null && allTrainProjectModels.Count != 0)
-                {
-                    trainTypeAutoComplete(true);
-                }
-                trainTypeAutoComplete();
-            }
-            else
-            {
-                MessageBox.Show("未检测到任何车次信息", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
+
         }
 
         private void analyseCommand(bool isYesterday = false, string detectedTrainRow = "")
@@ -1502,6 +1519,7 @@ namespace TimeTableAutoCompleteTool
 
         private void updateTimeTable()
         {
+            
             operationChangedAnalyse = "";
             if (ExcelFile == null)
             {
@@ -1888,6 +1906,11 @@ namespace TimeTableAutoCompleteTool
                                         bool ContainsTrainNumber = false;
                                         for (int ij = 0; ij < commandModel.Count; ij++)
                                         {
+                                            //客调不含的停运车
+                                            if(commandModel[ij].streamStatus == 4)
+                                            {
+                                                continue;
+                                            }
                                             if (row.GetCell(j).ToString().Trim().Contains("GF") || row.GetCell(j).ToString().Trim().Contains("ZM"))
                                                 row.GetCell(j).SetCellValue(row.GetCell(j).ToString().Replace("GF", "").Replace("ZM", ""));
                                             if (row.GetCell(j).ToString().Trim().Replace("GF", "").Replace("ZM", "").Equals(commandModel[ij].trainNumber) ||
@@ -2096,7 +2119,23 @@ namespace TimeTableAutoCompleteTool
                                                 //在此处加入commandmodel，streamStatus为4，后续检测到4时直接跳过
                                                 CommandModel _cm = new CommandModel();
                                                 _cm.trainNumber = row.GetCell(j).ToString().Trim().Replace("×", "");
+                                                _cm.secondTrainNumber = "null";
                                                 _cm.streamStatus = 4;
+                                                _cm.notMatchedTabelName = station;
+                                                //判断载客与否
+                                                string _trainNum = row.GetCell(j).ToString().Trim().Replace("×", "");
+                                                if (trainNum.Contains("0G") ||
+                                                    trainNum.Contains("0J") ||
+                                                    trainNum.Contains("DJ") ||
+                                                    trainNum.Contains("0D") ||
+                                                    trainNum.Contains("0C"))
+                                                {
+                                                    _cm.psngerTrain = false;
+                                                }
+                                                else
+                                                {
+                                                    _cm.psngerTrain = true;
+                                                }
                                                 //不添加重复的
                                                 bool hasGotSame = false;
                                                 foreach(CommandModel _tempCM in commandModel)
@@ -2110,6 +2149,7 @@ namespace TimeTableAutoCompleteTool
                                                         if (_tempCM.trainNumber.Equals(_cm.trainNumber))
                                                         {
                                                             hasGotSame = true;
+                                                            _tempCM.notMatchedTabelName = _tempCM.notMatchedTabelName + "/" + station;
                                                             break;
                                                         }
                                                     }
@@ -2224,7 +2264,7 @@ namespace TimeTableAutoCompleteTool
                     {
                         int a = 0;
                     }
-                    operationChangedAnalyse = operationChangedAnalyse + "\n" + station + "场" + title.Replace("(","").Replace(")","").Replace("本场",",本场办客") + "。\n";
+                    operationChangedAnalyse = operationChangedAnalyse + "\n" + station + "场" + title.Replace("(","").Replace(")","").Replace("本场",",本场停靠") + "。\n";
                     title += ")" + titleEnd;
                     if (fileCounter == ExcelFile.Count)
                     {
@@ -2691,23 +2731,6 @@ namespace TimeTableAutoCompleteTool
                 }
                 catch (Exception e)
                 {
-                        /*
-                    if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                    {
-                        MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                        string pSaveFilePath = fileName;//指定存储的路径
-                        File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                        fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                    }
-                    else
-                    {
-                        MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
-                        return;
-                    }
-                    */
                         MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
                     }
@@ -2721,37 +2744,11 @@ namespace TimeTableAutoCompleteTool
                 }
                 catch (Exception e)
                 {
-                        /*
-                    if (File.Exists(Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                    {
-                        MessageBox.Show("基本图文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        string pLocalFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                        string pSaveFilePath = fileName;//指定存储的路径
-                        File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                        fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                    }
-                    else
-                    {
-                        MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\基本图\\");
-                        return;
-                    }
-                    */
                         MessageBox.Show("基本图文件出现损坏（或文件无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         return;
                     }
             }
 
-            /*
-            if (workbook != null && !fileName.Contains("自动备份-"))
-            {
-                string pLocalFilePath = fileName.ToString();//要复制的文件路径
-                string pSaveFilePath = Application.StartupPath + "\\基本图\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//指定存储的路径
-                File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-
-            }
-            */
 
             //找表头
             ISheet sheet1 = workbook.GetSheetAt(0);
@@ -5495,23 +5492,6 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
-                            /*
-                            if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                            {
-                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                                string pSaveFilePath = fileName;//指定存储的路径
-                                File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                                fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                                workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                            }
-                            else
-                            {
-                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
-                                return;
-                            }
-                            */
                             MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             return;
                         }
@@ -5524,38 +5504,11 @@ namespace TimeTableAutoCompleteTool
                         }
                         catch (Exception e)
                         {
-                            /*
-                            if (File.Exists(Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1]))
-                            {
-                                MessageBox.Show("时刻表文件出现损坏\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                string pLocalFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//要复制的文件路径
-                                string pSaveFilePath = fileName;//指定存储的路径
-                                File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-                                fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                                workbook = new HSSFWorkbook(fileStream);  //xls数据读入workbook
-                            }
-                            else
-                            {
-                                MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                System.Diagnostics.Process.Start("explorer.exe", Application.StartupPath + "\\动车所时刻表\\");
-                                return;
-                            }
-                            */
                             MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             return;
 
                         }
                     }
-                    /*
-                    if (workbook != null && !fileName.Contains("自动备份-"))
-                    {
-                        string pLocalFilePath = fileName.ToString();//要复制的文件路径
-                        string pSaveFilePath = Application.StartupPath + "\\动车所时刻表\\自动备份-" + fileName.ToString().Split('\\')[fileName.ToString().Split('\\').Length - 1];//指定存储的路径
-                        File.Copy(pLocalFilePath, pSaveFilePath, true);//三个参数分别是源文件路径，存储路径，若存储路径有相同文件是否替换
-
-                    }
-                    */
-
                     //表格样式
                     ICellStyle normalStyle = workbook.CreateCellStyle();
                     normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;

@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using CCWin;
 using System.Windows.Forms;
+using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
+using System.IO;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -54,8 +57,17 @@ namespace TimeTableAutoCompleteTool
             start_cb.Checked = true;
             checked_cb.Checked = true;
             nonChecked_cb.Checked = true;
+
             getDataStatistics();
-            AllTrainsInCommand_lbl.Text = allCommandModels.Count.ToString();
+            int count = 0;
+            foreach(CommandModel _cm in allCommandModels)
+            {
+                if(_cm.streamStatus != 4)
+                {
+                    count++;
+                }
+            }
+            AllTrainsInCommand_lbl.Text = count.ToString();
 
             getSelectedTrains(false, start_cb.Checked, stop_cb.Checked, normal_cb.Checked, temp_cb.Checked, psngerTrain_cb.Checked, nonPsngerTrain_cb.Checked, checked_cb.Checked, nonChecked_cb.Checked);
         }
@@ -166,14 +178,39 @@ namespace TimeTableAutoCompleteTool
         //数据统计字符串
         private void getDataStatistics()
         {
-            string statisticsText = "郑州东（本站）本日实际开行旅客列车" + getSelectedTrains(true, true, false, true, true, true, false, true, false).Count +
-                "列（其中临客" + getSelectedTrains(true, true, false, false, true, true, false, true, false).Count + "列），开行其他列车" + getSelectedTrains(true, true, false, true, true, false, true, true, false).Count +
-                "列（其中临客" + getSelectedTrains(true, true, false, false, true, false, true, true, false).Count + "列）;停运旅客列车" + getSelectedTrains(true, false, true, true, true, true, false, true, false).Count +
-                "列（其中临客" + getSelectedTrains(true, false, true, false, true, true, false, true, false).Count + "列）;停运其他列车" + getSelectedTrains(true, false, true, true, true, false, true, true, false).Count +
+            List<CommandModel> startPsngerTrains = getSelectedTrains(true, true, false, true, true, true, false, true, false);
+            List<CommandModel> startOtherTrains = getSelectedTrains(true, true, false, true, true, false, true, true, false);
+            List<CommandModel> stopPsngerTrains = getSelectedTrains(true, false, true, true, true, true, false, true, false);
+            List<CommandModel> stopOtherTrains = getSelectedTrains(true, false, true, true, true, false, true, true, false);
+            //还需要把时刻表中有的未匹配停运车找出来
+            foreach (CommandModel _cm in allCommandModels)
+            {
+                if (_cm.streamStatus == 4)
+                {
+                    if (_cm.psngerTrain)
+                    {
+                        stopPsngerTrains.Add(_cm);
+                    }
+                    else
+                    {
+                        stopOtherTrains.Add(_cm);
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            string statisticsText = "郑州东（本站）本日实际开行旅客列车" + startPsngerTrains.Count +
+                "列（其中临客" + getSelectedTrains(true, true, false, false, true, true, false, true, false).Count + "列），开行其他列车" + startOtherTrains.Count +
+                "列（其中临客" + getSelectedTrains(true, true, false, false, true, false, true, true, false).Count + "列）;停运旅客列车" + stopPsngerTrains.Count +
+                "列（其中临客" + getSelectedTrains(true, false, true, false, true, true, false, true, false).Count + "列）;停运其他列车" + stopOtherTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, false, true, false, true, false, true, true, false).Count + "列。\n" + operationString + "\n" +
                 "未在图列车（右侧显示）" + getSelectedTrains(true, true, true, true, true, true, true, false, true).Count + "列";
 
             string unrecognazedTrains = "";
+            string notMatchedTrains = "";
+            int notMatchedCount = 0;
             int count = 0;
             foreach (CommandModel _cm in getSelectedTrains(true, true, true, true, true, true, true, false, true))
             {
@@ -199,6 +236,17 @@ namespace TimeTableAutoCompleteTool
             unrecognazedTrains = unrecognazedTrains + "\n共" + count + "列";
             operationChanged_rtb.Text = statisticsText;
             unrecognizedTrain_rtb.Text = unrecognazedTrains;
+            //找客调中不含的车
+            for(int i = 0;i< allCommandModels.Count; i++)
+            {
+                if(allCommandModels[i].streamStatus == 4)
+                {
+                    notMatchedCount++;
+                    notMatchedTrains = notMatchedTrains + notMatchedCount + "、" + allCommandModels[i].trainNumber +"-"+allCommandModels[i].notMatchedTabelName+"\n";
+                }
+            }
+            notMatchedTrains = notMatchedTrains + "\n共" + notMatchedCount + "列";
+            notMatchedTrains_rtb.Text = notMatchedTrains;
         }
 
         private List<CommandModel> getSelectedTrains(bool init, bool trainOperationTrue, bool trainOperationFalse, bool normalTrain, bool tempTrain, bool psnger, bool nonPsnger, bool hasChecked, bool nonChecked)
@@ -211,7 +259,7 @@ namespace TimeTableAutoCompleteTool
                 if ((allCommandModels[i].MatchedWithTimeTable == true &&
                     hasChecked == true))
                 {//再确定开/停
-                    if ((allCommandModels[i].streamStatus != 0 && trainOperationTrue == true) ||
+                    if ((allCommandModels[i].streamStatus != 0 && allCommandModels[i].streamStatus != 4 && trainOperationTrue == true) ||
                     (allCommandModels[i].streamStatus == 0 && trainOperationFalse == true))
                     //确定是否为普通列车
                     {
@@ -229,11 +277,11 @@ namespace TimeTableAutoCompleteTool
                 else if (allCommandModels[i].MatchedWithTimeTable == false &&
                     nonChecked == true)
                 {//未筛选的可能有上下行未知的情况
-                    if ((allCommandModels[i].streamStatus != 0 && trainOperationTrue == true) ||
+                    if ((allCommandModels[i].streamStatus != 0 && allCommandModels[i].streamStatus != 4 && trainOperationTrue == true) ||
                     (allCommandModels[i].streamStatus == 0 && trainOperationFalse == true))
                     {
                         if ((allCommandModels[i].trainType == 0 && normalTrain == true) ||
-                   (allCommandModels[i].trainType != 0 && tempTrain == true))
+                   (allCommandModels[i].trainType != 0&& tempTrain == true))
                         {//最后确定是否载客
                             if ((allCommandModels[i].psngerTrain == true && psnger == true) ||
                             (allCommandModels[i].psngerTrain == false && nonPsnger == true))
@@ -264,6 +312,465 @@ namespace TimeTableAutoCompleteTool
             }
             RefreshList(_tempCM);
         }
+
+        //创建数据统计excel文件
+        private void createStaticsFile()
+        {
+            try
+            {
+                FileStream fs = File.Create(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "统计结果.xls");
+
+                //创建工作薄
+                IWorkbook workbook = new HSSFWorkbook();
+                string fontSize = "14";
+
+                //表格样式
+                ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
+                stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
+                stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                HSSFFont font = (HSSFFont)workbook.CreateFont();
+                font.FontName = "宋体";//字体  
+                font.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
+                font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+                stoppedTrainStyle.SetFont(font);
+
+                ICellStyle nonMatchedTrainStype = workbook.CreateCellStyle();
+                nonMatchedTrainStype.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Blue.Index;
+                nonMatchedTrainStype.FillPattern = FillPattern.SolidForeground;
+                nonMatchedTrainStype.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Blue.Index;
+                nonMatchedTrainStype.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                nonMatchedTrainStype.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                nonMatchedTrainStype.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                nonMatchedTrainStype.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                HSSFFont nonMatchFont = (HSSFFont)workbook.CreateFont();
+                nonMatchFont.FontName = "宋体";//字体  
+                nonMatchFont.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
+                nonMatchFont.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+                nonMatchedTrainStype.SetFont(nonMatchFont);
+
+                ICellStyle normalTrainStyle = workbook.CreateCellStyle();
+                normalTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightGreen.Index;
+                normalTrainStyle.FillPattern = FillPattern.SolidForeground;
+                normalTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightGreen.Index;
+                normalTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                HSSFFont normalFont = (HSSFFont)workbook.CreateFont();
+                normalFont.FontName = "宋体";//字体  
+                normalFont.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
+                normalFont.IsBold = true;
+                normalTrainStyle.SetFont(normalFont);
+
+                ICellStyle tomorrowlTrainStyle = workbook.CreateCellStyle();
+                tomorrowlTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                tomorrowlTrainStyle.FillPattern = FillPattern.SolidForeground;
+                tomorrowlTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                tomorrowlTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                tomorrowlTrainStyle.SetFont(normalFont);
+
+                ICellStyle removeColors = workbook.CreateCellStyle();
+                removeColors.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                removeColors.FillPattern = FillPattern.SolidForeground;
+                removeColors.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                removeColors.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                removeColors.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                ICellStyle addedTrainStyle = workbook.CreateCellStyle();
+                addedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                addedTrainStyle.FillPattern = FillPattern.SolidForeground;
+                addedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+                addedTrainStyle.WrapText = true;
+                addedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+
+                HSSFFont addFont = (HSSFFont)workbook.CreateFont();
+                addFont.FontName = "宋体";//字体  
+                addFont.FontHeightInPoints = 12;//字号  
+                addFont.IsBold = false;
+                addedTrainStyle.SetFont(addFont);
+
+                //创建sheet
+                ISheet sheet = workbook.CreateSheet("数据统计");
+
+                //开行旅客列车
+                List<CommandModel> startPsngerTrains = getSelectedTrains(true, true, false, true, true, true, false, true, false);
+                List<CommandModel> startOtherTrains = getSelectedTrains(true, true, false, true, true, false, true, true, false);
+                List<CommandModel> stopPsngerTrains = getSelectedTrains(true, false, true, true, true, true, false, true, false);
+                List<CommandModel> stopOtherTrains = getSelectedTrains(true, false, true, true, true, false, true, true, false);
+                List<CommandModel> notMatchedTrains = getSelectedTrains(true, true, true, true, true, true, true, false, true);
+                //还需要把时刻表中有的未匹配停运车找出来
+                foreach (CommandModel _cm in allCommandModels)
+                {
+                    if(_cm.streamStatus == 4)
+                    {
+                        if (_cm.psngerTrain)
+                        {
+                            stopPsngerTrains.Add(_cm);
+                        }
+                        else
+                        {
+                            stopOtherTrains.Add(_cm);
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                //第一列 开行旅客列车
+                int columnCount =  0;
+                for (int rowNum = 0;rowNum< startPsngerTrains.Count; rowNum++)
+                {
+                    IRow row;
+                    if(sheet.GetRow(rowNum) == null)
+                    {
+                        row=sheet.CreateRow(rowNum);
+                    }
+                    else
+                    {
+                        row = sheet.GetRow(rowNum);
+                    }
+                    ICell cell;
+                    if (row.GetCell(columnCount) == null)
+                    {
+                        cell = row.CreateCell(columnCount);
+                    }
+                    else
+                    {
+                        cell = row.GetCell(columnCount);
+                    }
+                    sheet.SetColumnWidth(columnCount, 25 * 256);
+                    if (rowNum == 0)
+                    {
+                        cell.SetCellValue("开行旅客列车"+ startPsngerTrains.Count+"列");
+                        cell.CellStyle = removeColors;
+                    }
+                    else
+                    {
+                        string trainDetails = startPsngerTrains[rowNum].trainNumber;
+                        if (!startPsngerTrains[rowNum].secondTrainNumber.Equals("null"))
+                        {
+                            trainDetails =  trainDetails + "/" + startPsngerTrains[rowNum].secondTrainNumber;
+                        }
+                        if(startPsngerTrains[rowNum].streamStatus == 2)
+                        {
+                            trainDetails = "(次日开)" + trainDetails;
+                        }
+                        switch (startPsngerTrains[rowNum].trainType)
+                        {
+                            case 0:
+                                trainDetails = "√" + trainDetails;
+                                break;
+                            case 1:
+                                trainDetails = "√高峰" + trainDetails;
+                                break;
+                            case 2:
+                                trainDetails = "√临客" + trainDetails;
+                                break;
+                            case 3:
+                                trainDetails = "√周末" + trainDetails;
+                                break;
+                            case 4:
+                                trainDetails = "√加开" + trainDetails;
+                                break;
+                        }
+                        cell.SetCellValue(trainDetails);
+                        cell.CellStyle = normalTrainStyle;
+
+                    }
+
+                }
+                columnCount++;
+                //第二列 开行其他列车
+                for (int rowNum = 0; rowNum < startOtherTrains.Count; rowNum++)
+                {
+                    IRow row;
+                    if (sheet.GetRow(rowNum) == null)
+                    {
+                        row = sheet.CreateRow(rowNum);
+                    }
+                    else
+                    {
+                        row = sheet.GetRow(rowNum);
+                    }
+                    ICell cell;
+                    if (row.GetCell(columnCount) == null)
+                    {
+                        cell = row.CreateCell(columnCount);
+                    }
+                    else
+                    {
+                        cell = row.GetCell(columnCount);
+                    }
+                    sheet.SetColumnWidth(columnCount, 25 * 256);
+                    if (rowNum == 0)
+                    {
+                        cell.SetCellValue("开行其他列车" + startOtherTrains.Count + "列");
+                        cell.CellStyle = removeColors;
+                    }
+                    else
+                    {
+                        string trainDetails = startOtherTrains[rowNum].trainNumber;
+                        if (!startOtherTrains[rowNum].secondTrainNumber.Equals("null"))
+                        {
+                            trainDetails = trainDetails + "/" + startOtherTrains[rowNum].secondTrainNumber;
+                        }
+                        if (startPsngerTrains[rowNum].streamStatus == 2)
+                        {
+                            trainDetails = "(次日开)" + trainDetails;
+                        }
+                        switch (startOtherTrains[rowNum].trainType)
+                        {
+                            case 0:
+                                trainDetails = "√" + trainDetails;
+                                break;
+                            case 1:
+                                trainDetails = "√高峰" + trainDetails;
+                                break;
+                            case 2:
+                                trainDetails = "√临客" + trainDetails;
+                                break;
+                            case 3:
+                                trainDetails = "√周末" + trainDetails;
+                                break;
+                            case 4:
+                                trainDetails = "√加开" + trainDetails;
+                                break;
+                        }
+                        cell.SetCellValue(trainDetails);
+                        cell.CellStyle = normalTrainStyle;
+
+                    }
+
+                }
+                columnCount++;
+                //第三列 停运旅客列车
+                for (int rowNum = 0; rowNum < stopPsngerTrains.Count; rowNum++)
+                {
+                    IRow row;
+                    if (sheet.GetRow(rowNum) == null)
+                    {
+                        row = sheet.CreateRow(rowNum);
+                    }
+                    else
+                    {
+                        row = sheet.GetRow(rowNum);
+                    }
+                    ICell cell;
+                    if (row.GetCell(columnCount) == null)
+                    {
+                        cell = row.CreateCell(columnCount);
+                    }
+                    else
+                    {
+                        cell = row.GetCell(columnCount);
+                    }
+                    sheet.SetColumnWidth(columnCount, 25 * 256);
+                    if (rowNum == 0)
+                    {
+                        cell.SetCellValue("停运旅客列车"+ stopPsngerTrains.Count+"列");
+                        cell.CellStyle = removeColors;
+                    }
+                    else
+                    {
+                        string trainDetails = stopPsngerTrains[rowNum].trainNumber;
+                        if (!stopPsngerTrains[rowNum].secondTrainNumber.Equals("null"))
+                        {
+                            trainDetails = trainDetails + "/" + stopPsngerTrains[rowNum].secondTrainNumber;
+                        }
+                        switch (stopPsngerTrains[rowNum].trainType)
+                        {
+                            case 0:
+                                trainDetails = "×" + trainDetails;
+                                break;
+                            case 1:
+                                trainDetails = "×高峰" + trainDetails;
+                                break;
+                            case 2:
+                                trainDetails = "×临客" + trainDetails;
+                                break;
+                            case 3:
+                                trainDetails = "×周末" + trainDetails;
+                                break;
+                            case 4:
+                                trainDetails = "×加开" + trainDetails;
+                                break;
+                        }
+                        cell.SetCellValue(trainDetails);
+                        if(stopPsngerTrains[rowNum].streamStatus == 4)
+                        {
+                            cell.CellStyle = nonMatchedTrainStype;
+                        }
+                        else
+                        {
+                            cell.CellStyle = stoppedTrainStyle;
+                        }
+
+                    }
+
+                }
+                columnCount++;
+                //第四列 停运其他列车
+                for (int rowNum = 0; rowNum < stopOtherTrains.Count; rowNum++)
+                {
+                    IRow row;
+                    if (sheet.GetRow(rowNum) == null)
+                    {
+                        row = sheet.CreateRow(rowNum);
+                    }
+                    else
+                    {
+                        row = sheet.GetRow(rowNum);
+                    }
+                    ICell cell;
+                    if (row.GetCell(columnCount) == null)
+                    {
+                        cell = row.CreateCell(columnCount);
+                    }
+                    else
+                    {
+                        cell = row.GetCell(columnCount);
+                    }
+                    sheet.SetColumnWidth(columnCount, 25 * 256);
+                    if (rowNum == 0)
+                    {
+                        cell.SetCellValue("停运其他列车" + stopOtherTrains.Count + "列");
+                        cell.CellStyle = removeColors;
+                    }
+                    else
+                    {
+                        string trainDetails = stopOtherTrains[rowNum].trainNumber;
+                        if (!stopOtherTrains[rowNum].secondTrainNumber.Equals("null"))
+                        {
+                            trainDetails = trainDetails + "/" + stopOtherTrains[rowNum].secondTrainNumber;
+                        }
+                        switch (stopOtherTrains[rowNum].trainType)
+                        {
+                            case 0:
+                                trainDetails = "×" + trainDetails;
+                                break;
+                            case 1:
+                                trainDetails = "×高峰" + trainDetails;
+                                break;
+                            case 2:
+                                trainDetails = "×临客" + trainDetails;
+                                break;
+                            case 3:
+                                trainDetails = "×周末" + trainDetails;
+                                break;
+                            case 4:
+                                trainDetails = "×加开" + trainDetails;
+                                break;
+                        }
+                        cell.SetCellValue(trainDetails);
+                        if (stopOtherTrains[rowNum].streamStatus == 4)
+                        {
+                            cell.CellStyle = nonMatchedTrainStype;
+                        }
+                        else
+                        {
+                            cell.CellStyle = stoppedTrainStyle;
+                        }
+
+                    }
+
+                }
+                columnCount++;
+                //第五列 未匹配列车
+                for (int rowNum = 0; rowNum < notMatchedTrains.Count; rowNum++)
+                {
+                    IRow row;
+                    if (sheet.GetRow(rowNum) == null)
+                    {
+                        row = sheet.CreateRow(rowNum);
+                    }
+                    else
+                    {
+                        row = sheet.GetRow(rowNum);
+                    }
+                    ICell cell;
+                    if (row.GetCell(columnCount) == null)
+                    {
+                        cell = row.CreateCell(columnCount);
+                    }
+                    else
+                    {
+                        cell = row.GetCell(columnCount);
+                    }
+                    sheet.SetColumnWidth(columnCount, 25 * 256);
+                    if (rowNum == 0)
+                    {
+                        cell.SetCellValue("未匹配列车" + notMatchedTrains.Count + "列");
+                        cell.CellStyle = removeColors;
+                    }
+                    else
+                    {
+                        string trainDetails = notMatchedTrains[rowNum].trainNumber;
+                        if (!notMatchedTrains[rowNum].secondTrainNumber.Equals("null"))
+                        {
+                            trainDetails = trainDetails + "/" + notMatchedTrains[rowNum].secondTrainNumber;
+                        }
+                        switch (notMatchedTrains[rowNum].trainType)
+                        {
+                            case 0:
+                                trainDetails = "×" + trainDetails;
+                                break;
+                            case 1:
+                                trainDetails = "×高峰" + trainDetails;
+                                break;
+                            case 2:
+                                trainDetails = "×临客" + trainDetails;
+                                break;
+                            case 3:
+                                trainDetails = "×周末" + trainDetails;
+                                break;
+                            case 4:
+                                trainDetails = "×加开" + trainDetails;
+                                break;
+                        }
+                        cell.SetCellValue(trainDetails);
+                        cell.CellStyle = stoppedTrainStyle;
+
+                    }
+
+                }
+
+                //向excel文件中写入数据并保保存
+                workbook.Write(fs);
+                fs.Close();
+                System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+                //info.WorkingDirectory = Application.StartupPath;
+                info.FileName = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+  "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "统计结果.xls";
+                info.Arguments = "";
+                try
+                {
+                    System.Diagnostics.Process.Start(info);
+                }
+                catch (System.ComponentModel.Win32Exception we)
+                {
+                    MessageBox.Show(this, we.Message);
+                    return;
+                }
+            }
+            catch (Exception e1)
+            {
+                MessageBox.Show("出现错误请重试~" + e1.ToString().Split('。')[0] + "。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+
+
+        }
+
         private void checkedChanged()
         {
 
@@ -369,6 +876,11 @@ namespace TimeTableAutoCompleteTool
                     timer1.Stop();//此处可以关掉定时器，则实现单次置顶
                 }
             }
+        }
+
+        private void skinButton1_Click(object sender, EventArgs e)
+        {
+            createStaticsFile();
         }
     }
 }

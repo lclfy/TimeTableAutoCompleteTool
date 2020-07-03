@@ -68,7 +68,7 @@
             this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.notInCommand_rtb = new System.Windows.Forms.RichTextBox();
+            this.notMatchedTrains_rtb = new System.Windows.Forms.RichTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -451,6 +451,7 @@
             this.skinButton1.TabIndex = 45;
             this.skinButton1.Text = "创建统计Excel文件";
             this.skinButton1.UseVisualStyleBackColor = false;
+            this.skinButton1.Click += new System.EventHandler(this.skinButton1_Click);
             // 
             // label7
             // 
@@ -460,9 +461,9 @@
             this.label7.Location = new System.Drawing.Point(1230, 861);
             this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(707, 36);
+            this.label7.Size = new System.Drawing.Size(735, 36);
             this.label7.TabIndex = 46;
-            this.label7.Text = "“创建统计Excel文件”可创建便于调图分析的Excel文件";
+            this.label7.Text = "“创建统计Excel文件”可将所有数据分类列于Excel表格内\r\n";
             // 
             // unrecognizedTrain_rtb
             // 
@@ -483,9 +484,9 @@
             this.label8.Location = new System.Drawing.Point(1779, 99);
             this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(306, 41);
+            this.label8.Size = new System.Drawing.Size(488, 41);
             this.label8.TabIndex = 48;
-            this.label8.Text = "客调内不在图车次：";
+            this.label8.Text = "不在图车次(其他车站或未匹配)：";
             // 
             // contextMenuStrip1
             // 
@@ -521,16 +522,16 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // notInCommand_rtb
+            // notMatchedTrains_rtb
             // 
-            this.notInCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.notInCommand_rtb.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.notInCommand_rtb.Location = new System.Drawing.Point(1786, 546);
-            this.notInCommand_rtb.Name = "notInCommand_rtb";
-            this.notInCommand_rtb.ReadOnly = true;
-            this.notInCommand_rtb.Size = new System.Drawing.Size(508, 300);
-            this.notInCommand_rtb.TabIndex = 50;
-            this.notInCommand_rtb.Text = "";
+            this.notMatchedTrains_rtb.ContextMenuStrip = this.contextMenuStrip1;
+            this.notMatchedTrains_rtb.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.notMatchedTrains_rtb.Location = new System.Drawing.Point(1786, 546);
+            this.notMatchedTrains_rtb.Name = "notMatchedTrains_rtb";
+            this.notMatchedTrains_rtb.ReadOnly = true;
+            this.notMatchedTrains_rtb.Size = new System.Drawing.Size(508, 300);
+            this.notMatchedTrains_rtb.TabIndex = 50;
+            this.notMatchedTrains_rtb.Text = "";
             // 
             // label9
             // 
@@ -540,9 +541,9 @@
             this.label9.Location = new System.Drawing.Point(1779, 484);
             this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(338, 41);
+            this.label9.Size = new System.Drawing.Size(370, 41);
             this.label9.TabIndex = 51;
-            this.label9.Text = "客调不含的在图车次：";
+            this.label9.Text = "时刻表内客调不含车次：";
             // 
             // DataAnalyse
             // 
@@ -554,7 +555,7 @@
             this.CaptionBackColorTop = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(2384, 1112);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.notInCommand_rtb);
+            this.Controls.Add(this.notMatchedTrains_rtb);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.unrecognizedTrain_rtb);
             this.Controls.Add(this.label7);
@@ -629,7 +630,7 @@
         private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 清空ToolStripMenuItem;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.RichTextBox notInCommand_rtb;
+        private System.Windows.Forms.RichTextBox notMatchedTrains_rtb;
         private System.Windows.Forms.Label label9;
     }
 }
