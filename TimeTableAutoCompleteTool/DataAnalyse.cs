@@ -872,12 +872,11 @@ namespace TimeTableAutoCompleteTool
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            timerCount++;
             if (Handle1 != GetForegroundWindow()) //持续使该窗体置为最前,屏蔽该行则单次置顶
             {
                 SetForegroundWindow(Handle1);
-
-                timerCount++;
-                if(timerCount > 10)
+                if(timerCount > 20)
                 {
                     timer1.Stop();//此处可以关掉定时器，则实现单次置顶
                 }

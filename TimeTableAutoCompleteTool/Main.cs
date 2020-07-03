@@ -1168,6 +1168,8 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("j", "J");
             if (standardCommand.Contains("GG"))
                 standardCommand = standardCommand.Replace("GG", "G");
+            if (standardCommand.Contains("00G"))
+                standardCommand = standardCommand.Replace("00G", "0G");
             if (standardCommand.Contains("DD"))
                 standardCommand = standardCommand.Replace("DD", "D");
             if (standardCommand.Contains("CC"))
@@ -2234,11 +2236,12 @@ namespace TimeTableAutoCompleteTool
                                             string newContinueTrainNum = "";
                                             bool hasGotThat = false;
                                             string currentTrainTime = "";
-                                            int currentTrainPlace = 0;
+                                            int currentTrainPlace = -1;
                                             string log = "";
+
                                             currentTrainNum = row.GetCell(j).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("临客", "").Replace("周末", "").Replace("加开", "").Replace("非动","");
-                                            //不是自己场的不要找
-                                            if (isCurrentStationTrain)
+                                                //不是自己场的不要找
+                                                if (isCurrentStationTrain)
                                             {
                                                 //判断有无接
                                                 if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1) != null)
@@ -2283,13 +2286,18 @@ namespace TimeTableAutoCompleteTool
                                                             currentTrainTime = row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1).ToString().Trim();
                                                         }
                                                         //找目标车辆前面的车，必须同车型同车号的
+                                                        //currentTrainPlace == -1 ，跳过
+                                                        if (currentTrainPlace == -1)
+                                                        {
+                                                            hasGotThat = true;
+                                                        }
                                                         for (int il = currentTrainPlace - 1; il >= 0; il--)
                                                         {
                                                             if (hasGotThat)
                                                             {
                                                                 break;
                                                             }
-                                                            if (commandModel[il].streamStatus != 0)
+                                                            if (commandModel[il].streamStatus != 0 && commandModel[il].streamStatus != 4)
                                                             {
                                                                 if (commandModel[il].trainModel.Equals(commandModel[currentTrainPlace].trainModel) &&
                                                                     commandModel[il].trainId.Equals(commandModel[currentTrainPlace].trainId))
@@ -2401,13 +2409,18 @@ namespace TimeTableAutoCompleteTool
                                                             currentTrainTime = row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1).ToString().Trim();
                                                         }
                                                         //找目标车辆后面的车，必须同车型同车号的
+                                                        //currentTrainPlace == -1 ，跳过
+                                                        if (currentTrainPlace == -1)
+                                                        {
+                                                            hasGotThat = true;
+                                                        }
                                                         for (int il = currentTrainPlace + 1; il < commandModel.Count; il++)
                                                         {
                                                             if (hasGotThat)
                                                             {
                                                                 break;
                                                             }
-                                                            if (commandModel[il].streamStatus != 0)
+                                                            if (commandModel[il].streamStatus != 0 && commandModel[il].streamStatus != 4)
                                                             {
                                                                 if (commandModel[il].trainModel.Equals(commandModel[currentTrainPlace].trainModel) &&
                                                                     commandModel[il].trainId.Equals(commandModel[currentTrainPlace].trainId))
