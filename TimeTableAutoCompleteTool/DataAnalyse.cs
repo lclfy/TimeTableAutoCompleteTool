@@ -17,6 +17,7 @@ namespace TimeTableAutoCompleteTool
     {
         public List<CommandModel> allCommandModels;
         public string operationString;
+        public string continueTrainAnalyse;
         int timerCount = 0;
         //窗口置于最前
         [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, ExactSpelling = true)]
@@ -25,7 +26,7 @@ namespace TimeTableAutoCompleteTool
         public static extern bool SetForegroundWindow(IntPtr hWnd);//设置此窗体为活动窗体
                                                                    //定义变量,句柄类型
         public IntPtr Handle1;
-        public DataAnalyse(List<CommandModel> _allCm, string _operationString)
+        public DataAnalyse(List<CommandModel> _allCm, string _operationString,string _continueTrainAnalyse)
         {
             if (_allCm != null)
             {
@@ -34,6 +35,10 @@ namespace TimeTableAutoCompleteTool
             if (_operationString != null)
             {
                 operationString = _operationString;
+            }
+            if(_continueTrainAnalyse != null)
+            {
+                continueTrainAnalyse = _continueTrainAnalyse;
             }
             InitializeComponent();
         }
@@ -236,8 +241,9 @@ namespace TimeTableAutoCompleteTool
             unrecognazedTrains = unrecognazedTrains + "\n共" + count + "列";
             operationChanged_rtb.Text = statisticsText;
             unrecognizedTrain_rtb.Text = unrecognazedTrains;
+            continueTrainProblems_rtb.Text = continueTrainAnalyse;
             //找客调中不含的车
-            for(int i = 0;i< allCommandModels.Count; i++)
+            for (int i = 0;i< allCommandModels.Count; i++)
             {
                 if(allCommandModels[i].streamStatus == 4)
                 {
@@ -429,7 +435,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 //第一列 开行旅客列车
                 int columnCount =  0;
-                for (int rowNum = 0;rowNum< startPsngerTrains.Count; rowNum++)
+                for (int rowNum = 0;rowNum< startPsngerTrains.Count +1; rowNum++)
                 {
                     IRow row;
                     if(sheet.GetRow(rowNum) == null)
@@ -457,16 +463,16 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        string trainDetails = startPsngerTrains[rowNum].trainNumber;
-                        if (!startPsngerTrains[rowNum].secondTrainNumber.Equals("null"))
+                        string trainDetails = startPsngerTrains[rowNum - 1].trainNumber;
+                        if (!startPsngerTrains[rowNum -1].secondTrainNumber.Equals("null"))
                         {
-                            trainDetails =  trainDetails + "/" + startPsngerTrains[rowNum].secondTrainNumber;
+                            trainDetails =  trainDetails + "/" + startPsngerTrains[rowNum - 1].secondTrainNumber;
                         }
-                        if(startPsngerTrains[rowNum].streamStatus == 2)
+                        if(startPsngerTrains[rowNum - 1].streamStatus == 2)
                         {
                             trainDetails = "(次日开)" + trainDetails;
                         }
-                        switch (startPsngerTrains[rowNum].trainType)
+                        switch (startPsngerTrains[rowNum - 1].trainType)
                         {
                             case 0:
                                 trainDetails = "√" + trainDetails;
@@ -492,7 +498,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 columnCount++;
                 //第二列 开行其他列车
-                for (int rowNum = 0; rowNum < startOtherTrains.Count; rowNum++)
+                for (int rowNum = 0; rowNum < startOtherTrains.Count + 1; rowNum++)
                 {
                     IRow row;
                     if (sheet.GetRow(rowNum) == null)
@@ -520,16 +526,16 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        string trainDetails = startOtherTrains[rowNum].trainNumber;
-                        if (!startOtherTrains[rowNum].secondTrainNumber.Equals("null"))
+                        string trainDetails = startOtherTrains[rowNum - 1].trainNumber;
+                        if (!startOtherTrains[rowNum - 1].secondTrainNumber.Equals("null"))
                         {
-                            trainDetails = trainDetails + "/" + startOtherTrains[rowNum].secondTrainNumber;
+                            trainDetails = trainDetails + "/" + startOtherTrains[rowNum - 1].secondTrainNumber;
                         }
-                        if (startPsngerTrains[rowNum].streamStatus == 2)
+                        if (startOtherTrains[rowNum - 1].streamStatus == 2)
                         {
                             trainDetails = "(次日开)" + trainDetails;
                         }
-                        switch (startOtherTrains[rowNum].trainType)
+                        switch (startOtherTrains[rowNum - 1].trainType)
                         {
                             case 0:
                                 trainDetails = "√" + trainDetails;
@@ -555,7 +561,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 columnCount++;
                 //第三列 停运旅客列车
-                for (int rowNum = 0; rowNum < stopPsngerTrains.Count; rowNum++)
+                for (int rowNum = 0; rowNum < stopPsngerTrains.Count + 1; rowNum++)
                 {
                     IRow row;
                     if (sheet.GetRow(rowNum) == null)
@@ -583,12 +589,12 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        string trainDetails = stopPsngerTrains[rowNum].trainNumber;
-                        if (!stopPsngerTrains[rowNum].secondTrainNumber.Equals("null"))
+                        string trainDetails = stopPsngerTrains[rowNum - 1].trainNumber;
+                        if (!stopPsngerTrains[rowNum - 1].secondTrainNumber.Equals("null"))
                         {
-                            trainDetails = trainDetails + "/" + stopPsngerTrains[rowNum].secondTrainNumber;
+                            trainDetails = trainDetails + "/" + stopPsngerTrains[rowNum - 1].secondTrainNumber;
                         }
-                        switch (stopPsngerTrains[rowNum].trainType)
+                        switch (stopPsngerTrains[rowNum - 1].trainType)
                         {
                             case 0:
                                 trainDetails = "×" + trainDetails;
@@ -607,7 +613,7 @@ namespace TimeTableAutoCompleteTool
                                 break;
                         }
                         cell.SetCellValue(trainDetails);
-                        if(stopPsngerTrains[rowNum].streamStatus == 4)
+                        if(stopPsngerTrains[rowNum - 1].streamStatus == 4)
                         {
                             cell.CellStyle = nonMatchedTrainStype;
                         }
@@ -621,7 +627,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 columnCount++;
                 //第四列 停运其他列车
-                for (int rowNum = 0; rowNum < stopOtherTrains.Count; rowNum++)
+                for (int rowNum = 0; rowNum < stopOtherTrains.Count + 1; rowNum++)
                 {
                     IRow row;
                     if (sheet.GetRow(rowNum) == null)
@@ -649,12 +655,12 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        string trainDetails = stopOtherTrains[rowNum].trainNumber;
-                        if (!stopOtherTrains[rowNum].secondTrainNumber.Equals("null"))
+                        string trainDetails = stopOtherTrains[rowNum - 1].trainNumber;
+                        if (!stopOtherTrains[rowNum - 1].secondTrainNumber.Equals("null"))
                         {
-                            trainDetails = trainDetails + "/" + stopOtherTrains[rowNum].secondTrainNumber;
+                            trainDetails = trainDetails + "/" + stopOtherTrains[rowNum - 1].secondTrainNumber;
                         }
-                        switch (stopOtherTrains[rowNum].trainType)
+                        switch (stopOtherTrains[rowNum - 1].trainType)
                         {
                             case 0:
                                 trainDetails = "×" + trainDetails;
@@ -673,7 +679,7 @@ namespace TimeTableAutoCompleteTool
                                 break;
                         }
                         cell.SetCellValue(trainDetails);
-                        if (stopOtherTrains[rowNum].streamStatus == 4)
+                        if (stopOtherTrains[rowNum - 1].streamStatus == 4)
                         {
                             cell.CellStyle = nonMatchedTrainStype;
                         }
@@ -687,7 +693,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 columnCount++;
                 //第五列 未匹配列车
-                for (int rowNum = 0; rowNum < notMatchedTrains.Count; rowNum++)
+                for (int rowNum = 0; rowNum < notMatchedTrains.Count + 1; rowNum++)
                 {
                     IRow row;
                     if (sheet.GetRow(rowNum) == null)
@@ -715,12 +721,12 @@ namespace TimeTableAutoCompleteTool
                     }
                     else
                     {
-                        string trainDetails = notMatchedTrains[rowNum].trainNumber;
-                        if (!notMatchedTrains[rowNum].secondTrainNumber.Equals("null"))
+                        string trainDetails = notMatchedTrains[rowNum - 1].trainNumber;
+                        if (!notMatchedTrains[rowNum - 1].secondTrainNumber.Equals("null"))
                         {
-                            trainDetails = trainDetails + "/" + notMatchedTrains[rowNum].secondTrainNumber;
+                            trainDetails = trainDetails + "/" + notMatchedTrains[rowNum - 1].secondTrainNumber;
                         }
-                        switch (notMatchedTrains[rowNum].trainType)
+                        switch (notMatchedTrains[rowNum - 1].trainType)
                         {
                             case 0:
                                 trainDetails = "×" + trainDetails;
@@ -871,7 +877,7 @@ namespace TimeTableAutoCompleteTool
                 SetForegroundWindow(Handle1);
 
                 timerCount++;
-                if(timerCount > 20)
+                if(timerCount > 10)
                 {
                     timer1.Stop();//此处可以关掉定时器，则实现单次置顶
                 }

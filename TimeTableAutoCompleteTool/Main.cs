@@ -66,6 +66,8 @@ namespace TimeTableAutoCompleteTool
         public int modeSelect;
         //开行信息分析文本
         public string operationChangedAnalyse = "";
+        //接续列车发现问题文本
+        public string continueTrainAnalyse = "";
         float dpiX, dpiY;
 
         string developer = "反馈请联系运转车间（或技术科）\n*亦可联系黄楠/高雅雯";
@@ -77,10 +79,9 @@ namespace TimeTableAutoCompleteTool
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 67 - v200703";
-        string readMe = "build67更新内容:\n"+
-            " 1、统计优化，并加入调图专用分析。\n" +
-            "2、现可在客调命令中自动寻找正确的接续列车。";
-
+        string readMe = "build67更新内容:\n" +
+            " 1、统计优化，并加入调图专用分析。\n"+
+            "2、自动检查接续车次是否正确（beta）";
 
         public Main()
         {
@@ -160,6 +161,7 @@ namespace TimeTableAutoCompleteTool
                 FontSize_tb.Visible = true;
                 yesterdayExcelFile = "";
                 operationChangedAnalyse = "";
+                continueTrainAnalyse = "";
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件【框选所有时刻表!】";
@@ -181,6 +183,7 @@ namespace TimeTableAutoCompleteTool
                 yesterdayCommandText = "";
                 yesterdayExcelFile = "";
                 operationChangedAnalyse = "";
+                continueTrainAnalyse = "";
                 yesterdayCommandModel = new List<CommandModel>();
                 EMUGarage_YesterdayCommand_rtb.Text = "";
                 yesterdayCommand_rtb.Text = "";
@@ -213,6 +216,7 @@ namespace TimeTableAutoCompleteTool
                 yesterdayExcelFile = "";
                 trainPorjectFilePath_lbl.Text = "";
                 operationChangedAnalyse = "";
+                continueTrainAnalyse = "";
                 EMUorEMUC_groupBox.Visible = false;
                 yesterdayCommandText = "";
                 developerLabel.Text = " ";
@@ -393,13 +397,7 @@ namespace TimeTableAutoCompleteTool
             try
             {
                 //把streamstatus为4的清除
-                foreach (CommandModel _cm in commandModel)
-                {
-                    if (_cm.streamStatus == 4)
-                    {
-                        commandModel.Remove(_cm);
-                    }
-                }
+                analyseCommand();
                 if (commandModel.Count != 0 && radioButton1.Checked)
                 {
                     if (FontSize_tb.Text.Length == 0)
@@ -446,7 +444,7 @@ namespace TimeTableAutoCompleteTool
             }
             catch (Exception ee)
             {
-                MessageBox.Show("出现错误：" + e.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("出现错误：" + ee.ToString().Split('。')[0], "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
         }
@@ -550,6 +548,10 @@ namespace TimeTableAutoCompleteTool
                         else if (command[1].Contains("周末"))
                         {
                             trainType = 3;
+                        }
+                        else if (command[1].Contains("加开"))
+                        {
+                            trainType = 4;
                         }
 
                         for (int timeCount = 0; timeCount < command.Length; timeCount++)
@@ -1521,6 +1523,7 @@ namespace TimeTableAutoCompleteTool
         {
             
             operationChangedAnalyse = "";
+            continueTrainAnalyse = "";
             if (ExcelFile == null)
             {
                 MessageBox.Show("请重新选择时刻表文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2111,6 +2114,7 @@ namespace TimeTableAutoCompleteTool
                                                     }
                                                 }
                                             }
+                                            //添加时刻表内有的客调命令不含的车
                                             if (!gotIt)
                                             {
                                                 row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
@@ -2160,8 +2164,8 @@ namespace TimeTableAutoCompleteTool
                                                 }
                                             }
                                         }
-                                        {
-                                            //判断是否仅本场
+                                        //判断是否仅本场
+                                        bool isCurrentStationTrain = false;
                                             int currentTrainNumIndex = -1;
                                             if (trainNumColumnNum.Count >= 2 && trackNumColumnNum.Count >= 2)
                                             {
@@ -2174,7 +2178,7 @@ namespace TimeTableAutoCompleteTool
                                                 }
                                             }
                                             if (currentTrainNumIndex != -1)
-                                            {//条件判断完成，可以判断是否为本场车
+                                            {//条件判断完成，可以判断是否为本场车(以及找接续车次)
                                              //目前只有东三站
                                                 int tempTrack = 0;
                                                 if (station.Contains("徐兰"))
@@ -2184,6 +2188,7 @@ namespace TimeTableAutoCompleteTool
                                                         int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
                                                         if (tempTrack >= 21 && tempTrack <= 32)
                                                         {//是本场车，+1
+                                                        isCurrentStationTrain = true;
                                                             if (row.GetCell(j).ToString().Contains("√"))
                                                                 onlyThisStationStartTrains++;
                                                             else if (row.GetCell(j).ToString().Contains("×"))
@@ -2199,7 +2204,8 @@ namespace TimeTableAutoCompleteTool
                                                         int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
                                                         if (tempTrack >= 1 && tempTrack <= 16)
                                                         {//是本场车，+1
-                                                            if (row.GetCell(j).ToString().Contains("√"))
+                                                        isCurrentStationTrain = true;
+                                                        if (row.GetCell(j).ToString().Contains("√"))
                                                                 onlyThisStationStartTrains++;
                                                             else if(row.GetCell(j).ToString().Contains("×"))
                                                                 onlyThisStationStopTrains++;
@@ -2213,15 +2219,277 @@ namespace TimeTableAutoCompleteTool
                                                         int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
                                                         if (tempTrack >= 17 && tempTrack <= 20)
                                                         {//是本场车，+1
-                                                            if (row.GetCell(j).ToString().Contains("√"))
+                                                        isCurrentStationTrain = true;
+                                                        if (row.GetCell(j).ToString().Contains("√"))
                                                                 onlyThisStationStartTrains++;
                                                             else if (row.GetCell(j).ToString().Contains("×"))
                                                                 onlyThisStationStopTrains++;
                                                         }
                                                     }
                                                 }
+
+                                            //寻找接续问题
+                                            string currentTrainNum = "";
+                                            string continueTrainNum = "";
+                                            string newContinueTrainNum = "";
+                                            bool hasGotThat = false;
+                                            string currentTrainTime = "";
+                                            int currentTrainPlace = 0;
+                                            string log = "";
+                                            currentTrainNum = row.GetCell(j).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("临客", "").Replace("周末", "").Replace("加开", "").Replace("非动","");
+                                            //不是自己场的不要找
+                                            if (isCurrentStationTrain)
+                                            {
+                                                //判断有无接
+                                                if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1) != null)
+                                                {//有接
+                                                    if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1).ToString().Contains("由") &&
+                                                        row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1).ToString().Contains("改"))
+                                                    {
+                                                        //先判断接续是否为自己的第二车次，并记下自身位置
+                                                        continueTrainNum = row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1).ToString().Replace("由", "").Replace("改", "").Replace("非动", "");
+                                                        for (int ik = 0; ik < commandModel.Count; ik++)
+                                                        {
+                                                            if (commandModel[ik].trainNumber.Equals(currentTrainNum))
+                                                            {
+                                                                //自身不能停运
+                                                                if (commandModel[ik].streamStatus == 0 ||
+                                                                    commandModel[ik].streamStatus == 4)
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                                currentTrainPlace = ik;
+                                                                if (commandModel[ik].secondTrainNumber.Equals(continueTrainNum))
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            else if (commandModel[ik].secondTrainNumber.Equals(currentTrainNum))
+                                                            {
+                                                                currentTrainPlace = ik;
+                                                                if (commandModel[ik].trainNumber.Equals(continueTrainNum))
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        //不是，则开始在模型库中寻找
+                                                        //先把时间存下
+                                                        if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1) != null)
+                                                        {
+                                                            currentTrainTime = row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1).ToString().Trim();
+                                                        }
+                                                        //找目标车辆前面的车，必须同车型同车号的
+                                                        for (int il = currentTrainPlace - 1; il >= 0; il--)
+                                                        {
+                                                            if (hasGotThat)
+                                                            {
+                                                                break;
+                                                            }
+                                                            if (commandModel[il].streamStatus != 0)
+                                                            {
+                                                                if (commandModel[il].trainModel.Equals(commandModel[currentTrainPlace].trainModel) &&
+                                                                    commandModel[il].trainId.Equals(commandModel[currentTrainPlace].trainId))
+                                                                {//找到了前序列车，和原有进行对比
+                                                                    if (commandModel[il].trainNumber.Equals(continueTrainNum) ||
+                                                                        commandModel[il].secondTrainNumber.Equals(continueTrainNum))
+                                                                    {//一致，不改
+                                                                        break;
+                                                                    }
+                                                                    //类似时刻表中为“0G1869/G9202”
+                                                                    else if (continueTrainNum.Contains("/"))
+                                                                    {
+                                                                        string numA = continueTrainNum.Split('/')[0];
+                                                                        string numB = continueTrainNum.Split('/')[1];
+                                                                        if (commandModel[il].trainNumber.Equals(numA) ||
+                                                                       commandModel[il].secondTrainNumber.Equals(numA))
+                                                                        {//一致，不改
+                                                                            break;
+                                                                        }
+                                                                        if (commandModel[il].trainNumber.Equals(numB) ||
+                                                                        commandModel[il].secondTrainNumber.Equals(numB))
+                                                                        {//一致，不改
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//不一致，判断新的车次是否在图内
+                                                                        for (int im = 0; im <= sheet.LastRowNum; im++)
+                                                                        {
+                                                                            IRow tempRow = sheet.GetRow(im);
+                                                                            if (tempRow != null)
+                                                                            {
+                                                                                for (int ib = 0; ib <= tempRow.LastCellNum; ib++)
+                                                                                {
+                                                                                    if (tempRow.GetCell(ib) != null)
+                                                                                    {
+                                                                                        if (!tempRow.GetCell(ib).ToString().Contains("由") &&
+                                                                                            !tempRow.GetCell(ib).ToString().Contains("续开"))
+                                                                                        {
+                                                                                            if (tempRow.GetCell(ib).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("周末", "").Replace("临客", "").Replace("加开", "").Equals(commandModel[il].trainNumber))
+                                                                                            {
+                                                                                                //图中找到了相应车次，提供修改建议
+                                                                                                hasGotThat = true;
+                                                                                                newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                                log = station + "场" + currentTrainNum + "次(" + currentTrainTime + "出发)的前序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原前序列车为" + continueTrainNum + "次。";
+                                                                                                break;
+                                                                                            }
+                                                                                            if (tempRow.GetCell(ib).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("周末", "").Replace("临客", "").Replace("加开", "").Equals(commandModel[il].secondTrainNumber))
+                                                                                            {
+                                                                                                hasGotThat = true;
+                                                                                                newContinueTrainNum = commandModel[il].secondTrainNumber;
+                                                                                                log = station + "场" + currentTrainNum + "次(" + currentTrainTime + "出发)的前序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原前序列车为" + continueTrainNum + "次。";
+                                                                                                break;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            if (hasGotThat)
+                                                                            {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                //判断有无续
+                                                if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1) != null)
+                                                {//有续
+                                                    if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1).ToString().Contains("续开"))
+                                                    {
+                                                        //先判断接续是否为自己的第二车次
+                                                        continueTrainNum = row.GetCell(trackNumColumnNum[currentTrainNumIndex] + 1).ToString().Replace("续开", "").Replace("非动", "");
+                                                        for (int ik = 0; ik < commandModel.Count; ik++)
+                                                        {
+                                                            if (commandModel[ik].trainNumber.Equals(currentTrainNum))
+                                                            {
+                                                                //自身不能停运
+                                                                if (commandModel[ik].streamStatus == 0 ||
+                                                                    commandModel[ik].streamStatus == 4)
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                                currentTrainPlace = ik;
+                                                                if (commandModel[ik].secondTrainNumber.Equals(continueTrainNum))
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            else if (commandModel[ik].secondTrainNumber.Equals(currentTrainNum))
+                                                            {
+                                                                currentTrainPlace = ik;
+                                                                if (commandModel[ik].trainNumber.Equals(continueTrainNum))
+                                                                {
+                                                                    hasGotThat = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        //不是，则开始在模型库中寻找
+                                                        //先把时间存下
+                                                        if (row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1) != null)
+                                                        {
+                                                            currentTrainTime = row.GetCell(trackNumColumnNum[currentTrainNumIndex] - 1).ToString().Trim();
+                                                        }
+                                                        //找目标车辆后面的车，必须同车型同车号的
+                                                        for (int il = currentTrainPlace + 1; il < commandModel.Count; il++)
+                                                        {
+                                                            if (hasGotThat)
+                                                            {
+                                                                break;
+                                                            }
+                                                            if (commandModel[il].streamStatus != 0)
+                                                            {
+                                                                if (commandModel[il].trainModel.Equals(commandModel[currentTrainPlace].trainModel) &&
+                                                                    commandModel[il].trainId.Equals(commandModel[currentTrainPlace].trainId))
+                                                                {//找到了后序列车，和原有进行对比
+                                                                    if (commandModel[il].trainNumber.Equals(continueTrainNum) ||
+                                                                        commandModel[il].secondTrainNumber.Equals(continueTrainNum))
+                                                                    {//一致，不改
+                                                                        break;
+                                                                    }
+                                                                    //类似时刻表中为“0G1869/G9202”
+                                                                    else if (continueTrainNum.Contains("/"))
+                                                                    {
+                                                                        string numA = continueTrainNum.Split('/')[0];
+                                                                        string numB = continueTrainNum.Split('/')[1];
+                                                                        if (commandModel[il].trainNumber.Equals(numA) ||
+                                                                       commandModel[il].secondTrainNumber.Equals(numA))
+                                                                        {//一致，不改
+                                                                            break;
+                                                                        }
+                                                                        if (commandModel[il].trainNumber.Equals(numB) ||
+                                                                        commandModel[il].secondTrainNumber.Equals(numB))
+                                                                        {//一致，不改
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {//不一致，判断新的车次是否在图内
+                                                                        for (int im = 0; im <= sheet.LastRowNum; im++)
+                                                                        {
+                                                                            IRow tempRow = sheet.GetRow(im);
+                                                                            if (tempRow != null)
+                                                                            {
+                                                                                for (int ib = 0; ib <= tempRow.LastCellNum; ib++)
+                                                                                {
+                                                                                    if (tempRow.GetCell(ib) != null)
+                                                                                    {
+                                                                                        if (!tempRow.GetCell(ib).ToString().Contains("由") &&
+                                                                                            !tempRow.GetCell(ib).ToString().Contains("续开"))
+                                                                                        {
+                                                                                            if (tempRow.GetCell(ib).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("周末", "").Replace("临客", "").Replace("加开", "").Equals(commandModel[il].trainNumber))
+                                                                                            {
+                                                                                                //图中找到了相应车次，提供修改建议
+                                                                                                hasGotThat = true;
+                                                                                                newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                                log = station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
+                                                                                                break;
+                                                                                            }
+                                                                                            if (tempRow.GetCell(ib).ToString().Trim().Replace("√", "").Replace("×", "").Replace("高峰", "").Replace("周末", "").Replace("临客", "").Replace("加开", "").Equals(commandModel[il].secondTrainNumber))
+                                                                                            {
+                                                                                                hasGotThat = true;
+                                                                                                newContinueTrainNum = commandModel[il].secondTrainNumber;
+                                                                                                log = station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
+                                                                                                break;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            if (hasGotThat)
+                                                                            {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+
+                                                    }
+                                                }
+
+                                                if (log.Length != 0 && !log.Equals(""))
+                                                {
+                                                    continueTrainAnalyse = continueTrainAnalyse + log + "\n";
+                                                }
                                             }
+
+
                                         }
+
+
                                     }
                                 }
                             }
@@ -2268,7 +2536,7 @@ namespace TimeTableAutoCompleteTool
                     title += ")" + titleEnd;
                     if (fileCounter == ExcelFile.Count)
                     {
-                        DataAnalyse _daForm = new DataAnalyse(commandModel, operationChangedAnalyse);
+                        DataAnalyse _daForm = new DataAnalyse(commandModel, operationChangedAnalyse,continueTrainAnalyse);
                         _daForm.Show();
                     }
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
@@ -8182,7 +8450,7 @@ namespace TimeTableAutoCompleteTool
 
         private void startDataAnalyse()
         {
-            DataAnalyse _form = new DataAnalyse(commandModel,operationChangedAnalyse);
+            DataAnalyse _form = new DataAnalyse(commandModel,operationChangedAnalyse,continueTrainAnalyse);
             _form.Show();
         }
 
