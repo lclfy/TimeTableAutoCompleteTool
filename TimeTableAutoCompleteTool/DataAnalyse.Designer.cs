@@ -52,10 +52,6 @@
             this._trainModel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._trainID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.operationChanged_rtb = new System.Windows.Forms.RichTextBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.复制toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.stop_cb = new CCWin.SkinControl.SkinCheckBox();
@@ -65,13 +61,18 @@
             this.label6 = new System.Windows.Forms.Label();
             this.skinButton1 = new CCWin.SkinControl.SkinButton();
             this.label7 = new System.Windows.Forms.Label();
-            this.unrecognizedTrain_rtb = new System.Windows.Forms.RichTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.notMatchedTrains_rtb = new System.Windows.Forms.RichTextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.continueTrainProblems_rtb = new System.Windows.Forms.RichTextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.unrecognizedTrain_rtb = new System.Windows.Forms.RichTextBox();
+            this.notMatchedTrains_rtb = new System.Windows.Forms.RichTextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.复制toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.skinButton2 = new CCWin.SkinControl.SkinButton();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -331,42 +332,12 @@
             // 
             // operationChanged_rtb
             // 
-            this.operationChanged_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.operationChanged_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.operationChanged_rtb.Location = new System.Drawing.Point(1236, 160);
             this.operationChanged_rtb.Name = "operationChanged_rtb";
             this.operationChanged_rtb.Size = new System.Drawing.Size(508, 304);
             this.operationChanged_rtb.TabIndex = 36;
             this.operationChanged_rtb.Text = "";
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.复制toolStripMenuItem1,
-            this.粘贴ToolStripMenuItem,
-            this.清空ToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(137, 118);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
-            // 
-            // 复制toolStripMenuItem1
-            // 
-            this.复制toolStripMenuItem1.Name = "复制toolStripMenuItem1";
-            this.复制toolStripMenuItem1.Size = new System.Drawing.Size(136, 38);
-            this.复制toolStripMenuItem1.Text = "复制";
-            // 
-            // 粘贴ToolStripMenuItem
-            // 
-            this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
-            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
-            this.粘贴ToolStripMenuItem.Text = "粘贴";
-            // 
-            // 清空ToolStripMenuItem
-            // 
-            this.清空ToolStripMenuItem.Name = "清空ToolStripMenuItem";
-            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
-            this.清空ToolStripMenuItem.Text = "清空";
             // 
             // label2
             // 
@@ -473,12 +444,12 @@
             this.skinButton1.DownBack = null;
             this.skinButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.skinButton1.ForeColor = System.Drawing.Color.White;
-            this.skinButton1.Location = new System.Drawing.Point(1227, 920);
+            this.skinButton1.Location = new System.Drawing.Point(1786, 920);
             this.skinButton1.Margin = new System.Windows.Forms.Padding(6);
             this.skinButton1.MouseBack = null;
             this.skinButton1.Name = "skinButton1";
             this.skinButton1.NormlBack = null;
-            this.skinButton1.Size = new System.Drawing.Size(1067, 82);
+            this.skinButton1.Size = new System.Drawing.Size(508, 82);
             this.skinButton1.TabIndex = 45;
             this.skinButton1.Text = "创建统计Excel文件";
             this.skinButton1.UseVisualStyleBackColor = false;
@@ -495,17 +466,6 @@
             this.label7.Size = new System.Drawing.Size(959, 36);
             this.label7.TabIndex = 46;
             this.label7.Text = "“创建统计Excel文件”可将列车数据分类列于Excel表格内，将保存至桌面。\r\n";
-            // 
-            // unrecognizedTrain_rtb
-            // 
-            this.unrecognizedTrain_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.unrecognizedTrain_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.unrecognizedTrain_rtb.Location = new System.Drawing.Point(1786, 160);
-            this.unrecognizedTrain_rtb.Name = "unrecognizedTrain_rtb";
-            this.unrecognizedTrain_rtb.ReadOnly = true;
-            this.unrecognizedTrain_rtb.Size = new System.Drawing.Size(508, 304);
-            this.unrecognizedTrain_rtb.TabIndex = 47;
-            this.unrecognizedTrain_rtb.Text = "";
             // 
             // label8
             // 
@@ -524,32 +484,8 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // notMatchedTrains_rtb
-            // 
-            this.notMatchedTrains_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.notMatchedTrains_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.notMatchedTrains_rtb.Location = new System.Drawing.Point(1786, 546);
-            this.notMatchedTrains_rtb.Name = "notMatchedTrains_rtb";
-            this.notMatchedTrains_rtb.ReadOnly = true;
-            this.notMatchedTrains_rtb.Size = new System.Drawing.Size(508, 300);
-            this.notMatchedTrains_rtb.TabIndex = 50;
-            this.notMatchedTrains_rtb.Text = "";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label9.Location = new System.Drawing.Point(1779, 484);
-            this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(370, 41);
-            this.label9.TabIndex = 51;
-            this.label9.Text = "时刻表内客调不含车次：";
-            // 
             // continueTrainProblems_rtb
             // 
-            this.continueTrainProblems_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.continueTrainProblems_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.continueTrainProblems_rtb.Location = new System.Drawing.Point(1236, 546);
             this.continueTrainProblems_rtb.Name = "continueTrainProblems_rtb";
@@ -569,6 +505,90 @@
             this.label10.TabIndex = 53;
             this.label10.Text = "可能的接续列车变化(需核对)";
             // 
+            // unrecognizedTrain_rtb
+            // 
+            this.unrecognizedTrain_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.unrecognizedTrain_rtb.Location = new System.Drawing.Point(1786, 160);
+            this.unrecognizedTrain_rtb.Name = "unrecognizedTrain_rtb";
+            this.unrecognizedTrain_rtb.ReadOnly = true;
+            this.unrecognizedTrain_rtb.Size = new System.Drawing.Size(508, 304);
+            this.unrecognizedTrain_rtb.TabIndex = 47;
+            this.unrecognizedTrain_rtb.Text = "";
+            this.unrecognizedTrain_rtb.TextChanged += new System.EventHandler(this.unrecognizedTrain_rtb_TextChanged);
+            // 
+            // notMatchedTrains_rtb
+            // 
+            this.notMatchedTrains_rtb.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.notMatchedTrains_rtb.Location = new System.Drawing.Point(1786, 546);
+            this.notMatchedTrains_rtb.Name = "notMatchedTrains_rtb";
+            this.notMatchedTrains_rtb.ReadOnly = true;
+            this.notMatchedTrains_rtb.Size = new System.Drawing.Size(508, 300);
+            this.notMatchedTrains_rtb.TabIndex = 50;
+            this.notMatchedTrains_rtb.Text = "";
+            this.notMatchedTrains_rtb.TextChanged += new System.EventHandler(this.notMatchedTrains_rtb_TextChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.label9.Location = new System.Drawing.Point(1779, 484);
+            this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(370, 41);
+            this.label9.TabIndex = 51;
+            this.label9.Text = "时刻表内客调不含车次：";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
+            // 复制toolStripMenuItem1
+            // 
+            this.复制toolStripMenuItem1.Name = "复制toolStripMenuItem1";
+            this.复制toolStripMenuItem1.Size = new System.Drawing.Size(136, 38);
+            this.复制toolStripMenuItem1.Text = "复制";
+            // 
+            // 粘贴ToolStripMenuItem
+            // 
+            this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
+            this.粘贴ToolStripMenuItem.Text = "粘贴";
+            // 
+            // 清空ToolStripMenuItem
+            // 
+            this.清空ToolStripMenuItem.Name = "清空ToolStripMenuItem";
+            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(136, 38);
+            this.清空ToolStripMenuItem.Text = "清空";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.复制toolStripMenuItem1,
+            this.粘贴ToolStripMenuItem,
+            this.清空ToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(137, 118);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // skinButton2
+            // 
+            this.skinButton2.BackColor = System.Drawing.Color.Transparent;
+            this.skinButton2.BaseColor = System.Drawing.Color.DodgerBlue;
+            this.skinButton2.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.skinButton2.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.skinButton2.DownBack = null;
+            this.skinButton2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.skinButton2.ForeColor = System.Drawing.Color.White;
+            this.skinButton2.Location = new System.Drawing.Point(1237, 921);
+            this.skinButton2.Margin = new System.Windows.Forms.Padding(6);
+            this.skinButton2.MouseBack = null;
+            this.skinButton2.Name = "skinButton2";
+            this.skinButton2.NormlBack = null;
+            this.skinButton2.Size = new System.Drawing.Size(508, 82);
+            this.skinButton2.TabIndex = 54;
+            this.skinButton2.Text = "打开日统计文档";
+            this.skinButton2.UseVisualStyleBackColor = false;
+            this.skinButton2.Click += new System.EventHandler(this.skinButton2_Click);
+            // 
             // DataAnalyse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
@@ -577,7 +597,8 @@
             this.BorderColor = System.Drawing.Color.White;
             this.CaptionBackColorBottom = System.Drawing.Color.White;
             this.CaptionBackColorTop = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(2384, 1112);
+            this.ClientSize = new System.Drawing.Size(2880, 1381);
+            this.Controls.Add(this.skinButton2);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.continueTrainProblems_rtb);
             this.Controls.Add(this.label9);
@@ -649,16 +670,17 @@
         private System.Windows.Forms.Label label6;
         private CCWin.SkinControl.SkinButton skinButton1;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.RichTextBox unrecognizedTrain_rtb;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.RichTextBox continueTrainProblems_rtb;
+        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 复制toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 清空ToolStripMenuItem;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.RichTextBox unrecognizedTrain_rtb;
         private System.Windows.Forms.RichTextBox notMatchedTrains_rtb;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.RichTextBox continueTrainProblems_rtb;
-        private System.Windows.Forms.Label label10;
+        private CCWin.SkinControl.SkinButton skinButton2;
     }
 }

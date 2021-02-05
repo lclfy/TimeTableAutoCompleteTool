@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using System.IO;
+using Spire.Doc;
+using Spire.Doc.Documents;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -19,6 +21,11 @@ namespace TimeTableAutoCompleteTool
         public string operationString;
         public string continueTrainAnalyse;
         int timerCount = 0;
+        //必须创建过doc才能手动打开
+        bool couldCreateDoc = false;
+        
+        string wordFile = "";
+        float dpiX, dpiY;
         //窗口置于最前
         [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetForegroundWindow(); //获得本窗体的句柄
@@ -52,6 +59,11 @@ namespace TimeTableAutoCompleteTool
 
         private void init()
         {
+            skinButton2.Enabled = false;
+            Graphics graphics = this.CreateGraphics();
+            dpiX = graphics.DpiX;
+            dpiY = graphics.DpiY;
+            this.Size = new Size((int)(1200 * (dpiX / 96)), (int)(550 * (dpiY / 96)));
             timerCount = 0;
             start_cb.Checked = true;
             stop_cb.Checked = true;
@@ -210,8 +222,7 @@ namespace TimeTableAutoCompleteTool
                 "列（其中临客" + getSelectedTrains(true, true, false, false, true, true, false, true, false).Count + "列），开行其他列车" + startOtherTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, true, false, false, true, false, true, true, false).Count + "列）;停运旅客列车" + stopPsngerTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, false, true, false, true, true, false, true, false).Count + "列）;停运其他列车" + stopOtherTrains.Count +
-                "列（其中临客" + getSelectedTrains(true, false, true, false, true, false, true, true, false).Count + "列。\n" + operationString + "\n" +
-                "未在图列车（右侧显示）" + getSelectedTrains(true, true, true, true, true, true, true, false, true).Count + "列";
+                "列（其中临客" + getSelectedTrains(true, false, true, false, true, false, true, true, false).Count + "列。\n" + operationString + "\n";
 
             string unrecognazedTrains = "";
             string notMatchedTrains = "";
@@ -253,6 +264,12 @@ namespace TimeTableAutoCompleteTool
             }
             notMatchedTrains = notMatchedTrains + "\n共" + notMatchedCount + "列";
             notMatchedTrains_rtb.Text = notMatchedTrains;
+
+            //开行旅客列车不为空，创建统计word文档
+            if(startPsngerTrains.Count != 0)
+            {
+                createStaticDoc(statisticsText,continueTrainAnalyse);
+            }
         }
 
         private List<CommandModel> getSelectedTrains(bool init, bool trainOperationTrue, bool trainOperationFalse, bool normalTrain, bool tempTrain, bool psnger, bool nonPsnger, bool hasChecked, bool nonChecked)
@@ -305,6 +322,60 @@ namespace TimeTableAutoCompleteTool
             return _tempCM;
         }
 
+        //创建统计word文档
+        private void createStaticDoc(string staticText, string continueTrainText)
+        {
+
+            if (staticText.Length == 0 && continueTrainText.Length == 0)
+            {
+                return;
+            }
+            Document doc = new Document();
+
+            Section section = doc.AddSection();
+            //Add Paragraph
+            Paragraph Para1 = section.AddParagraph();
+            //Append Text
+            string title = "列车运行数据统计";
+            int hour = -1;
+            int.TryParse(DateTime.Now.ToString("HH"), out hour);
+            if (hour >= 0 && hour <= 16)
+            {
+                title = DateTime.Now.ToString("yyyy年MM月dd日-") + title;
+            }
+            else
+            {
+                title = DateTime.Now.AddDays(1).ToString("yyyy年MM月dd日-") + title;
+            }
+            FileStream fs = File.Create(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + title + ".doc");
+            fs.Close();
+            Para1.AppendText(title + "\n\n");
+
+            Paragraph Para2 = section.AddParagraph();
+            Para2.AppendText("列车开行情况：\n"+staticText + "\n\n");
+
+            Paragraph Para3 = section.AddParagraph();
+            Para3.AppendText("接续列车修改情况：\n"+continueTrainText);
+
+            //写入数据并保存
+            doc.SaveToFile(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + title + ".doc", FileFormat.Doc);
+            System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+            //info.WorkingDirectory = Application.StartupPath;
+            info.FileName = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + title + ".doc";
+            info.Arguments = "";
+            try
+            {
+                System.Diagnostics.Process.Start(info);
+            }
+            catch (System.ComponentModel.Win32Exception we)
+            {
+                MessageBox.Show(this, we.Message);
+                return;
+            }
+
+
+            skinButton2.Enabled = true;
+        }
         private void searchList(string text)
         {
             List<CommandModel> _tempCM = new List<CommandModel>();
@@ -726,26 +797,51 @@ namespace TimeTableAutoCompleteTool
                         {
                             trainDetails = trainDetails + "/" + notMatchedTrains[rowNum - 1].secondTrainNumber;
                         }
-                        switch (notMatchedTrains[rowNum - 1].trainType)
+                        if(notMatchedTrains[rowNum - 1].streamStatus == 0)
                         {
-                            case 0:
-                                trainDetails = "×" + trainDetails;
-                                break;
-                            case 1:
-                                trainDetails = "×高峰" + trainDetails;
-                                break;
-                            case 2:
-                                trainDetails = "×临客" + trainDetails;
-                                break;
-                            case 3:
-                                trainDetails = "×周末" + trainDetails;
-                                break;
-                            case 4:
-                                trainDetails = "×加开" + trainDetails;
-                                break;
+                            switch (notMatchedTrains[rowNum - 1].trainType)
+                            {
+                                case 0:
+                                    trainDetails = "(停)" + trainDetails;
+                                    break;
+                                case 1:
+                                    trainDetails = "(停)高峰" + trainDetails;
+                                    break;
+                                case 2:
+                                    trainDetails = "(停)临客" + trainDetails;
+                                    break;
+                                case 3:
+                                    trainDetails = "(停)周末" + trainDetails;
+                                    break;
+                                case 4:
+                                    trainDetails = "(停)加开" + trainDetails;
+                                    break;
+                            }
                         }
+                        else
+                        {
+                            switch (notMatchedTrains[rowNum - 1].trainType)
+                            {
+                                case 0:
+                                    trainDetails = "(开)" + trainDetails;
+                                    break;
+                                case 1:
+                                    trainDetails = "(开)高峰" + trainDetails;
+                                    break;
+                                case 2:
+                                    trainDetails = "(开)临客" + trainDetails;
+                                    break;
+                                case 3:
+                                    trainDetails = "(开)周末" + trainDetails;
+                                    break;
+                                case 4:
+                                    trainDetails = "(开)加开" + trainDetails;
+                                    break;
+                            }
+                        }
+                       
                         cell.SetCellValue(trainDetails);
-                        cell.CellStyle = stoppedTrainStyle;
+                        cell.CellStyle = tomorrowlTrainStyle;
 
                     }
 
@@ -881,6 +977,27 @@ namespace TimeTableAutoCompleteTool
                     timer1.Stop();//此处可以关掉定时器，则实现单次置顶
                 }
             }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void notMatchedTrains_rtb_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void unrecognizedTrain_rtb_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //word文档
+        private void skinButton2_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void skinButton1_Click(object sender, EventArgs e)
