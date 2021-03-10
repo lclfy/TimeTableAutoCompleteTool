@@ -2010,7 +2010,7 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                     stoppedTrainsCount++;
-                                                    row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                    row.GetCell(j).CellStyle = nonMatchedTrainStype;
                                                 }
                                                 else if (commandModel[ij].streamStatus == 2)
                                                 {
@@ -2047,7 +2047,7 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                     stoppedTrainsCount++;
-                                                    row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                    row.GetCell(j).CellStyle = nonMatchedTrainStype;
                                                 }
                                                 gotIt = true;
                                                 if (status == -1)
@@ -2130,7 +2130,7 @@ namespace TimeTableAutoCompleteTool
                                                             {
                                                                 row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                                 stoppedTrainsCount++;
-                                                                row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                                row.GetCell(j).CellStyle = nonMatchedTrainStype;
                                                             }
                                                             gotIt = true;
                                                             hasGotIt = true;

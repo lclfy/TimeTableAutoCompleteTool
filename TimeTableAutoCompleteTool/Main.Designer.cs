@@ -101,10 +101,10 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(66, 93);
-            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label1.Location = new System.Drawing.Point(42, 75);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(868, 36);
+            this.label1.Size = new System.Drawing.Size(496, 22);
             this.label1.TabIndex = 0;
             this.label1.Text = "1.将当日开行车次客调命令全部复制于下方文本框(无需删除多余内容)";
             // 
@@ -116,27 +116,27 @@
             this.粘贴ToolStripMenuItem,
             this.清空ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(129, 112);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 70);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // 复制toolStripMenuItem1
             // 
             this.复制toolStripMenuItem1.Name = "复制toolStripMenuItem1";
-            this.复制toolStripMenuItem1.Size = new System.Drawing.Size(128, 36);
+            this.复制toolStripMenuItem1.Size = new System.Drawing.Size(100, 22);
             this.复制toolStripMenuItem1.Text = "复制";
             this.复制toolStripMenuItem1.Click += new System.EventHandler(this.复制toolStripMenuItem1_Click);
             // 
             // 粘贴ToolStripMenuItem
             // 
             this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
-            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(128, 36);
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.粘贴ToolStripMenuItem.Text = "粘贴";
             this.粘贴ToolStripMenuItem.Click += new System.EventHandler(this.粘贴ToolStripMenuItem_Click);
             // 
             // 清空ToolStripMenuItem
             // 
             this.清空ToolStripMenuItem.Name = "清空ToolStripMenuItem";
-            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(128, 36);
+            this.清空ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.清空ToolStripMenuItem.Text = "清空";
             this.清空ToolStripMenuItem.Click += new System.EventHandler(this.清空ToolStripMenuItem_Click);
             // 
@@ -144,10 +144,10 @@
             // 
             this.secondStepText_lbl.AutoSize = true;
             this.secondStepText_lbl.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.secondStepText_lbl.Location = new System.Drawing.Point(11, 553);
-            this.secondStepText_lbl.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.secondStepText_lbl.Location = new System.Drawing.Point(7, 448);
+            this.secondStepText_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.secondStepText_lbl.Name = "secondStepText_lbl";
-            this.secondStepText_lbl.Size = new System.Drawing.Size(386, 36);
+            this.secondStepText_lbl.Size = new System.Drawing.Size(220, 22);
             this.secondStepText_lbl.TabIndex = 2;
             this.secondStepText_lbl.Text = "2.选择时刻表文件/基本图文件";
             // 
@@ -155,10 +155,10 @@
             // 
             this.filePathLBL.AutoSize = true;
             this.filePathLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePathLBL.Location = new System.Drawing.Point(18, 632);
-            this.filePathLBL.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.filePathLBL.Location = new System.Drawing.Point(11, 512);
+            this.filePathLBL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.filePathLBL.Name = "filePathLBL";
-            this.filePathLBL.Size = new System.Drawing.Size(96, 28);
+            this.filePathLBL.Size = new System.Drawing.Size(56, 17);
             this.filePathLBL.TabIndex = 4;
             this.filePathLBL.Text = "已选择：";
             // 
@@ -166,20 +166,20 @@
             // 
             this.filePath_lbl.AutoSize = true;
             this.filePath_lbl.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.filePath_lbl.Location = new System.Drawing.Point(205, 707);
-            this.filePath_lbl.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.filePath_lbl.Location = new System.Drawing.Point(130, 572);
+            this.filePath_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.filePath_lbl.Name = "filePath_lbl";
-            this.filePath_lbl.Size = new System.Drawing.Size(0, 28);
+            this.filePath_lbl.Size = new System.Drawing.Size(0, 17);
             this.filePath_lbl.TabIndex = 5;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.Location = new System.Drawing.Point(75, 144);
-            this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label4.Location = new System.Drawing.Point(48, 117);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(690, 28);
+            this.label4.Size = new System.Drawing.Size(365, 17);
             this.label4.TabIndex = 7;
             this.label4.Text = "示例：218、2018年02月13日，CRH380BG-5708+5811：G1294/5/4。";
             // 
@@ -188,20 +188,20 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label5.Location = new System.Drawing.Point(985, 100);
-            this.label5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label5.Location = new System.Drawing.Point(627, 81);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(348, 28);
+            this.label5.Size = new System.Drawing.Size(200, 17);
             this.label5.TabIndex = 8;
             this.label5.Text = "（请注意客调令其他部分中的列车）";
             // 
             // outputTB
             // 
-            this.outputTB.Location = new System.Drawing.Point(33, 56);
-            this.outputTB.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.outputTB.Location = new System.Drawing.Point(21, 45);
+            this.outputTB.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.outputTB.Name = "outputTB";
             this.outputTB.ReadOnly = true;
-            this.outputTB.Size = new System.Drawing.Size(382, 616);
+            this.outputTB.Size = new System.Drawing.Size(245, 499);
             this.outputTB.TabIndex = 9;
             this.outputTB.Text = "";
             // 
@@ -210,10 +210,10 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label6.Location = new System.Drawing.Point(308, 656);
-            this.label6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label6.Location = new System.Drawing.Point(196, 531);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 28);
+            this.label6.Size = new System.Drawing.Size(0, 17);
             this.label6.TabIndex = 8;
             // 
             // hint_label
@@ -221,10 +221,10 @@
             this.hint_label.AutoSize = true;
             this.hint_label.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.hint_label.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.hint_label.Location = new System.Drawing.Point(51, 931);
-            this.hint_label.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.hint_label.Location = new System.Drawing.Point(32, 754);
+            this.hint_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.hint_label.Name = "hint_label";
-            this.hint_label.Size = new System.Drawing.Size(996, 28);
+            this.hint_label.Size = new System.Drawing.Size(570, 17);
             this.hint_label.TabIndex = 10;
             this.hint_label.Text = "绿色为开行，红色为停开，白色为调令未含车次，黄色为次日接入车次。高峰/临客/周末在车次前含有标注";
             // 
@@ -232,10 +232,10 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.Location = new System.Drawing.Point(29, 4);
-            this.label8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label8.Location = new System.Drawing.Point(18, 3);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(323, 36);
+            this.label8.Size = new System.Drawing.Size(186, 22);
             this.label8.TabIndex = 11;
             this.label8.Text = "客调命令中提取出的车次";
             // 
@@ -244,10 +244,10 @@
             this.developerLabel.AutoSize = true;
             this.developerLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.developerLabel.ForeColor = System.Drawing.Color.DarkOrange;
-            this.developerLabel.Location = new System.Drawing.Point(1107, 931);
-            this.developerLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.developerLabel.Location = new System.Drawing.Point(704, 754);
+            this.developerLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.developerLabel.Name = "developerLabel";
-            this.developerLabel.Size = new System.Drawing.Size(399, 28);
+            this.developerLabel.Size = new System.Drawing.Size(229, 17);
             this.developerLabel.TabIndex = 12;
             this.developerLabel.Text = "反馈请联系运转车间-罗思聪（或技术科）";
             // 
@@ -255,20 +255,20 @@
             // 
             this.secondListTitle_lbl.AutoSize = true;
             this.secondListTitle_lbl.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.secondListTitle_lbl.Location = new System.Drawing.Point(425, 4);
-            this.secondListTitle_lbl.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.secondListTitle_lbl.Location = new System.Drawing.Point(270, 3);
+            this.secondListTitle_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.secondListTitle_lbl.Name = "secondListTitle_lbl";
-            this.secondListTitle_lbl.Size = new System.Drawing.Size(127, 36);
+            this.secondListTitle_lbl.Size = new System.Drawing.Size(74, 22);
             this.secondListTitle_lbl.TabIndex = 13;
             this.secondListTitle_lbl.Text = "搜索车次";
             // 
             // searchResult_tb
             // 
-            this.searchResult_tb.Location = new System.Drawing.Point(425, 56);
-            this.searchResult_tb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.searchResult_tb.Location = new System.Drawing.Point(270, 45);
+            this.searchResult_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.searchResult_tb.Name = "searchResult_tb";
             this.searchResult_tb.ReadOnly = true;
-            this.searchResult_tb.Size = new System.Drawing.Size(382, 616);
+            this.searchResult_tb.Size = new System.Drawing.Size(245, 499);
             this.searchResult_tb.TabIndex = 14;
             this.searchResult_tb.Text = "";
             // 
@@ -277,10 +277,10 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label11.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label11.Location = new System.Drawing.Point(1423, 905);
-            this.label11.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label11.Location = new System.Drawing.Point(906, 733);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(0, 28);
+            this.label11.Size = new System.Drawing.Size(0, 17);
             this.label11.TabIndex = 15;
             // 
             // buildLBL
@@ -288,10 +288,10 @@
             this.buildLBL.AutoSize = true;
             this.buildLBL.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.buildLBL.ForeColor = System.Drawing.Color.Tomato;
-            this.buildLBL.Location = new System.Drawing.Point(1542, 931);
-            this.buildLBL.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.buildLBL.Location = new System.Drawing.Point(981, 754);
+            this.buildLBL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.buildLBL.Name = "buildLBL";
-            this.buildLBL.Size = new System.Drawing.Size(96, 28);
+            this.buildLBL.Size = new System.Drawing.Size(56, 17);
             this.buildLBL.TabIndex = 16;
             this.buildLBL.Text = "修订内容";
             // 
@@ -307,11 +307,11 @@
             this.groupBox1.Controls.Add(this.importTimeTable_Btn);
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.secondStepText_lbl);
-            this.groupBox1.Location = new System.Drawing.Point(57, 135);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.groupBox1.Location = new System.Drawing.Point(36, 109);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox1.Size = new System.Drawing.Size(886, 791);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(564, 640);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             // 
@@ -324,12 +324,12 @@
             this.compareDailySchedue_btn.DownBack = null;
             this.compareDailySchedue_btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.compareDailySchedue_btn.ForeColor = System.Drawing.Color.White;
-            this.compareDailySchedue_btn.Location = new System.Drawing.Point(695, 616);
-            this.compareDailySchedue_btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.compareDailySchedue_btn.Location = new System.Drawing.Point(442, 499);
+            this.compareDailySchedue_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.compareDailySchedue_btn.MouseBack = null;
             this.compareDailySchedue_btn.Name = "compareDailySchedue_btn";
             this.compareDailySchedue_btn.NormlBack = null;
-            this.compareDailySchedue_btn.Size = new System.Drawing.Size(174, 72);
+            this.compareDailySchedue_btn.Size = new System.Drawing.Size(111, 58);
             this.compareDailySchedue_btn.TabIndex = 31;
             this.compareDailySchedue_btn.Text = "计划文件对比";
             this.compareDailySchedue_btn.UseVisualStyleBackColor = false;
@@ -338,10 +338,10 @@
             // command_rTb
             // 
             this.command_rTb.ContextMenuStrip = this.contextMenuStrip1;
-            this.command_rTb.Location = new System.Drawing.Point(17, 56);
-            this.command_rTb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.command_rTb.Location = new System.Drawing.Point(11, 45);
+            this.command_rTb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.command_rTb.Name = "command_rTb";
-            this.command_rTb.Size = new System.Drawing.Size(849, 476);
+            this.command_rTb.Size = new System.Drawing.Size(542, 386);
             this.command_rTb.TabIndex = 1;
             this.command_rTb.Text = "";
             this.command_rTb.TextChanged += new System.EventHandler(this.command_rTb_TextChanged);
@@ -353,11 +353,11 @@
             this.EMUorEMUC_groupBox.Controls.Add(this.radioButton5);
             this.EMUorEMUC_groupBox.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EMUorEMUC_groupBox.ForeColor = System.Drawing.Color.DarkOrange;
-            this.EMUorEMUC_groupBox.Location = new System.Drawing.Point(378, 532);
-            this.EMUorEMUC_groupBox.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.EMUorEMUC_groupBox.Location = new System.Drawing.Point(241, 431);
+            this.EMUorEMUC_groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.EMUorEMUC_groupBox.Name = "EMUorEMUC_groupBox";
-            this.EMUorEMUC_groupBox.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.EMUorEMUC_groupBox.Size = new System.Drawing.Size(270, 88);
+            this.EMUorEMUC_groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.EMUorEMUC_groupBox.Size = new System.Drawing.Size(172, 71);
             this.EMUorEMUC_groupBox.TabIndex = 26;
             this.EMUorEMUC_groupBox.TabStop = false;
             this.EMUorEMUC_groupBox.Text = "全图类型";
@@ -366,10 +366,10 @@
             // 
             this.radioButton4.AutoSize = true;
             this.radioButton4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.radioButton4.Location = new System.Drawing.Point(20, 33);
-            this.radioButton4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.radioButton4.Location = new System.Drawing.Point(13, 27);
+            this.radioButton4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(100, 32);
+            this.radioButton4.Size = new System.Drawing.Size(62, 21);
             this.radioButton4.TabIndex = 26;
             this.radioButton4.TabStop = true;
             this.radioButton4.Text = "班计划";
@@ -380,10 +380,10 @@
             // 
             this.radioButton5.AutoSize = true;
             this.radioButton5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.radioButton5.Location = new System.Drawing.Point(145, 33);
-            this.radioButton5.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.radioButton5.Location = new System.Drawing.Point(92, 27);
+            this.radioButton5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(100, 32);
+            this.radioButton5.Size = new System.Drawing.Size(62, 21);
             this.radioButton5.TabIndex = 25;
             this.radioButton5.TabStop = true;
             this.radioButton5.Text = "动检车";
@@ -393,10 +393,10 @@
             // FontSize_tb
             // 
             this.FontSize_tb.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.FontSize_tb.Location = new System.Drawing.Point(761, 628);
-            this.FontSize_tb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.FontSize_tb.Location = new System.Drawing.Point(484, 508);
+            this.FontSize_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.FontSize_tb.Name = "FontSize_tb";
-            this.FontSize_tb.Size = new System.Drawing.Size(43, 47);
+            this.FontSize_tb.Size = new System.Drawing.Size(29, 30);
             this.FontSize_tb.TabIndex = 30;
             this.FontSize_tb.Text = "12";
             this.FontSize_tb.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
@@ -409,10 +409,10 @@
             this.label222.BackColor = System.Drawing.Color.Transparent;
             this.label222.BorderColor = System.Drawing.Color.White;
             this.label222.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label222.Location = new System.Drawing.Point(513, 654);
-            this.label222.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label222.Location = new System.Drawing.Point(326, 529);
+            this.label222.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label222.Name = "label222";
-            this.label222.Size = new System.Drawing.Size(243, 28);
+            this.label222.Size = new System.Drawing.Size(140, 17);
             this.label222.TabIndex = 29;
             this.label222.Text = "（字体大小有误请修改）";
             // 
@@ -422,10 +422,10 @@
             this.label111.BackColor = System.Drawing.Color.Transparent;
             this.label111.BorderColor = System.Drawing.Color.White;
             this.label111.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label111.Location = new System.Drawing.Point(537, 625);
-            this.label111.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label111.Location = new System.Drawing.Point(342, 506);
+            this.label111.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label111.Name = "label111";
-            this.label111.Size = new System.Drawing.Size(201, 28);
+            this.label111.Size = new System.Drawing.Size(116, 17);
             this.label111.TabIndex = 1;
             this.label111.Text = "时刻表车次字体大小";
             // 
@@ -438,12 +438,12 @@
             this.start_Btn.DownBack = null;
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.start_Btn.ForeColor = System.Drawing.Color.White;
-            this.start_Btn.Location = new System.Drawing.Point(18, 693);
-            this.start_Btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.start_Btn.Location = new System.Drawing.Point(11, 561);
+            this.start_Btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.start_Btn.MouseBack = null;
             this.start_Btn.Name = "start_Btn";
             this.start_Btn.NormlBack = null;
-            this.start_Btn.Size = new System.Drawing.Size(853, 75);
+            this.start_Btn.Size = new System.Drawing.Size(543, 61);
             this.start_Btn.TabIndex = 8;
             this.start_Btn.Text = "生成时刻表/班计划";
             this.start_Btn.UseVisualStyleBackColor = false;
@@ -458,12 +458,12 @@
             this.importTimeTable_Btn.DownBack = null;
             this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
-            this.importTimeTable_Btn.Location = new System.Drawing.Point(695, 546);
-            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.importTimeTable_Btn.Location = new System.Drawing.Point(442, 442);
+            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.importTimeTable_Btn.MouseBack = null;
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.NormlBack = null;
-            this.importTimeTable_Btn.Size = new System.Drawing.Size(174, 72);
+            this.importTimeTable_Btn.Size = new System.Drawing.Size(111, 58);
             this.importTimeTable_Btn.TabIndex = 7;
             this.importTimeTable_Btn.Text = "导入全部";
             this.importTimeTable_Btn.UseVisualStyleBackColor = false;
@@ -477,11 +477,11 @@
             this.rightGroupBox.Controls.Add(this.searchResult_tb);
             this.rightGroupBox.Controls.Add(this.label8);
             this.rightGroupBox.Controls.Add(this.secondListTitle_lbl);
-            this.rightGroupBox.Location = new System.Drawing.Point(955, 135);
-            this.rightGroupBox.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.rightGroupBox.Location = new System.Drawing.Point(608, 109);
+            this.rightGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rightGroupBox.Name = "rightGroupBox";
-            this.rightGroupBox.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.rightGroupBox.Size = new System.Drawing.Size(851, 791);
+            this.rightGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rightGroupBox.Size = new System.Drawing.Size(542, 640);
             this.rightGroupBox.TabIndex = 20;
             this.rightGroupBox.TabStop = false;
             // 
@@ -494,12 +494,12 @@
             this.dataAnalyse_btn.DownBack = null;
             this.dataAnalyse_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dataAnalyse_btn.ForeColor = System.Drawing.Color.White;
-            this.dataAnalyse_btn.Location = new System.Drawing.Point(33, 693);
-            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.dataAnalyse_btn.Location = new System.Drawing.Point(21, 561);
+            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataAnalyse_btn.MouseBack = null;
             this.dataAnalyse_btn.Name = "dataAnalyse_btn";
             this.dataAnalyse_btn.NormlBack = null;
-            this.dataAnalyse_btn.Size = new System.Drawing.Size(777, 75);
+            this.dataAnalyse_btn.Size = new System.Drawing.Size(494, 61);
             this.dataAnalyse_btn.TabIndex = 28;
             this.dataAnalyse_btn.Text = "查看统计数据";
             this.dataAnalyse_btn.UseVisualStyleBackColor = false;
@@ -507,10 +507,10 @@
             // 
             // search_tb
             // 
-            this.search_tb.Location = new System.Drawing.Point(570, 4);
-            this.search_tb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.search_tb.Location = new System.Drawing.Point(363, 3);
+            this.search_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.search_tb.Name = "search_tb";
-            this.search_tb.Size = new System.Drawing.Size(241, 37);
+            this.search_tb.Size = new System.Drawing.Size(155, 24);
             this.search_tb.TabIndex = 27;
             this.search_tb.TextChanged += new System.EventHandler(this.search_tb_TextChanged);
             // 
@@ -518,10 +518,10 @@
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.radioButton1.Location = new System.Drawing.Point(28, 30);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.radioButton1.Location = new System.Drawing.Point(18, 24);
+            this.radioButton1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(100, 32);
+            this.radioButton1.Size = new System.Drawing.Size(62, 21);
             this.radioButton1.TabIndex = 22;
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "行车室";
@@ -532,10 +532,10 @@
             // 
             this.radioButton2.AutoSize = true;
             this.radioButton2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.radioButton2.Location = new System.Drawing.Point(152, 30);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.radioButton2.Location = new System.Drawing.Point(97, 24);
+            this.radioButton2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(100, 32);
+            this.radioButton2.Size = new System.Drawing.Size(62, 21);
             this.radioButton2.TabIndex = 23;
             this.radioButton2.TabStop = true;
             this.radioButton2.Text = "综控室";
@@ -550,11 +550,11 @@
             this.groupBox4.Controls.Add(this.radioButton1);
             this.groupBox4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox4.ForeColor = System.Drawing.Color.DarkOrange;
-            this.groupBox4.Location = new System.Drawing.Point(1386, 61);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.groupBox4.Location = new System.Drawing.Point(882, 49);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox4.Size = new System.Drawing.Size(422, 70);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Size = new System.Drawing.Size(269, 57);
             this.groupBox4.TabIndex = 25;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "应用范围";
@@ -563,10 +563,10 @@
             // 
             this.radioButton3.AutoSize = true;
             this.radioButton3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.radioButton3.Location = new System.Drawing.Point(277, 30);
-            this.radioButton3.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.radioButton3.Location = new System.Drawing.Point(176, 24);
+            this.radioButton3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(100, 32);
+            this.radioButton3.Size = new System.Drawing.Size(62, 21);
             this.radioButton3.TabIndex = 24;
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "动车所";
@@ -578,10 +578,10 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.ForeColor = System.Drawing.Color.Tomato;
-            this.label2.Location = new System.Drawing.Point(1485, 961);
-            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label2.Location = new System.Drawing.Point(945, 778);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(306, 28);
+            this.label2.Size = new System.Drawing.Size(176, 17);
             this.label2.TabIndex = 27;
             this.label2.Text = "鼠标移动至版本号查看更新内容";
             // 
@@ -593,11 +593,11 @@
             this.rightGroupBox_Compare.Controls.Add(this.compare_btn);
             this.rightGroupBox_Compare.Controls.Add(this.label7);
             this.rightGroupBox_Compare.Controls.Add(this.yesterdayCommand_rtb);
-            this.rightGroupBox_Compare.Location = new System.Drawing.Point(955, 135);
-            this.rightGroupBox_Compare.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.rightGroupBox_Compare.Location = new System.Drawing.Point(608, 109);
+            this.rightGroupBox_Compare.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.rightGroupBox_Compare.Name = "rightGroupBox_Compare";
-            this.rightGroupBox_Compare.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-            this.rightGroupBox_Compare.Size = new System.Drawing.Size(873, 791);
+            this.rightGroupBox_Compare.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.rightGroupBox_Compare.Size = new System.Drawing.Size(556, 640);
             this.rightGroupBox_Compare.TabIndex = 28;
             this.rightGroupBox_Compare.TabStop = false;
             // 
@@ -606,21 +606,21 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label10.ForeColor = System.Drawing.Color.Tomato;
-            this.label10.Location = new System.Drawing.Point(337, 355);
-            this.label10.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label10.Location = new System.Drawing.Point(214, 287);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(285, 28);
+            this.label10.Size = new System.Drawing.Size(164, 17);
             this.label10.TabIndex = 29;
             this.label10.Text = "上方对比内容应为前一日客调";
             // 
             // comparedResult_rtb
             // 
             this.comparedResult_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.comparedResult_rtb.Location = new System.Drawing.Point(22, 396);
-            this.comparedResult_rtb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.comparedResult_rtb.Location = new System.Drawing.Point(14, 321);
+            this.comparedResult_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comparedResult_rtb.Name = "comparedResult_rtb";
             this.comparedResult_rtb.ReadOnly = true;
-            this.comparedResult_rtb.Size = new System.Drawing.Size(807, 268);
+            this.comparedResult_rtb.Size = new System.Drawing.Size(515, 218);
             this.comparedResult_rtb.TabIndex = 33;
             this.comparedResult_rtb.Text = "";
             // 
@@ -628,10 +628,10 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.Location = new System.Drawing.Point(15, 348);
-            this.label9.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label9.Location = new System.Drawing.Point(10, 282);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(267, 36);
+            this.label9.Size = new System.Drawing.Size(154, 22);
             this.label9.TabIndex = 32;
             this.label9.Text = "对比结果（可复制）";
             // 
@@ -644,12 +644,12 @@
             this.compare_btn.DownBack = null;
             this.compare_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.compare_btn.ForeColor = System.Drawing.Color.White;
-            this.compare_btn.Location = new System.Drawing.Point(22, 693);
-            this.compare_btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.compare_btn.Location = new System.Drawing.Point(14, 561);
+            this.compare_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.compare_btn.MouseBack = null;
             this.compare_btn.Name = "compare_btn";
             this.compare_btn.NormlBack = null;
-            this.compare_btn.Size = new System.Drawing.Size(807, 75);
+            this.compare_btn.Size = new System.Drawing.Size(514, 61);
             this.compare_btn.TabIndex = 31;
             this.compare_btn.Text = "（选择文件后）对比两日客调";
             this.compare_btn.UseVisualStyleBackColor = false;
@@ -659,20 +659,20 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label7.Location = new System.Drawing.Point(15, 0);
-            this.label7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label7.Location = new System.Drawing.Point(10, 0);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(463, 36);
+            this.label7.Size = new System.Drawing.Size(266, 22);
             this.label7.TabIndex = 29;
             this.label7.Text = "（复制对比命令）对比客调粘贴位置";
             // 
             // yesterdayCommand_rtb
             // 
             this.yesterdayCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.yesterdayCommand_rtb.Location = new System.Drawing.Point(22, 56);
-            this.yesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.yesterdayCommand_rtb.Location = new System.Drawing.Point(14, 45);
+            this.yesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.yesterdayCommand_rtb.Name = "yesterdayCommand_rtb";
-            this.yesterdayCommand_rtb.Size = new System.Drawing.Size(807, 284);
+            this.yesterdayCommand_rtb.Size = new System.Drawing.Size(515, 231);
             this.yesterdayCommand_rtb.TabIndex = 31;
             this.yesterdayCommand_rtb.Text = "";
             this.yesterdayCommand_rtb.TextChanged += new System.EventHandler(this.yesterdayCommand_rtb_TextChanged);
@@ -689,11 +689,11 @@
             this.rightGroupBox_EMUGarage.Controls.Add(this.label20);
             this.rightGroupBox_EMUGarage.Controls.Add(this.label21);
             this.rightGroupBox_EMUGarage.Controls.Add(this.EMUGarage_YesterdayCommand_rtb);
-            this.rightGroupBox_EMUGarage.Location = new System.Drawing.Point(975, 131);
-            this.rightGroupBox_EMUGarage.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.rightGroupBox_EMUGarage.Location = new System.Drawing.Point(620, 106);
+            this.rightGroupBox_EMUGarage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.rightGroupBox_EMUGarage.Name = "rightGroupBox_EMUGarage";
-            this.rightGroupBox_EMUGarage.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-            this.rightGroupBox_EMUGarage.Size = new System.Drawing.Size(851, 791);
+            this.rightGroupBox_EMUGarage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.rightGroupBox_EMUGarage.Size = new System.Drawing.Size(542, 640);
             this.rightGroupBox_EMUGarage.TabIndex = 37;
             this.rightGroupBox_EMUGarage.TabStop = false;
             // 
@@ -702,10 +702,10 @@
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label17.ForeColor = System.Drawing.Color.Red;
-            this.label17.Location = new System.Drawing.Point(15, 334);
-            this.label17.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label17.Location = new System.Drawing.Point(10, 270);
+            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(674, 36);
+            this.label17.Size = new System.Drawing.Size(385, 22);
             this.label17.TabIndex = 38;
             this.label17.Text = "夜班计划文件中空股道列表(存场不过夜股道，共72G)";
             // 
@@ -713,11 +713,11 @@
             // 
             this.emptyTrackList_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.emptyTrackList_rtb.Cursor = System.Windows.Forms.Cursors.Default;
-            this.emptyTrackList_rtb.Location = new System.Drawing.Point(18, 392);
-            this.emptyTrackList_rtb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.emptyTrackList_rtb.Location = new System.Drawing.Point(11, 317);
+            this.emptyTrackList_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.emptyTrackList_rtb.Name = "emptyTrackList_rtb";
             this.emptyTrackList_rtb.ReadOnly = true;
-            this.emptyTrackList_rtb.Size = new System.Drawing.Size(807, 144);
+            this.emptyTrackList_rtb.Size = new System.Drawing.Size(515, 117);
             this.emptyTrackList_rtb.TabIndex = 37;
             this.emptyTrackList_rtb.Text = "";
             // 
@@ -730,12 +730,12 @@
             this.matchTrackWithTrain_Project_btn.DownBack = null;
             this.matchTrackWithTrain_Project_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.matchTrackWithTrain_Project_btn.ForeColor = System.Drawing.Color.White;
-            this.matchTrackWithTrain_Project_btn.Location = new System.Drawing.Point(22, 696);
-            this.matchTrackWithTrain_Project_btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.matchTrackWithTrain_Project_btn.Location = new System.Drawing.Point(14, 563);
+            this.matchTrackWithTrain_Project_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.matchTrackWithTrain_Project_btn.MouseBack = null;
             this.matchTrackWithTrain_Project_btn.Name = "matchTrackWithTrain_Project_btn";
             this.matchTrackWithTrain_Project_btn.NormlBack = null;
-            this.matchTrackWithTrain_Project_btn.Size = new System.Drawing.Size(807, 75);
+            this.matchTrackWithTrain_Project_btn.Size = new System.Drawing.Size(514, 61);
             this.matchTrackWithTrain_Project_btn.TabIndex = 31;
             this.matchTrackWithTrain_Project_btn.Text = "（新）整理调车计划";
             this.matchTrackWithTrain_Project_btn.UseVisualStyleBackColor = false;
@@ -745,10 +745,10 @@
             // 
             this.trainPorjectFilePath_lbl.AutoSize = true;
             this.trainPorjectFilePath_lbl.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.trainPorjectFilePath_lbl.Location = new System.Drawing.Point(29, 640);
-            this.trainPorjectFilePath_lbl.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.trainPorjectFilePath_lbl.Location = new System.Drawing.Point(18, 518);
+            this.trainPorjectFilePath_lbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.trainPorjectFilePath_lbl.Name = "trainPorjectFilePath_lbl";
-            this.trainPorjectFilePath_lbl.Size = new System.Drawing.Size(96, 28);
+            this.trainPorjectFilePath_lbl.Size = new System.Drawing.Size(56, 17);
             this.trainPorjectFilePath_lbl.TabIndex = 35;
             this.trainPorjectFilePath_lbl.Text = "已选择：";
             // 
@@ -761,12 +761,12 @@
             this.importTrainProjectFile_btn.DownBack = null;
             this.importTrainProjectFile_btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.importTrainProjectFile_btn.ForeColor = System.Drawing.Color.White;
-            this.importTrainProjectFile_btn.Location = new System.Drawing.Point(655, 546);
-            this.importTrainProjectFile_btn.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.importTrainProjectFile_btn.Location = new System.Drawing.Point(417, 442);
+            this.importTrainProjectFile_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.importTrainProjectFile_btn.MouseBack = null;
             this.importTrainProjectFile_btn.Name = "importTrainProjectFile_btn";
             this.importTrainProjectFile_btn.NormlBack = null;
-            this.importTrainProjectFile_btn.Size = new System.Drawing.Size(174, 72);
+            this.importTrainProjectFile_btn.Size = new System.Drawing.Size(111, 58);
             this.importTrainProjectFile_btn.TabIndex = 36;
             this.importTrainProjectFile_btn.Text = "导入";
             this.importTrainProjectFile_btn.UseVisualStyleBackColor = false;
@@ -776,10 +776,10 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label18.Location = new System.Drawing.Point(24, 560);
-            this.label18.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label18.Location = new System.Drawing.Point(15, 453);
+            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(127, 36);
+            this.label18.Size = new System.Drawing.Size(74, 22);
             this.label18.TabIndex = 35;
             this.label18.Text = "动车所：";
             // 
@@ -788,20 +788,20 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.Tomato;
-            this.label19.Location = new System.Drawing.Point(337, 355);
-            this.label19.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label19.Location = new System.Drawing.Point(214, 287);
+            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(0, 28);
+            this.label19.Size = new System.Drawing.Size(0, 17);
             this.label19.TabIndex = 29;
             // 
             // label20
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label20.Location = new System.Drawing.Point(15, 348);
-            this.label20.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label20.Location = new System.Drawing.Point(10, 282);
+            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(0, 36);
+            this.label20.Size = new System.Drawing.Size(0, 22);
             this.label20.TabIndex = 32;
             // 
             // label21
@@ -809,32 +809,32 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.Red;
-            this.label21.Location = new System.Drawing.Point(15, 0);
-            this.label21.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.label21.Location = new System.Drawing.Point(10, 0);
+            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(772, 36);
+            this.label21.Size = new System.Drawing.Size(448, 22);
             this.label21.TabIndex = 29;
             this.label21.Text = "复制昨日命令至此（△现在可以自动区分当日/次日进行填表）";
             // 
             // EMUGarage_YesterdayCommand_rtb
             // 
             this.EMUGarage_YesterdayCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
-            this.EMUGarage_YesterdayCommand_rtb.Location = new System.Drawing.Point(22, 56);
-            this.EMUGarage_YesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.EMUGarage_YesterdayCommand_rtb.Location = new System.Drawing.Point(14, 45);
+            this.EMUGarage_YesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.EMUGarage_YesterdayCommand_rtb.Name = "EMUGarage_YesterdayCommand_rtb";
-            this.EMUGarage_YesterdayCommand_rtb.Size = new System.Drawing.Size(807, 256);
+            this.EMUGarage_YesterdayCommand_rtb.Size = new System.Drawing.Size(515, 208);
             this.EMUGarage_YesterdayCommand_rtb.TabIndex = 31;
             this.EMUGarage_YesterdayCommand_rtb.Text = "";
             this.EMUGarage_YesterdayCommand_rtb.TextChanged += new System.EventHandler(this.EMUGarage_YesterdayCommand_rtb_TextChanged);
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CaptionBackColorBottom = System.Drawing.Color.White;
             this.CaptionBackColorTop = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1896, 1034);
+            this.ClientSize = new System.Drawing.Size(1214, 824);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.label5);
@@ -852,7 +852,7 @@
             this.Controls.Add(this.rightGroupBox_Compare);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Main";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Main_Load);
