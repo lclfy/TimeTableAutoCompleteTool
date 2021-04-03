@@ -325,7 +325,7 @@ namespace TimeTableAutoCompleteTool
         //创建统计word文档
         private void createStaticDoc(string staticText, string continueTrainText)
         {
-
+            
             if (staticText.Length == 0 && continueTrainText.Length == 0)
             {
                 return;

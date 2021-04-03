@@ -198,7 +198,7 @@
             // outputTB
             // 
             this.outputTB.Location = new System.Drawing.Point(21, 45);
-            this.outputTB.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.outputTB.Margin = new System.Windows.Forms.Padding(4);
             this.outputTB.Name = "outputTB";
             this.outputTB.ReadOnly = true;
             this.outputTB.Size = new System.Drawing.Size(245, 499);
@@ -265,7 +265,7 @@
             // searchResult_tb
             // 
             this.searchResult_tb.Location = new System.Drawing.Point(270, 45);
-            this.searchResult_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.searchResult_tb.Margin = new System.Windows.Forms.Padding(4);
             this.searchResult_tb.Name = "searchResult_tb";
             this.searchResult_tb.ReadOnly = true;
             this.searchResult_tb.Size = new System.Drawing.Size(245, 499);
@@ -308,9 +308,9 @@
             this.groupBox1.Controls.Add(this.filePathLBL);
             this.groupBox1.Controls.Add(this.secondStepText_lbl);
             this.groupBox1.Location = new System.Drawing.Point(36, 109);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(564, 640);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
@@ -325,7 +325,7 @@
             this.compareDailySchedue_btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.compareDailySchedue_btn.ForeColor = System.Drawing.Color.White;
             this.compareDailySchedue_btn.Location = new System.Drawing.Point(442, 499);
-            this.compareDailySchedue_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.compareDailySchedue_btn.Margin = new System.Windows.Forms.Padding(4);
             this.compareDailySchedue_btn.MouseBack = null;
             this.compareDailySchedue_btn.Name = "compareDailySchedue_btn";
             this.compareDailySchedue_btn.NormlBack = null;
@@ -339,7 +339,7 @@
             // 
             this.command_rTb.ContextMenuStrip = this.contextMenuStrip1;
             this.command_rTb.Location = new System.Drawing.Point(11, 45);
-            this.command_rTb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.command_rTb.Margin = new System.Windows.Forms.Padding(4);
             this.command_rTb.Name = "command_rTb";
             this.command_rTb.Size = new System.Drawing.Size(542, 386);
             this.command_rTb.TabIndex = 1;
@@ -354,9 +354,9 @@
             this.EMUorEMUC_groupBox.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.EMUorEMUC_groupBox.ForeColor = System.Drawing.Color.DarkOrange;
             this.EMUorEMUC_groupBox.Location = new System.Drawing.Point(241, 431);
-            this.EMUorEMUC_groupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.EMUorEMUC_groupBox.Margin = new System.Windows.Forms.Padding(4);
             this.EMUorEMUC_groupBox.Name = "EMUorEMUC_groupBox";
-            this.EMUorEMUC_groupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.EMUorEMUC_groupBox.Padding = new System.Windows.Forms.Padding(4);
             this.EMUorEMUC_groupBox.Size = new System.Drawing.Size(172, 71);
             this.EMUorEMUC_groupBox.TabIndex = 26;
             this.EMUorEMUC_groupBox.TabStop = false;
@@ -367,7 +367,7 @@
             this.radioButton4.AutoSize = true;
             this.radioButton4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.radioButton4.Location = new System.Drawing.Point(13, 27);
-            this.radioButton4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButton4.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(62, 21);
             this.radioButton4.TabIndex = 26;
@@ -381,7 +381,7 @@
             this.radioButton5.AutoSize = true;
             this.radioButton5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.radioButton5.Location = new System.Drawing.Point(92, 27);
-            this.radioButton5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButton5.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton5.Name = "radioButton5";
             this.radioButton5.Size = new System.Drawing.Size(62, 21);
             this.radioButton5.TabIndex = 25;
@@ -394,7 +394,7 @@
             // 
             this.FontSize_tb.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FontSize_tb.Location = new System.Drawing.Point(484, 508);
-            this.FontSize_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FontSize_tb.Margin = new System.Windows.Forms.Padding(4);
             this.FontSize_tb.Name = "FontSize_tb";
             this.FontSize_tb.Size = new System.Drawing.Size(29, 30);
             this.FontSize_tb.TabIndex = 30;
@@ -439,7 +439,7 @@
             this.start_Btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.start_Btn.ForeColor = System.Drawing.Color.White;
             this.start_Btn.Location = new System.Drawing.Point(11, 561);
-            this.start_Btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.start_Btn.Margin = new System.Windows.Forms.Padding(4);
             this.start_Btn.MouseBack = null;
             this.start_Btn.Name = "start_Btn";
             this.start_Btn.NormlBack = null;
@@ -459,7 +459,7 @@
             this.importTimeTable_Btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.importTimeTable_Btn.ForeColor = System.Drawing.Color.White;
             this.importTimeTable_Btn.Location = new System.Drawing.Point(442, 442);
-            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.importTimeTable_Btn.Margin = new System.Windows.Forms.Padding(4);
             this.importTimeTable_Btn.MouseBack = null;
             this.importTimeTable_Btn.Name = "importTimeTable_Btn";
             this.importTimeTable_Btn.NormlBack = null;
@@ -478,9 +478,9 @@
             this.rightGroupBox.Controls.Add(this.label8);
             this.rightGroupBox.Controls.Add(this.secondListTitle_lbl);
             this.rightGroupBox.Location = new System.Drawing.Point(608, 109);
-            this.rightGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rightGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.rightGroupBox.Name = "rightGroupBox";
-            this.rightGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rightGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.rightGroupBox.Size = new System.Drawing.Size(542, 640);
             this.rightGroupBox.TabIndex = 20;
             this.rightGroupBox.TabStop = false;
@@ -495,7 +495,7 @@
             this.dataAnalyse_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dataAnalyse_btn.ForeColor = System.Drawing.Color.White;
             this.dataAnalyse_btn.Location = new System.Drawing.Point(21, 561);
-            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataAnalyse_btn.Margin = new System.Windows.Forms.Padding(4);
             this.dataAnalyse_btn.MouseBack = null;
             this.dataAnalyse_btn.Name = "dataAnalyse_btn";
             this.dataAnalyse_btn.NormlBack = null;
@@ -508,7 +508,7 @@
             // search_tb
             // 
             this.search_tb.Location = new System.Drawing.Point(363, 3);
-            this.search_tb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.search_tb.Margin = new System.Windows.Forms.Padding(4);
             this.search_tb.Name = "search_tb";
             this.search_tb.Size = new System.Drawing.Size(155, 24);
             this.search_tb.TabIndex = 27;
@@ -519,7 +519,7 @@
             this.radioButton1.AutoSize = true;
             this.radioButton1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.radioButton1.Location = new System.Drawing.Point(18, 24);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButton1.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(62, 21);
             this.radioButton1.TabIndex = 22;
@@ -533,7 +533,7 @@
             this.radioButton2.AutoSize = true;
             this.radioButton2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.radioButton2.Location = new System.Drawing.Point(97, 24);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButton2.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(62, 21);
             this.radioButton2.TabIndex = 23;
@@ -551,9 +551,9 @@
             this.groupBox4.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox4.ForeColor = System.Drawing.Color.DarkOrange;
             this.groupBox4.Location = new System.Drawing.Point(882, 49);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox4.Size = new System.Drawing.Size(269, 57);
             this.groupBox4.TabIndex = 25;
             this.groupBox4.TabStop = false;
@@ -564,7 +564,7 @@
             this.radioButton3.AutoSize = true;
             this.radioButton3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.radioButton3.Location = new System.Drawing.Point(176, 24);
-            this.radioButton3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioButton3.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(62, 21);
             this.radioButton3.TabIndex = 24;
@@ -617,7 +617,7 @@
             // 
             this.comparedResult_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.comparedResult_rtb.Location = new System.Drawing.Point(14, 321);
-            this.comparedResult_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comparedResult_rtb.Margin = new System.Windows.Forms.Padding(4);
             this.comparedResult_rtb.Name = "comparedResult_rtb";
             this.comparedResult_rtb.ReadOnly = true;
             this.comparedResult_rtb.Size = new System.Drawing.Size(515, 218);
@@ -645,7 +645,7 @@
             this.compare_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.compare_btn.ForeColor = System.Drawing.Color.White;
             this.compare_btn.Location = new System.Drawing.Point(14, 561);
-            this.compare_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.compare_btn.Margin = new System.Windows.Forms.Padding(4);
             this.compare_btn.MouseBack = null;
             this.compare_btn.Name = "compare_btn";
             this.compare_btn.NormlBack = null;
@@ -670,7 +670,7 @@
             // 
             this.yesterdayCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.yesterdayCommand_rtb.Location = new System.Drawing.Point(14, 45);
-            this.yesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.yesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4);
             this.yesterdayCommand_rtb.Name = "yesterdayCommand_rtb";
             this.yesterdayCommand_rtb.Size = new System.Drawing.Size(515, 231);
             this.yesterdayCommand_rtb.TabIndex = 31;
@@ -714,7 +714,7 @@
             this.emptyTrackList_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.emptyTrackList_rtb.Cursor = System.Windows.Forms.Cursors.Default;
             this.emptyTrackList_rtb.Location = new System.Drawing.Point(11, 317);
-            this.emptyTrackList_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.emptyTrackList_rtb.Margin = new System.Windows.Forms.Padding(4);
             this.emptyTrackList_rtb.Name = "emptyTrackList_rtb";
             this.emptyTrackList_rtb.ReadOnly = true;
             this.emptyTrackList_rtb.Size = new System.Drawing.Size(515, 117);
@@ -731,7 +731,7 @@
             this.matchTrackWithTrain_Project_btn.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.matchTrackWithTrain_Project_btn.ForeColor = System.Drawing.Color.White;
             this.matchTrackWithTrain_Project_btn.Location = new System.Drawing.Point(14, 563);
-            this.matchTrackWithTrain_Project_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.matchTrackWithTrain_Project_btn.Margin = new System.Windows.Forms.Padding(4);
             this.matchTrackWithTrain_Project_btn.MouseBack = null;
             this.matchTrackWithTrain_Project_btn.Name = "matchTrackWithTrain_Project_btn";
             this.matchTrackWithTrain_Project_btn.NormlBack = null;
@@ -762,7 +762,7 @@
             this.importTrainProjectFile_btn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.importTrainProjectFile_btn.ForeColor = System.Drawing.Color.White;
             this.importTrainProjectFile_btn.Location = new System.Drawing.Point(417, 442);
-            this.importTrainProjectFile_btn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.importTrainProjectFile_btn.Margin = new System.Windows.Forms.Padding(4);
             this.importTrainProjectFile_btn.MouseBack = null;
             this.importTrainProjectFile_btn.Name = "importTrainProjectFile_btn";
             this.importTrainProjectFile_btn.NormlBack = null;
@@ -820,7 +820,7 @@
             // 
             this.EMUGarage_YesterdayCommand_rtb.ContextMenuStrip = this.contextMenuStrip1;
             this.EMUGarage_YesterdayCommand_rtb.Location = new System.Drawing.Point(14, 45);
-            this.EMUGarage_YesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.EMUGarage_YesterdayCommand_rtb.Margin = new System.Windows.Forms.Padding(4);
             this.EMUGarage_YesterdayCommand_rtb.Name = "EMUGarage_YesterdayCommand_rtb";
             this.EMUGarage_YesterdayCommand_rtb.Size = new System.Drawing.Size(515, 208);
             this.EMUGarage_YesterdayCommand_rtb.TabIndex = 31;
@@ -852,7 +852,7 @@
             this.Controls.Add(this.rightGroupBox_Compare);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Main_Load);
