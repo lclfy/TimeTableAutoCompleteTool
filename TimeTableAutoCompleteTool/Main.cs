@@ -6458,7 +6458,7 @@ namespace TimeTableAutoCompleteTool
                                                             || targetTrackNum.Trim().Equals("JC5G")
                                                             || targetTrackNum.Trim().Equals("JC6G"))
                                                         {//二场并且<44道
-                                                            row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                            //row.GetCell(j).CellStyle = stoppedTrainStyle;
                                                         }
 
 
@@ -6512,7 +6512,7 @@ namespace TimeTableAutoCompleteTool
                                                                             }
                                                                             if((_emugtm.trackLine ==1 || _emugtm.trackLine == 2) && trackNumInt >= 58)
                                                                             {//58G及以上不能向动一动二开车
-                                                                            row.GetCell(secondTrackNumColumn).CellStyle = stoppedTrainStyle;
+                                                                            //row.GetCell(secondTrackNumColumn).CellStyle = stoppedTrainStyle;
                                                                         }
                                                                         }
                                                                         break;
@@ -6744,7 +6744,7 @@ namespace TimeTableAutoCompleteTool
                                                             || targetTrackNum.Trim().Equals("JC5G")
                                                             || targetTrackNum.Trim().Equals("JC6G"))
                                                         {//二场并且<44道
-                                                            row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                            //row.GetCell(j).CellStyle = stoppedTrainStyle;
                                                         }
                                                         if (j < firstTrackNumColumn)
                                                         {
