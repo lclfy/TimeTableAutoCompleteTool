@@ -78,11 +78,11 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 72 - v20210403";
-        string readMe = "build72更新内容:\n" +
-            " 1、修复因客调命令格式修改导致的问题\n" +
-            "2、综控室增加对比文件展示\n" +
-            "3、动车所修复查错bug";
+        string build = "build 73 - v20210701";
+        string readMe = "build73更新内容:\n" +
+            " 1、新增车型400AF-Z/400AF-BZ\n" +
+            "2、动车所停开划掉\n" +
+            "3、行车室修复0D问题";
 
         public Main()
         {
@@ -1218,6 +1218,7 @@ namespace TimeTableAutoCompleteTool
             int trainConnectType = -1;
             string trainId = "";
             List<CommandModel> AllModels = new List<CommandModel>();
+            //20210625-增加400AF-Z
             if (!trainModel.Equals("null"))
             {//0短编 1长编 2重联
                 if (trainModel.Contains("L") ||
@@ -1235,8 +1236,13 @@ namespace TimeTableAutoCompleteTool
                 }
                 else if(trainModel.Contains("AF-B")||
                     trainModel.Contains("BF-B"))
-                {//新增的 17节
+                {//新增的 17节(AF-BZ BF-BZ)
                     trainConnectType = 3;
+                }
+                else if (trainModel.Contains("AF-Z") ||
+                    trainModel.Contains("BF-Z"))
+                {
+                    int test = 0;
                 }
                 else
                 {
@@ -1289,13 +1295,21 @@ namespace TimeTableAutoCompleteTool
             }
             if (!trainModel.Contains("+"))
             {
-                if(trainModel.Contains("-A"))
+                if (trainModel.Contains("-A"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-A";
                 }
-                else if (trainModel.Contains("-B"))
+                else if (trainModel.Contains("-B") && !trainModel.Contains("-BZ"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-B";
+                }
+                else if (trainModel.Contains("-BZ"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BZ";
+                }
+                else if (trainModel.Contains("-Z"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-Z";
                 }
                 else
                 {
@@ -1311,6 +1325,10 @@ namespace TimeTableAutoCompleteTool
                 else if (trainModel.Contains("-B"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-B+";
+                }
+                else if (trainModel.Contains("-Z"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-Z+";
                 }
                 else
                 {
@@ -5853,6 +5871,9 @@ namespace TimeTableAutoCompleteTool
                 //动车所股道所在列
                 int firstTrackNumColumn = -1;
                 int secondTrackNumColumn = -1;
+                //动车所车型车号列
+                int firstTrainIDColumn = -1;
+                int secondTrainIDColumn = -1;
                 string fileName = ExcelFile[0];
                 /*
                 try
@@ -5943,20 +5964,23 @@ namespace TimeTableAutoCompleteTool
 
                     //表格样式
                     ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
-                    stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                    stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
                     stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
-                    stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                    stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
                     stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
                     stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
                     stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
                     stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
                     stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
                     stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-                    HSSFFont font = (HSSFFont)workbook.CreateFont();
-                    font.FontName = "宋体";//字体  
-                    font.FontHeightInPoints = 17;//字号  
-                    font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
-                    stoppedTrainStyle.SetFont(font);
+                HSSFFont font = (HSSFFont)workbook.CreateFont();
+                font.FontName = "宋体";//字体  
+                font.IsStrikeout = true;
+                font.IsBold = true;
+                font.IsItalic = true;
+                font.FontHeightInPoints =17;//字号  
+                stoppedTrainStyle.SetFont(font);
+                stoppedTrainStyle.SetFont(font);
 
                     //表格样式
                     ICellStyle yesterdayNumberStyle = workbook.CreateCellStyle();
@@ -6000,20 +6024,37 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         if (row.GetCell(b).ToString().Contains("动车所"))
                                         {
-                                            if (firstTrackNumColumn == -1)
-                                            {
-                                                firstTrackNumColumn = b;
-                                            }
-                                            else
-                                            {
-                                                secondTrackNumColumn = b;
-                                            }
-                                            if (firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
+                                        if (firstTrackNumColumn == -1)
+                                        {
+                                            firstTrackNumColumn = b;
+                                        }
+                                        else
+                                        {
+                                            secondTrackNumColumn = b;
+                                        }
+
+                                        if (firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
                                             {
                                                 break;
                                             }
                                         }
+                                    if (row.GetCell(b).ToString().Contains("车型"))
+                                    {
+                                        if (firstTrainIDColumn == -1)
+                                        {
+                                            firstTrainIDColumn = b;
+                                        }
+                                        else
+                                        {
+                                            secondTrainIDColumn = b;
+                                        }
+
+                                        if (firstTrainIDColumn != -1 && secondTrainIDColumn != -1)
+                                        {
+                                            break;
+                                        }
                                     }
+                                }
                                 }
                             if (i == 0&& row.GetCell(0).ToString().Contains("-") && row.GetCell(0).ToString().Contains("动车所"))
                             {
@@ -6104,6 +6145,10 @@ namespace TimeTableAutoCompleteTool
                                             }
                                             for (int line = j + 1; line <= row.LastCellNum; line++)
                                             {
+                                            if(row.GetCell(line) == null)
+                                            {
+                                                row.CreateCell(line);
+                                            }
                                                 if ((row.GetCell(line).ToString().Contains("G") ||
                                                     row.GetCell(line).ToString().Contains("D") ||
                                                         row.GetCell(line).ToString().Contains("C") ||
@@ -6166,8 +6211,14 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     break;
                                                 }
-                                                if ((row.GetCell(j + 2) == null && row.GetCell(j + 3) == null) ||
-                                                (row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
+                                                if((row.GetCell(j + 2) == null)){
+                                                row.CreateCell(j + 2);
+                                            }
+                                            if ((row.GetCell(j + 3) == null))
+                                            {
+                                                row.CreateCell(j + 3);
+                                            }
+                                            if ((row.GetCell(j + 2).ToString().Length == 0 && row.GetCell(j + 3).ToString().Length == 0))
                                                 {
                                                     //说明是和别人共用一格 但是在下面（目标单元格被挡住了）所以往上挪一行填
                                                     row = sheet.GetRow(i - 1);
@@ -6211,6 +6262,7 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         row = sheet.GetRow(i);
                                         row.GetCell(j + 1).SetCellValue("");
+                                    int aaa = 0;
                                         row.GetCell(j).CellStyle = normalNumberStyle;
                                         //把股道所在列和备注列清空一下
                                         int rowi = i;
@@ -6264,9 +6316,10 @@ namespace TimeTableAutoCompleteTool
                                                             row.CreateCell(j + 1);
                                                         }
                                                     }
-                                                    if (model.streamStatus == 0)
+                                                    if (model.streamStatus == 0 || model.streamStatus == 4)
                                                     {
-                                                        row.GetCell(j + 1).SetCellValue("停开");
+                                                    row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                    row.GetCell(j + 1).SetCellValue("停开");
                                                     }
                                                     else
                                                     {
@@ -6508,7 +6561,7 @@ namespace TimeTableAutoCompleteTool
                                                                                 (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
                                                                                 (_emugtm.trackLine == 4 && trackNumInt <= 33))
                                                                             {//动存线-走行线匹配判断
-                                                                                row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                                //row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
                                                                             }
                                                                             if((_emugtm.trackLine ==1 || _emugtm.trackLine == 2) && trackNumInt >= 58)
                                                                             {//58G及以上不能向动一动二开车
@@ -6552,9 +6605,10 @@ namespace TimeTableAutoCompleteTool
                                                             row.CreateCell(j + 1);
                                                         }
                                                     }
-                                                    if (model.streamStatus == 0)
+                                                    if (model.streamStatus == 0 || model.streamStatus == 4)
                                                     {
-                                                        row.GetCell(j + 1).SetCellValue("停开");
+                                                    row.GetCell(j).CellStyle = stoppedTrainStyle;
+                                                    row.GetCell(j + 1).SetCellValue("停开");
                                                     }
                                                     else
                                                     {
@@ -6822,6 +6876,44 @@ namespace TimeTableAutoCompleteTool
                             }
                         }
                     }
+                    //动车所停开标注为停开
+                    for(int check = 0; check <= sheet.LastRowNum; check++)
+                {
+                    IRow checkRow = sheet.GetRow(check);
+                    if(checkRow == null)
+                    {
+                        continue;
+                    }
+                    ICell firstTrainNumCell = checkRow.GetCell(firstTrainIDColumn - 1);
+                    ICell firstTrainIDCell = checkRow.GetCell(firstTrainIDColumn);
+                    if(firstTrainNumCell == null)
+                    {
+
+                    }
+                    else if(firstTrainNumCell.ToString().Trim().Length != 0)
+                    {
+                        //停开车标停开
+                        if(firstTrainIDCell == null || firstTrainIDCell.ToString().Trim().Length == 0 || firstTrainIDCell.ToString().Trim().Contains("停"))
+                        {
+                            firstTrainNumCell.CellStyle = stoppedTrainStyle;
+                        }
+                    }
+                    ICell secondTrainNumCell = checkRow.GetCell(secondTrainIDColumn - 1);
+                    ICell secondTrainIDCell = checkRow.GetCell(secondTrainIDColumn);
+                    if(secondTrainNumCell == null)
+                    {
+
+                    }
+                    else if (secondTrainNumCell.ToString().Trim().Length != 0)
+                    {
+                        //停开车标停开
+                        if (secondTrainIDCell == null || secondTrainIDCell.ToString().Trim().Length == 0 || secondTrainIDCell.ToString().Trim().Contains("停"))
+                        {
+                            secondTrainNumCell.CellStyle = stoppedTrainStyle;
+                        }
+                    }
+
+                }
                     if (failedLoadingTrain.Length != 0)
                     {
                         MessageBox.Show("请人工检查以下车次是否未填写（在昨天的客调令中已标红）：\n" + failedLoadingTrain, "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -7262,26 +7354,79 @@ namespace TimeTableAutoCompleteTool
                                             string trainModel = value.Split('-')[0].Trim();
                                             string trainID = value.Split('-')[1].Trim();
                                             _pm.trainModel = trainModel;
+                                            //20210625 新增400AF-BZ/Z车型
                                             if (trainModel.Contains("L") ||
                                                 trainModel.Contains("2B") ||
                                                 trainModel.Contains("AF-A") ||
                                                 trainModel.Contains("AF-B") ||
                                                 trainModel.Contains("BF-A") ||
-                                                trainModel.Contains("BF-B"))
+                                                trainModel.Contains("BF-B") ||
+                                                 trainModel.Contains("BF-BZ") ||
+                                                  trainModel.Contains("AF-BZ"))
                                             {
                                                 _pm.trainConnectType = 1;
-                                                _pm.trainId = value.Split('-')[1].Trim();
+                                                if (trainModel.Contains("-A") || trainModel.Contains("-B"))
+                                                {
+                                                    if(value.Split('-').Length == 3)
+                                                    {
+                                                        _pm.trainId = value.Split('-')[2].Trim();
+                                                    }
+                                                    else
+                                                    {
+                                                        _pm.trainId = value.Split('-')[1].Trim();
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    _pm.trainId = value.Split('-')[1].Trim();
+                                                }
+
                                             }
                                             else if (trainID.Contains("+"))
                                             {
                                                 _pm.trainConnectType = 2;
-                                                _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
-                                                _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
+                                                //400AF-Z-XXX+XXX
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z"))
+                                                {
+                                                    if(value.Split('-').Length >= 3)
+                                                    {
+                                                        _pm.trainId = value.Split('-')[2].Split('+')[0].Trim();
+                                                        _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
+                                                    }
+                                                    else
+                                                    {
+                                                        _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
+                                                        _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    _pm.trainId = value.Split('-')[1].Split('+')[0].Trim();
+                                                    _pm.secondTrainId = value.Split('-')[1].Split('+')[1].Trim();
+                                                }
+
                                             }
                                             else
                                             {
+                                                //400AF-Z-XXX
                                                 _pm.trainConnectType = 0;
-                                                _pm.trainId = value.Split('-')[1].Trim();
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z"))
+                                                {
+                                                    if (value.Split('-').Length >= 3)
+                                                    {
+                                                        _pm.trainId = value.Split('-')[2].Trim();
+                                                    }
+                                                    else
+                                                    {
+                                                        _pm.trainId = value.Split('-')[1].Trim();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    _pm.trainId = value.Split('-')[1].Trim();
+                                                }
+
                                             }
                                         }
                                     }
