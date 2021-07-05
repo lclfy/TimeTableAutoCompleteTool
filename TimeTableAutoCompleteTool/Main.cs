@@ -6172,6 +6172,10 @@ namespace TimeTableAutoCompleteTool
                                             }
                                             for (int line = j + 1; line <= row.LastCellNum; line++)
                                             {
+                                            if(line > 255)
+                                            {
+                                                break;
+                                            }
                                             if(row.GetCell(line) == null)
                                             {
                                                 row.CreateCell(line);
