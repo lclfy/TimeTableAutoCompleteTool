@@ -78,11 +78,11 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 73 - v20210701";
-        string readMe = "build73更新内容:\n" +
+        string build = "build 74 - v20210705";
+        string readMe = "build74更新内容:\n" +
             " 1、新增车型400AF-Z/400AF-BZ\n" +
             "2、动车所停开划掉\n" +
-            "3、行车室修复0D问题";
+            "3、动车所识别问题修复";
 
         public Main()
         {
@@ -1493,13 +1493,13 @@ namespace TimeTableAutoCompleteTool
         {
             yesterdayExcelFile = "";
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
-            openFileDialog1.Filter = "Excel 文件 |*.xlsx;*.xls";
+            openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
             if (!radioButton2.Checked)
             {
                 openFileDialog1.InitialDirectory = Application.StartupPath + "\\" + startPath + "\\";
             }
 
-            //openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
+
             if (radioButton1.Checked)
             {
                 openFileDialog1.Multiselect = true;
@@ -1579,18 +1579,7 @@ namespace TimeTableAutoCompleteTool
                     FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     if (fileName.IndexOf(".xlsx") > 0) // 2007版本  
                     {
-                        MessageBox.Show("提示：若出现错误，请将excel时刻表文件转存为2003版格式(.XLS)");
-                        try
-                        {
-                            workbook = new XSSFWorkbook(fileStream);  //xlsx数据读入workbook  
-                        }
-                        catch (Exception e)
-                        {
-                          
-                            MessageBox.Show("时刻表文件出现损坏（或时刻表无效）\n错误内容：" + e.ToString().Split('在')[0], "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            return;
-                        }
-
+                        MessageBox.Show("提示：请将excel时刻表文件转存为2003版格式(.XLS)");
                     }
                     else if (fileName.IndexOf(".xls") > 0) // 2003版本  
                     {
@@ -5871,6 +5860,9 @@ namespace TimeTableAutoCompleteTool
                 //动车所股道所在列
                 int firstTrackNumColumn = -1;
                 int secondTrackNumColumn = -1;
+                //备注列
+                int first_extraColumn = -1;
+                int second_extraColumn = -1;
                 //动车所车型车号列
                 int firstTrainIDColumn = -1;
                 int secondTrainIDColumn = -1;
@@ -6008,10 +6000,12 @@ namespace TimeTableAutoCompleteTool
                         row = sheet.GetRow(i);   //row读入第i行数据  
                         if (row != null)
                         {
+                        if(row.GetCell (0) == null)
+                        {
+                            row.CreateCell(0);
+                        }
                             //判断当前位置是白班还是夜班/标题行
-                            if (row.GetCell(0) != null)
                             {
-                                if (row.GetCell(0).ToString().Contains("备注") && titleRowNum == -1)
                                 {//标题行
                                     titleRowNum = i;
                                     titleRow = sheet.GetRow(i);
@@ -6024,19 +6018,39 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         if (row.GetCell(b).ToString().Contains("动车所"))
                                         {
-                                        if (firstTrackNumColumn == -1)
+                                        IRow nextRow = sheet.GetRow(i + 1);
+                                        if(nextRow != null)
                                         {
-                                            firstTrackNumColumn = b;
-                                        }
-                                        else
-                                        {
-                                            secondTrackNumColumn = b;
+                                            if(nextRow.GetCell(b) != null)
+                                            {
+                                                if (nextRow.GetCell(b).ToString().Trim().Contains("股道"))
+                                                {
+                                                    if (firstTrackNumColumn == -1)
+                                                    {
+                                                        firstTrackNumColumn = b;
+                                                    }
+                                                    else
+                                                    {
+                                                        secondTrackNumColumn = b;
+                                                    }
+                                                }
+                                            }
+                                            if (nextRow.GetCell(b+1) != null)
+                                            {
+                                                if (nextRow.GetCell(b+1).ToString().Trim().Contains("股道"))
+                                                {
+                                                    if (firstTrackNumColumn == -1)
+                                                    {
+                                                        firstTrackNumColumn = b+1;
+                                                    }
+                                                    else
+                                                    {
+                                                        secondTrackNumColumn = b+1;
+                                                    }
+                                                }
+                                            }
                                         }
 
-                                        if (firstTrackNumColumn != -1 && secondTrackNumColumn != -1)
-                                            {
-                                                break;
-                                            }
                                         }
                                     if (row.GetCell(b).ToString().Contains("车型"))
                                     {
@@ -6049,9 +6063,20 @@ namespace TimeTableAutoCompleteTool
                                             secondTrainIDColumn = b;
                                         }
 
-                                        if (firstTrainIDColumn != -1 && secondTrainIDColumn != -1)
+                                    }
+                                    if (row.GetCell(b).ToString().Contains("备注"))
+                                    {
+                                        if(titleRowNum == -1)
                                         {
-                                            break;
+                                            titleRowNum = i;
+                                        }
+                                        if (first_extraColumn == -1)
+                                        {
+                                            first_extraColumn = b;
+                                        }
+                                        else
+                                        {
+                                            second_extraColumn = b;
                                         }
                                     }
                                 }
@@ -6066,6 +6091,7 @@ namespace TimeTableAutoCompleteTool
                             }
                                 if(secondSection == -1)
                                 {//是否二场
+                                /*
                                     if(row.GetCell(0).ToString().Contains("二场") ||
                                         row.GetCell(0).ToString().Contains("II场") ||
                                         row.GetCell(0).ToString().Contains("2场"))
@@ -6073,6 +6099,7 @@ namespace TimeTableAutoCompleteTool
                                         nightStart = i;
                                         secondSection = 1;
                                     }
+                                */
                                 }
                                 if (nightStart == -1)
                                 {
@@ -6268,13 +6295,13 @@ namespace TimeTableAutoCompleteTool
                                         int rowi = i;
                                         if (!hasFoundThisRow)
                                         {
-                                            if (row.GetCell(0) != null)
+                                            if (row.GetCell(first_extraColumn) != null)
                                             {
-                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0]);
+                                                row.GetCell(first_extraColumn).SetCellValue(row.GetCell(0).ToString().Split('-')[0]);
                                             }
-                                            if(row.GetCell(9) != null)
+                                            if(row.GetCell(second_extraColumn) != null)
                                             {
-                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0]);
+                                                row.GetCell(second_extraColumn).SetCellValue(row.GetCell(second_extraColumn).ToString().Split('-')[0]);
                                             }
                                             if (row.GetCell(firstTrackNumColumn) != null && row.GetCell(firstTrackNumColumn).ToString().Trim().Length != 0 && regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(firstTrackNumColumn).ToString().Trim()))
                                             {
@@ -6525,11 +6552,11 @@ namespace TimeTableAutoCompleteTool
                                                             row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
                                                             if (projectNum.Length != 0)
                                                             {
-                                                                if (row.GetCell(0) == null)
+                                                                if (row.GetCell(first_extraColumn) == null)
                                                                 {
-                                                                    row.CreateCell(0);
+                                                                    row.CreateCell(first_extraColumn);
                                                                 }
-                                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                                row.GetCell(first_extraColumn).SetCellValue(row.GetCell(first_extraColumn).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
                                                             }
                                                         }
                                                         else if (j < secondTrackNumColumn)
@@ -6542,11 +6569,11 @@ namespace TimeTableAutoCompleteTool
                                                             row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
                                                             if (projectNum.Length != 0)
                                                             {
-                                                                if (row.GetCell(9) == null)
+                                                                if (row.GetCell(second_extraColumn) == null)
                                                                 {
-                                                                    row.CreateCell(9);
+                                                                    row.CreateCell(second_extraColumn);
                                                                 }
-                                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                                row.GetCell(second_extraColumn).SetCellValue(row.GetCell(second_extraColumn).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
                                                             }
                                                             if (trackNumInt != 0)
                                                             {
@@ -6810,11 +6837,11 @@ namespace TimeTableAutoCompleteTool
                                                             row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
                                                             if (projectNum.Length != 0)
                                                             {
-                                                                if (row.GetCell(0) == null)
+                                                                if (row.GetCell(first_extraColumn) == null)
                                                                 {
-                                                                    row.CreateCell(0);
+                                                                    row.CreateCell(first_extraColumn);
                                                                 }
-                                                                row.GetCell(0).SetCellValue(row.GetCell(0).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                                row.GetCell(first_extraColumn).SetCellValue(row.GetCell(first_extraColumn).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
                                                             }
                                                         }
                                                         else if (j < secondTrackNumColumn)
@@ -6827,11 +6854,11 @@ namespace TimeTableAutoCompleteTool
                                                             row.GetCell(secondTrackNumColumn).CellStyle = trackNumStyle;
                                                             if (projectNum.Length != 0)
                                                             {
-                                                                if (row.GetCell(9) == null)
+                                                                if (row.GetCell(second_extraColumn) == null)
                                                                 {
-                                                                    row.CreateCell(9);
+                                                                    row.CreateCell(second_extraColumn);
                                                                 }
-                                                                row.GetCell(9).SetCellValue(row.GetCell(9).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
+                                                                row.GetCell(second_extraColumn).SetCellValue(row.GetCell(second_extraColumn).ToString().Split('-')[0].ToString().Trim() + "-" + projectNum + "钩");
                                                             }
                                                             if (trackNumInt != 0)
                                                             {
@@ -6846,7 +6873,7 @@ namespace TimeTableAutoCompleteTool
                                                                                 (_emugtm.trackLine == 3 && (trackNumInt <= 25 || trackNumInt > 33)) ||
                                                                                 (_emugtm.trackLine == 4 && trackNumInt <= 33))
                                                                             {//动存线-走行线匹配判断
-                                                                                row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
+                                                                                //row.GetCell(secondTrackNumColumn).CellStyle = notRecommandedTrackNumStyle;
                                                                             }
                                                                         }
                                                                         break;
