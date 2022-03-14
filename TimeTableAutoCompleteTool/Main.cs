@@ -80,7 +80,7 @@ namespace TimeTableAutoCompleteTool
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 75 - v20220314";
         string readMe = "build75更新内容:\n" +
-            " 纠错功能bug修复，增强客调识别减少错误\n";
+            " 纠错功能bug修复，增强客调识别减少错误，增加临客识别\n";
 
         public Main()
         {
@@ -454,7 +454,9 @@ namespace TimeTableAutoCompleteTool
         private void analyseCommand(bool isYesterday = false, string detectedTrainRow = "", bool isDetecting = false)
         {   //分析客调命令
             //删除不需要的标点符号-字符
-            int addedTrainCount = 0;   
+            int addedTrainCount = 0;
+            //出现“临客”后为高峰车
+            bool isRushHourTrain = false;
             //try
             {
                 string wrongNumber = "";
@@ -475,8 +477,14 @@ namespace TimeTableAutoCompleteTool
                 }
                 List<CommandModel> AllModels = new List<CommandModel>();
                 addedTrainText = "";
+
                 for (int i = 0; i < AllCommand.Length; i++)
                 {
+                    if (AllCommand[i].Contains("临客"))
+                    {
+                        isRushHourTrain = true;
+                        AllCommand[i].Replace("临客", "");
+                    }
                     if (AllCommand[i].Contains("站") &&
                         AllCommand[i].Contains("开") && (
                         AllCommand[i].Contains("001") ||
@@ -539,21 +547,9 @@ namespace TimeTableAutoCompleteTool
                         {//有逗号-逗号换横杠
                             command[1] = command[1].Replace('，', '-');
                         }
-                        if (command[1].Contains("高峰"))
-                        {
-                            trainType = 1;
-                        }
-                        else if (command[1].Contains("临客"))
+                        if (isRushHourTrain)
                         {
                             trainType = 2;
-                        }
-                        else if (command[1].Contains("周末"))
-                        {
-                            trainType = 3;
-                        }
-                        else if (command[1].Contains("加开"))
-                        {
-                            trainType = 4;
                         }
 
                         for (int timeCount = 0; timeCount < command.Length; timeCount++)
@@ -1094,7 +1090,7 @@ namespace TimeTableAutoCompleteTool
             standardCommand = standardCommand.Replace("(9)、2", "\n(9)、2");
             standardCommand = standardCommand.Replace("(10)、2", "\n(10)、2");
             if (standardCommand.Contains("临时定点列车："))
-                standardCommand = standardCommand.Replace("临时定点列车：", "");
+                standardCommand = standardCommand.Replace("临时定点列车：", "临客");
             if (standardCommand.Contains("担当局："))
                 standardCommand = standardCommand.Replace("担当局：", "。");
             if (standardCommand.Contains("1\t2"))
