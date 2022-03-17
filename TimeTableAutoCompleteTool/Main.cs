@@ -70,7 +70,7 @@ namespace TimeTableAutoCompleteTool
         public string continueTrainAnalyse = "";
         float dpiX, dpiY;
 
-        string developer = "反馈请联系运转车间（或技术科）\n*亦可联系黄楠/高雅雯";
+        string developer = "反馈请联系17638570597（罗思聪）\n*亦可联系黄楠/高雅雯";
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
         string downStations = "郑州 郑州西 京广-（ 许昌东 漯河西 驻马店西 信阳东 明港东 孝感北 武汉 汉口 咸宁北 赤壁北 岳阳东 汨罗东 长沙南 株洲西 衡山西 衡阳东 耒阳西 郴州西 韶关 英德西 清远 广州北 深圳北 福田 深圳北 广州南 庆盛 虎门 光明城 西九龙 珠海）城际-（ 新郑机场 焦作）徐兰-（ 巩义南 洛阳龙门 三门峡西 灵宝西 华山北 渭南北 临潼东 西安北 汉中 宝鸡南 天水南 秦安 通渭 定西北 榆中 兰州西）西南-（ 成都东 重庆西 重庆北 贵阳北 昆明南 南宁东 怀化南 湘潭北 韶山南 芷江 新晃西 娄底南 桂林 玉溪 宜昌东 恩施 襄阳北 汉川 天门南 仙桃西 潜江 荆州 枝江北 湛江西）东南-（ 黄冈东 萍乡北 新余北 宜春东 鹰潭北 南昌西 九江  赣州西 厦门北 潮汕 漳州 惠州南）郑万-（长葛北 禹州 郏县 平顶山西 方城 邓州东 南阳东 襄阳东 南漳 保康县 神农架 兴山 巴东北 巫山 奉节 云阳 万州北） 郑合-（许昌北 鄢陵 扶沟南 西华 周口东 淮阳南 沈丘北 界首南 临泉 阜阳西）";
         string[] allEMUGarageTracks = {"1G", "2G", "3G", "4G1", "4G2", "5G1", "5G2", "6G1", "6G2", "7G1", "7G2", "8G1", "8G2", "9G1", "9G2", "10G1", "10G2", "11G1", "11G2", "12G1", "12G2", "13G1", "13G2",
@@ -78,9 +78,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 75 - v20220314";
-        string readMe = "build75更新内容:\n" +
-            " 纠错功能bug修复，增强客调识别减少错误，增加临客识别\n";
+        string build = "build 76 - v20220317";
+        string readMe = "build76更新内容:\n" +
+            " 纠错功能bug修复，增强客调识别减少错误，增加临客识别，恢复综控可以读取07版Excel（运转仅03版）\n";
 
         public Main()
         {
@@ -164,7 +164,7 @@ namespace TimeTableAutoCompleteTool
                 modeSelect = 1;
                 startPath = "时刻表";
                 secondStepText_lbl.Text = "2.选择时刻表文件【框选所有时刻表!】";
-                developerLabel.Text = "反馈请联系运转车间-罗思聪";
+                developerLabel.Text = "";
                 start_Btn.Text = "处理时刻表";
                 ExcelFile = new List<string>();
                 start_Btn.Enabled = false;
@@ -1503,7 +1503,14 @@ namespace TimeTableAutoCompleteTool
         {
             yesterdayExcelFile = "";
             OpenFileDialog openFileDialog1 = new OpenFileDialog();   //显示选择文件对话框 
-            openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
+            if (radioButton2.Checked)
+            {
+                openFileDialog1.Filter = "Excel 文件 (*.xls,*.xlsx)|*.xls;*.xlsx";
+            }
+            else
+            {
+                openFileDialog1.Filter = "Excel 2003 文件 (*.xls)|*.xls";
+            }
             if (!radioButton2.Checked)
             {
                 openFileDialog1.InitialDirectory = Application.StartupPath + "\\" + startPath + "\\";
@@ -5127,7 +5134,7 @@ namespace TimeTableAutoCompleteTool
         }
             catch (Exception e1)
             {
-                MessageBox.Show("出现错误请重试~若持续错误请联系黄楠：" + e1.ToString().Split('。')[0] + "。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("出现错误，请重试，持续出现问题可联系17638570597（罗思聪）：" + e1.ToString().Split('。')[0] + "。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
 
