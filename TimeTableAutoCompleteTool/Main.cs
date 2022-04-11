@@ -1562,6 +1562,404 @@ namespace TimeTableAutoCompleteTool
             }
         }
 
+        //202204读取时刻表表头内容
+        //inputtype默认为1
+        private TimeTable GetStationsFromCurrentTables(IWorkbook workbook, int _inputType = 1)
+        {
+            //通过标题寻找车站（线路所模糊匹配，东三场南站动车所精确匹配）
+            List<TimeTable> _timeTables = new List<TimeTable>();
+            int counter = 0;
+            //foreach (IWorkbook workbook in _timeTablesWorkbooks)
+            {
+                TimeTable _timeTable = new TimeTable();
+                string allStations = "";
+                ISheet sheet = workbook.GetSheetAt(0);  //获取工作表  
+                IRow row;
+
+                for (int i = 0; i < sheet.LastRowNum; i++)  //对工作表每一行  
+                {
+                    row = sheet.GetRow(i);   //row读入第i行数据  
+                    bool hasGotStationsRow = false;
+                    if (row != null)
+                    {
+                        for (int j = 0; j < row.LastCellNum; j++)  //对工作表每一列  
+                        {
+                            if (row.GetCell(j) != null)
+                            {
+                                string titleName = "";
+                                bool hasgot = false;
+                                titleName = row.GetCell(j).ToString().Trim().Replace(" ", "");
+                                if (_inputType == 0)
+                                {
+                                    if ((titleName.Contains("郑州东站") &&
+                                   titleName.Contains("上行")) ||
+                                  (titleName.Contains("郑州东站") &&
+                                    titleName.Contains("下行")))
+                                    {
+                                        _timeTable.Title = "郑州东";
+                                        _timeTable.titleRow = i;
+                                        hasgot = true;
+                                    }
+                                }
+                                else if (_inputType == 1)
+                                {
+                                    string[] _allStations = new string[] { "曹古寺", "二郎庙", "鸿宝", "郑州东京广场", "南曹", "寺后", "郑州东徐兰场", "郑开", "郑州南郑万场", "郑州东城际场", "郑州南城际场", "郑州东疏解区", "郑州东动车所", "郑州南动车所", "新郑机场", "周口东", "民权北", "兰考南", "开封北", "许昌北", "许昌东", "鄢陵", "扶沟南", "西华", "淮阳南", "沈丘北", "长葛北", "禹州", "郏县" };
+                                    for (int ij = 0; ij < _allStations.Length; ij++)
+                                    {
+                                        if ((titleName.Contains(_allStations[ij]) &&
+                                                                 titleName.Contains("上行")) ||
+                                                                (titleName.Contains(_allStations[ij]) &&
+                                                                titleName.Contains("下行")))
+                                        {
+                                            //表头与车站不符的特殊情况
+                                            if (titleName.Contains("郑开"))
+                                            {
+                                                _timeTable.Title = "宋城路";
+                                            }
+                                            else
+                                            {
+                                                _timeTable.Title = _allStations[ij];
+                                            }
+                                            _timeTable.titleRow = i;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (row.GetCell(j).ToString().Contains("始发") ||
+                                    row.GetCell(j).ToString().Contains("备注") ||
+                                     hasGotStationsRow)
+                                {
+                                    hasGotStationsRow = true;
+                                    _timeTable.stationRow = i;
+                                }
+                                if (!row.GetCell(j).ToString().Trim().Replace(" ", "").Contains("时刻") &&
+                                    row.GetCell(j).ToString().Length != 0)
+                                {
+                                    string currentStation = row.GetCell(j).ToString();
+                                    if (currentStation.Contains("线路所"))
+                                    {
+                                        currentStation = currentStation.Replace("线路所", "");
+                                    }
+                                    if (currentStation.Contains("车站"))
+                                    {
+                                        currentStation = currentStation.Replace("车站", "车次");
+                                    }
+                                    if (currentStation.Contains("站"))
+                                    {
+                                        currentStation = currentStation.Replace("站", "");
+                                    }
+
+                                    if (currentStation.Contains("郑州东"))
+                                    {
+                                        //郑州南城际场修改
+                                        /*
+                                        if (currentStation.Equals("郑州东城际场"))
+                                        {
+                                            continue;
+                                        }
+                                        */
+                                        if (_inputType == 0)
+                                        {
+                                            currentStation = "郑州东";
+                                        }
+                                        else if (_inputType == 1)
+                                        {
+                                            if (currentStation.Contains("郑州东京广场"))
+                                            {
+                                                currentStation = "郑州东京广场";
+                                            }
+                                            if (currentStation.Contains("郑州东城际场"))
+                                            {
+                                                currentStation = "郑州东城际场";
+                                            }
+                                            if (currentStation.Contains("郑州东徐兰场"))
+                                            {
+                                                currentStation = "郑州东徐兰场";
+                                            }
+                                        }
+                                        //currentStation = currentStation.Replace("郑州东", "");
+                                    }
+                                    currentStation = currentStation.Trim();
+                                    Stations_TimeTable _tempStation = new Stations_TimeTable();
+                                    //此时需要找这个站是上行还是下行
+                                    IRow titleRow = sheet.GetRow(_timeTable.titleRow);
+                                    _tempStation.stationColumn = j;
+                                    _tempStation.stationName = currentStation;
+                                    if (titleRow != null)
+                                    {
+                                        bool hasGotData = false;
+                                        for (int k = j; k >= 0; k--)
+                                        {//往上找写了上下行的那行，往左找 直到找到字为止
+                                            if (titleRow.GetCell(k) != null)
+                                            {
+                                                string cellInfo = titleRow.GetCell(k).ToString();
+                                                if (cellInfo.Contains("上行"))
+                                                {//说明是上行的
+                                                    _tempStation.upOrDown = false;
+                                                    hasGotData = true;
+                                                }
+                                                else if (cellInfo.Contains("下行"))
+                                                {
+                                                    _tempStation.upOrDown = true;
+                                                    hasGotData = true;
+                                                }
+                                            }
+                                            if (hasGotData)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        if (!allStations.Contains(currentStation))
+                                        {
+                                            allStations = allStations + "-" + currentStation;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式：“郑州东站…时刻表（上行）”或“（线路所）…时刻表（上行）”，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        return null;
+                                    }
+                                    //此时依然不能直接添加，需要寻找到达-股道-发出所在列
+                                    IRow stopStartRow = sheet.GetRow(_timeTable.stationRow + 1);
+                                    if (stopStartRow != null)
+                                    {
+                                        string cellInfo = "";
+                                        if (stopStartRow.GetCell(j) != null)
+                                        {
+                                            cellInfo = stopStartRow.GetCell(j).ToString().Trim();
+
+                                            if (cellInfo.Contains("通过") || cellInfo.Contains("发出"))
+                                            {
+                                                _tempStation.startedTimeColumn = j;
+                                            }
+                                            if (cellInfo.Contains("到达"))
+                                            {
+                                                _tempStation.stoppedTimeColumn = j;
+                                            }
+                                            if (cellInfo.Contains("股道"))
+                                            {
+                                                _tempStation.trackNumColumn = j;
+                                            }
+                                            //此时往右，再往上，看看get到的是不是自己，是的话就看是股道还是发出，直到不是的再退出循环
+                                            for (int k = j + 1; k < stopStartRow.LastCellNum; k++)
+                                            {//
+                                                string nextCell = "";
+                                                if (stopStartRow.GetCell(k) != null)
+                                                {
+                                                    nextCell = stopStartRow.GetCell(k).ToString().Trim();
+                                                }
+                                                IRow stationRow = sheet.GetRow(_timeTable.stationRow);
+                                                if (stationRow != null)
+                                                {
+                                                    if (stationRow.GetCell(k) == null)
+                                                    {
+                                                        if (nextCell.Contains("股道"))
+                                                        {
+                                                            _tempStation.trackNumColumn = k;
+                                                        }
+                                                        else if (nextCell.Contains("发出"))
+                                                        {
+                                                            _tempStation.startedTimeColumn = k;
+                                                        }
+                                                    }
+                                                    else if (stationRow.GetCell(k).ToString().Length == 0)
+                                                    {
+                                                        if (nextCell.Contains("股道"))
+                                                        {
+                                                            _tempStation.trackNumColumn = k;
+                                                        }
+                                                        else if (nextCell.Contains("发出"))
+                                                        {
+                                                            _tempStation.startedTimeColumn = k;
+                                                        }
+                                                    }
+                                                    else
+                                                    {//有字就不对了，应该跳出
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("选定的列车时刻表表头不具有规定格式：到达-股道-发出，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式：到达-股道-发出，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        return null;
+                                    }
+                                    _timeTable.currentStations.Add(_tempStation);
+                                }
+                            }
+                        }
+                    }
+                    if (hasGotStationsRow)
+                    {
+                        break;
+                    }
+                }
+                //仅使用郑万时刻表，作为徐兰场使用
+                if (_timeTable.Title.Contains("郑万") && _timeTables.Count == 1)
+                {
+                    _timeTable.Title = "徐兰";
+                }
+                else if (_timeTable.Title == null || _timeTable.Title.Length == 0)
+                {
+                    MessageBox.Show("选定的列车时刻表表头不具有规定格式：“郑州东站…时刻表（上行）”或“（线路所）…时刻表（上行）”，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return null;
+                }
+                allStations = allStations.Remove(0, 1);
+                _timeTable.stations = allStations.Split('-');
+
+                _timeTable.timeTablePlace = counter;
+                _timeTables.Add(_timeTable);
+                counter++;
+            }
+            //20220411 只有一张时刻表，原设计是多张，不想改代码了，就凑合用吧
+            TimeTable _tm = new TimeTable();
+            if (_timeTables.Count > 0)
+            {
+                _tm = _timeTables[0];
+            }
+            return _tm;
+
+        }
+
+
+
+        //202204删除所需对应内容，目标行，起始列，结束列
+        private IWorkbook deleteTargetRow(IWorkbook _workbook,int startColumn,int stopColumn,int targetRow)
+        {
+            ICellStyle normalTrainStyle_temp = _workbook.CreateCellStyle();
+            //normalTrainStyle.FillPattern = FillPattern.SolidForeground;
+            normalTrainStyle_temp.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+            normalTrainStyle_temp.FillPattern = FillPattern.SolidForeground;
+            normalTrainStyle_temp.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.White.Index;
+            normalTrainStyle_temp.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTrainStyle_temp.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTrainStyle_temp.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            normalTrainStyle_temp.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            HSSFFont normalFont = (HSSFFont)_workbook.CreateFont();
+            normalFont.FontName = "宋体";//字体  
+            normalFont.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
+            normalTrainStyle_temp.SetFont(normalFont);
+
+            ISheet sheet = _workbook.GetSheetAt(0);
+            //for(int i = 0; i <= sheet.LastRowNum; i++)
+            {
+                IRow row = sheet.GetRow(targetRow);
+                for(int j = startColumn; j <= stopColumn; j++)
+                {
+                    if (row.GetCell(j) != null)
+                    {
+                        row.GetCell(j).SetCellValue("");
+                        //style刷一遍
+                        row.GetCell(j).CellStyle = normalTrainStyle_temp;
+                    }
+                }
+            }
+            return _workbook;
+        }
+
+        //202204把空的部分从下挪上来，从上往下找，标题行之下，分两组（以表头“终到”为基准）
+        //若有空的，标记该空行，新循环往下找，找到有车次号的，整行内容搬运过来，新行删除，再从原来找到的空行位置+1继续找
+        private IWorkbook fixEmptyRows(IWorkbook _workbook,List<int> stoppedStationAt,int titleRow)
+        {
+            ISheet sheet = _workbook.GetSheetAt(0);
+            //首次循环，找空行
+            for (int i =titleRow + 1; i <= sheet.LastRowNum; i++)
+            {
+                {
+                    if (sheet.GetRow(i) != null)
+                    {
+                        IRow row = sheet.GetRow(i);
+                        //如果是空的（终到那一列被删了）
+                        if (row.GetCell(stoppedStationAt[0]) == null)
+                        {
+                            continue;
+                        }
+                        if (row.GetCell(stoppedStationAt[0]).ToString().Length == 0)
+                        {
+                            //往下找内容，挪动到这一行
+                            for(int next = i + 1; next <= sheet.LastRowNum; next++)
+                            {
+                                if (sheet.GetRow(next) == null)
+                                {
+                                    continue;
+                                }
+                                IRow nextRow = sheet.GetRow(next);
+                                if(nextRow.GetCell(stoppedStationAt[0]) == null)
+                                {
+                                    continue;
+                                }
+                                if (nextRow.GetCell(stoppedStationAt[0]).ToString().Length != 0)
+                                {
+                                    //找每一列，挪动到上面
+                                    //找到内容了，挪到上面，本行内容删除
+                                    for (int j1 = 0;j1<= stoppedStationAt[0]; j1++)
+                                    {
+                                        row.GetCell(j1).SetCellValue(nextRow.GetCell(j1).ToString().Trim());
+                                        nextRow.GetCell(j1).SetCellValue("");
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(stoppedStationAt.Count == 2)
+                {
+                    if (sheet.GetRow(i) != null)
+                    {
+                        IRow row = sheet.GetRow(i);
+                        //如果是空的（终到那一列被删了）
+                        if(row.GetCell(stoppedStationAt[1]) == null)
+                        {
+                            continue;
+                        }
+                        if (row.GetCell(stoppedStationAt[1]).ToString().Length == 0)
+                        {
+                            //往下找内容，挪动到这一行
+                            bool hasFoundText = false;
+                            for (int next = i + 1; next <= sheet.LastRowNum; next++)
+                            {
+                                if (sheet.GetRow(next) == null)
+                                {
+                                    continue;
+                                }
+                                IRow nextRow = sheet.GetRow(next);
+                                if (nextRow.GetCell(stoppedStationAt[1]) == null)
+                                {
+                                    continue;
+                                }
+                                if (nextRow.GetCell(stoppedStationAt[1]).ToString().Length != 0)
+                                {
+                                    //找每一列，挪动到上面
+                                    //找到内容了，挪到上面，本行内容删除
+                                    for (int j2 = stoppedStationAt[0] + 1; j2 <= stoppedStationAt[1]; j2++)
+                                    {
+                                        row.GetCell(j2).SetCellValue(nextRow.GetCell(j2).ToString().Trim());
+                                        nextRow.GetCell(j2).SetCellValue("");
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            //把下方空白区域直接删除
+
+            return _workbook;
+        }
+
+
         private void updateTimeTable()
         {
             
@@ -1589,6 +1987,8 @@ namespace TimeTableAutoCompleteTool
                 int weekendTrain = 0;
                 int addedTrain = 0;
                 string checkedText = "";
+
+
                 //未在客调中发现的车，临时储存。streamStatus为4
                 List<CommandModel> notMatchedModels = new List<CommandModel>();
                 try
@@ -1612,21 +2012,12 @@ namespace TimeTableAutoCompleteTool
                         }
                     }
 
-               
+
                     //表格样式
-                    ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
-                    stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-                    stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
-                    stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-                    stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-                    stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-                    stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-                    stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
                     HSSFFont font = (HSSFFont)workbook.CreateFont();
                     font.FontName = "宋体";//字体  
                     font.FontHeightInPoints = short.Parse(fontSize.ToString());//字号  
                     font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
-                    stoppedTrainStyle.SetFont(font);
 
                     ICellStyle nonMatchedTrainStype = workbook.CreateCellStyle();
                     nonMatchedTrainStype.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
@@ -1701,25 +2092,54 @@ namespace TimeTableAutoCompleteTool
                         sheet.GetRow(0).CreateCell(0);
                     }
                     string title = sheet.GetRow(0).GetCell(0).ToString().Trim();
+                    //202204-上下行时刻表的终止位置，上下行所在位置（左边，右边）,主站所在列，时刻表生成工具算法
+                    //算法：先把时刻表内容全部读取，将不包含的车相应位置内容清除，单写一个算法把下面的行都往上挪（郑州站系统里有这个算法）
+                    //利用主站所在列，小于主站列的是在运行后方，大于主站列的是运行前方，可做统计
+                    //额外保存，保存名称加上所制作的日期
                     string station = "";
+                    //第一个，第二个“终到”
+                    List<int> stoppedStationAt = new List<int>();
+                    //第一个，第二个主站位置
+                    List<int> mainStationAt = new List<int>();
+                    TimeTable currentTimeTable = new TimeTable();
+                    //因停运而被删除的车位置，格式为 "行-列"
+                    List<string> removedTrains = new List<string>();
                     //车次列
                     List<int> trainNumColumnNum = new List<int>();
                     //股道列
                     List<int> trackNumColumnNum = new List<int>();
+
                     //标题行
                     int titleRowNum = -1;
                     if (title.Contains("京广"))
                     {
                         station = "京广";
-                    }else if (title.Contains("徐兰"))
+                    }
+                    else if (title.Contains("徐兰"))
                     {
                         station = "徐兰";
-                    }else if (title.Contains("城际"))
+                    }
+                    else if (title.Contains("东城际"))
                     {
-                        station = "城际";
+                        station = "东城际";
+                    }
+                    else if (title.Contains("郑万"))
+                    {
+                        station = "郑万";
+                    }
+                    else if (title.Contains("郑阜"))
+                    {
+                        station = "郑阜";
+                    }
+                    else if (title.Contains("南城际"))
+                    {
+                        station = "南城际";
                     }
 
-                        
+                    //20220411读取时刻表内容
+                    currentTimeTable = GetStationsFromCurrentTables(workbook);
+
+
                     if (title.Contains("-"))
                     {
                         title = title.Split('-')[1];
@@ -1837,7 +2257,7 @@ namespace TimeTableAutoCompleteTool
                             }
                         }
                     }
-                    //找股道列
+                    //找股道列，主站列和终到列
                     for (int searchRow = 0; searchRow <= sheet.LastRowNum; searchRow++)
                     {
                         IRow tempRow = sheet.GetRow(searchRow);
@@ -1849,10 +2269,21 @@ namespace TimeTableAutoCompleteTool
                             }
                           if (tempRow != null && sheet.GetRow(searchRow+1) != null && sheet.GetRow(searchRow + 1).GetCell(searchColumn + 1) != null && tempRow.GetCell(searchColumn) != null)
                             {
-                                if(tempRow.GetCell(searchColumn).ToString().Contains(station))
-                                if (sheet.GetRow(searchRow + 1).GetCell(searchColumn+1).ToString().Equals("股道"))
+                                if (tempRow.GetCell(searchColumn).ToString().Contains(station))
                                 {
-                                    trackNumColumnNum.Add(searchColumn+1);
+                                    if (sheet.GetRow(searchRow + 1).GetCell(searchColumn + 1).ToString().Equals("股道"))
+                                    {
+                                        //202204，获取主站位置
+                                        mainStationAt.Add(searchColumn);
+                                        trackNumColumnNum.Add(searchColumn + 1);
+                                    }
+                                }
+                                if (tempRow.GetCell(searchColumn).ToString().Contains("终到"))
+                                {
+                                    {
+                                        //202204，获取"终到"位置
+                                        stoppedStationAt.Add(searchColumn);
+                                    }
                                 }
                             }
                         }
@@ -2040,6 +2471,8 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                     stoppedTrainsCount++;
                                                     row.GetCell(j).CellStyle = nonMatchedTrainStype;
+                                                    //202204 停运，加入删除行
+                                                    removedTrains.Add(i + "-" + j);
                                                 }
                                                 else if (commandModel[ij].streamStatus == 2)
                                                 {
@@ -2077,6 +2510,8 @@ namespace TimeTableAutoCompleteTool
                                                     row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                     stoppedTrainsCount++;
                                                     row.GetCell(j).CellStyle = nonMatchedTrainStype;
+                                                    //202204 停运，加入删除行
+                                                    removedTrains.Add(i + "-" + j);
                                                 }
                                                 gotIt = true;
                                                 if (status == -1)
@@ -2160,6 +2595,8 @@ namespace TimeTableAutoCompleteTool
                                                                 row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                                 stoppedTrainsCount++;
                                                                 row.GetCell(j).CellStyle = nonMatchedTrainStype;
+                                                                //202204 停运，加入删除行
+                                                                removedTrains.Add(i + "-" + j);
                                                             }
                                                             gotIt = true;
                                                             hasGotIt = true;
@@ -2172,6 +2609,8 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 row.GetCell(j).SetCellValue("×" + row.GetCell(j).ToString().Trim());
                                                 row.GetCell(j).CellStyle = nonMatchedTrainStype;
+                                                //202204 停运，加入删除行
+                                                removedTrains.Add(i + "-" + j);
                                                 stoppedTrainsCount++;
                                                 //在此处加入commandmodel，streamStatus为4，后续检测到4时直接跳过
                                                 CommandModel _cm = new CommandModel();
@@ -2559,6 +2998,45 @@ namespace TimeTableAutoCompleteTool
                             }
                         }
                     }
+                    //202204 已经收集到所有需要删除的车，下面进行删除工作
+                    int a1 = removedTrains.Count; 
+                    foreach(string targetPlace in removedTrains)
+                    {
+                        if (!targetPlace.Contains("-"))
+                        {
+                            continue;
+                        }
+                        int targetRow = -1;
+                        int.TryParse(targetPlace.Split('-')[0],out targetRow);
+                        int targetColumn = -1;
+                        int.TryParse(targetPlace.Split('-')[1], out targetColumn);
+                        int startColumn = -1;
+                        int stopColumn = -1;
+                        if(targetColumn != -1 && stoppedStationAt.Count > 0)
+                        {
+                            if (targetColumn < stoppedStationAt[0])
+                            {
+                                startColumn = 0;
+                                stopColumn = stoppedStationAt[0];
+                            }
+                            else if(stoppedStationAt.Count > 1 && targetColumn < stoppedStationAt[1])
+                            {
+                                startColumn = stoppedStationAt[0]+1;
+                                stopColumn = stoppedStationAt[1];
+                            }
+                        }
+                        //条件齐全，开始删除
+                        if(targetColumn != -1 && targetRow != -1 && startColumn != -1 && stopColumn != -1)
+                        {
+                            deleteTargetRow(workbook,startColumn,stopColumn,targetRow);
+                        }
+                    }
+                    //202204全删完了，挪动表格填满
+                    fixEmptyRows(workbook,stoppedStationAt,titleRowNum);
+                    //全部刷白
+                    
+                    //202204对剩下的车判断各个方向
+
                     //把这张表内未识别的添加进去
                     foreach(CommandModel _cm in notMatchedModels)
                     {
@@ -2605,14 +3083,14 @@ namespace TimeTableAutoCompleteTool
                     }
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
                     /*重新修改文件指定单元格样式*/
-                    FileStream fs1 = File.OpenWrite(fileName);
+                    FileStream fs1 = File.OpenWrite(fileName.Replace(".xls","").Replace(".XLS","") + "-"+title.Split('-')[0]+".xls");
                     workbook.Write(fs1);
                     fs1.Close();
                     fileStream.Close();
                     workbook.Close();
                     System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
                     //info.WorkingDirectory = Application.StartupPath;
-                    info.FileName = fileName;
+                    info.FileName = fileName.Replace(".xls", "").Replace(".XLS", "") + "-" + title.Split('-')[0] + ".xls";
                     info.Arguments = "";
                     if (checkedText.Length != 0)
                     {

@@ -140,6 +140,10 @@
     </Compile>
     <Compile Include="DisplayModify\ModifyTrackPoint.Designer.cs" />
     <Compile Include="DisplayModels\PowerSupplyModel.cs" />
+    <Compile Include="Models\Station.cs" />
+    <Compile Include="Models\Stations_TimeTable.cs" />
+    <Compile Include="Models\TimeTable.cs" />
+    <Compile Include="Models\Train.cs" />
     <Compile Include="Models\TrainProjectSortModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
