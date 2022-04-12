@@ -50,6 +50,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.buildLBL = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.compareDailySchedue_btn = new CCWin.SkinControl.SkinButton();
             this.command_rTb = new System.Windows.Forms.RichTextBox();
             this.EMUorEMUC_groupBox = new System.Windows.Forms.GroupBox();
@@ -88,7 +89,6 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.EMUGarage_YesterdayCommand_rtb = new System.Windows.Forms.RichTextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.EMUorEMUC_groupBox.SuspendLayout();
@@ -299,6 +299,18 @@
             this.groupBox1.Size = new System.Drawing.Size(483, 452);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox1.Location = new System.Drawing.Point(299, 372);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(121, 21);
+            this.checkBox1.TabIndex = 32;
+            this.checkBox1.Text = "删除停运车(Beta)";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // compareDailySchedue_btn
             // 
@@ -773,18 +785,6 @@
             this.EMUGarage_YesterdayCommand_rtb.TabIndex = 31;
             this.EMUGarage_YesterdayCommand_rtb.Text = "";
             this.EMUGarage_YesterdayCommand_rtb.TextChanged += new System.EventHandler(this.EMUGarage_YesterdayCommand_rtb_TextChanged);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox1.Location = new System.Drawing.Point(322, 372);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(87, 21);
-            this.checkBox1.TabIndex = 32;
-            this.checkBox1.Text = "删除停运车";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Main
             // 

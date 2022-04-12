@@ -268,7 +268,7 @@ namespace TimeTableAutoCompleteTool
             //开行旅客列车不为空，创建统计word文档
             if(startPsngerTrains.Count != 0)
             {
-                createStaticDoc(statisticsText,continueTrainAnalyse);
+                createStaticDoc(statisticsText,continueTrainAnalyse, unrecognazedTrains);
             }
         }
 
@@ -323,7 +323,7 @@ namespace TimeTableAutoCompleteTool
         }
 
         //创建统计word文档
-        private void createStaticDoc(string staticText, string continueTrainText)
+        private void createStaticDoc(string staticText, string continueTrainText, string unrecognazedTrains)
         {
             
             if (staticText.Length == 0 && continueTrainText.Length == 0)
@@ -355,7 +355,12 @@ namespace TimeTableAutoCompleteTool
             Para2.AppendText("列车开行情况：\n"+staticText + "\n\n");
 
             Paragraph Para3 = section.AddParagraph();
-            Para3.AppendText("接续列车修改情况：\n"+continueTrainText);
+            Para3.AppendText("未在图列车（可能出现加开车，请核对命令）：\n" + unrecognazedTrains);
+
+            Paragraph Para4 = section.AddParagraph();
+            Para4.AppendText("接续列车修改情况：\n"+continueTrainText);
+
+            
 
             //写入数据并保存
             doc.SaveToFile(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + title + ".doc", FileFormat.Doc);

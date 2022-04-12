@@ -80,9 +80,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 77 - v20220412";
-        string readMe = "build77更新内容:\n" +
-            " 运转增加将停开车删除功能，增加按方向进行统计功能\n";
+        string build = "build 78 - v20220412";
+        string readMe = "build78更新内容:\n" +
+            " 运转增加将停开车删除功能，增加按方向进行统计功能，增加未在图列车展示\n";
         //综控可以读取07版Excel（运转仅03版）
         public Main()
         {
@@ -1965,33 +1965,40 @@ namespace TimeTableAutoCompleteTool
                 **/
                 var temp = sheet.GetMergedRegion(i);
                 string t2 = temp.FirstRow.ToString();
-                if (temp.FirstRow >= 5 && temp.FirstRow <= lastFoundRow)
+                if(temp.FirstRow == 1 && temp.LastRow > 10)
+                {
+                    sheet.RemoveMergedRegion(i);
+                }
+                if (temp.FirstRow >= 4 && temp.FirstRow <= lastFoundRow)
                 {
                     sheet.RemoveMergedRegion(i);
                 }
             }
             //把下方空白区域直接删除,把加开车次挪到上面
             //此算法用于找到加开车次并挪动，已弃用（原有删除方法可以把加开车次自动挪上来）
-            /*
-            for (int emptyRowNum = lastFoundRow + 1; emptyRowNum <= sheet.LastRowNum; emptyRowNum++)
+            //把加开车次合并
+            for (int addedTrainRow = 0; addedTrainRow <= sheet.LastRowNum; addedTrainRow++)
             {
-                IRow row = sheet.GetRow(emptyRowNum);
+                IRow row = sheet.GetRow(addedTrainRow);
                 if (row.GetCell(0) != null)
                 {
                     if (row.GetCell(0).ToString().Contains("加开车次"))
                     {
-                        if(sheet.GetRow(lastFoundRow+1).GetCell(0) != null)
+                        if(stoppedStationAt.Count > 1)
                         {
-                            sheet.GetRow(lastFoundRow + 1).GetCell(0).SetCellValue(row.GetCell(0).ToString());
+                            sheet.AddMergedRegion(new CellRangeAddress(addedTrainRow, addedTrainRow, 0, stoppedStationAt[1]));
+                            sheet.AddMergedRegion(new CellRangeAddress(addedTrainRow + 1, addedTrainRow + 6, 0, stoppedStationAt[1]));
                         }
                         else
                         {
-                            sheet.GetRow(lastFoundRow + 1).CreateCell(0).SetCellValue(row.GetCell(0).ToString());
+                            sheet.AddMergedRegion(new CellRangeAddress(addedTrainRow, addedTrainRow, 0, stoppedStationAt[0]));
+                            sheet.AddMergedRegion(new CellRangeAddress(addedTrainRow + 1, addedTrainRow + 6, 0, stoppedStationAt[0]));
                         }
+
                     }
                 }
             }
-            */
+
             //删除空行
             int lastRow = sheet.LastRowNum;
                 for (int ij = lastFoundRow; ij <= lastRow; ij++)
@@ -2002,7 +2009,7 @@ namespace TimeTableAutoCompleteTool
                     }
                     if (sheet.GetRow(ij) == null)
                     {
-                        sheet.ShiftRows(ij + 1, sheet.LastRowNum, -1);
+                        sheet.ShiftRows(ij + 1, lastRow, -1);
                         ij = ij - 1;
                         lastRow = lastRow - 1;
                     }
@@ -2010,7 +2017,7 @@ namespace TimeTableAutoCompleteTool
                     {
                         if (sheet.GetRow(ij).GetCell(0) == null)
                         {
-                            sheet.ShiftRows(ij + 1, sheet.LastRowNum, -1);
+                            sheet.ShiftRows(ij + 1, lastRow, -1);
                             ij = ij - 1;
                             lastRow = lastRow - 1;
                         }
@@ -2018,7 +2025,7 @@ namespace TimeTableAutoCompleteTool
                         {
                             if (sheet.GetRow(ij).GetCell(0).ToString().Trim().Length == 0)
                             {
-                                sheet.ShiftRows(ij + 1, sheet.LastRowNum, -1);
+                                sheet.ShiftRows(ij + 1, lastRow, -1);
                                 ij = ij - 1;
                                 lastRow = lastRow - 1;
                             }
@@ -2076,7 +2083,7 @@ namespace TimeTableAutoCompleteTool
             startAndStop.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             HSSFFont startAndStopFont = (HSSFFont)workbook.CreateFont();
             startAndStopFont.FontName = "宋体";//字体  
-            startAndStopFont.FontHeightInPoints = 13;//字号  
+            startAndStopFont.FontHeightInPoints = 15;//字号  
             startAndStop.SetFont(startAndStopFont);
 
             //格式-车次
@@ -2111,7 +2118,12 @@ namespace TimeTableAutoCompleteTool
                 if (sheet.GetRow(i) != null)
                 {
                     IRow _row = sheet.GetRow(i);
-                    for (int j = 0; j < _row.LastCellNum; j++)
+                    int lastColumn = stoppedStationAt[0];
+                    if(stoppedStationAt.Count > 1)
+                    {
+                        lastColumn = stoppedStationAt[1];
+                    }
+                    for (int j = 0; j <= lastColumn; j++)
                     {
                         if(_row.GetCell(j) == null)
                         {
@@ -2149,7 +2161,7 @@ namespace TimeTableAutoCompleteTool
                         }
                         //用小字
                         if(_row.GetCell(j).ToString().Contains("改")||
-                            _row.GetCell(j).ToString().Contains("续开"))
+                            _row.GetCell(j).ToString().Contains("续"))
                         {
                             _row.GetCell(j).CellStyle = continuedTrainCell;
                         }
@@ -2184,9 +2196,9 @@ namespace TimeTableAutoCompleteTool
             {
                 return "";
             }
-            string text = "";
             bool upOrDownChanged = false;
             int record_upOrDown = -1;
+            List<string> texts = new List<string>();
             ISheet sheet = workbook.GetSheetAt(0);
             //先判断一个车站是上行还是下行，第几列，数量找出来，再找它和主站的位置关系（1左，1右2左，2右），通过上下行是否变换判断是去还是来
             for(int _tCount = 0; _tCount < table.currentStations.Count; _tCount++)
@@ -2195,6 +2207,7 @@ namespace TimeTableAutoCompleteTool
                 string upOrDown = "";
                 int targetStationColumn = -1;
                 Stations_TimeTable _st = table.currentStations[_tCount];
+
                 if (_st.stationName.Contains("始发")||
                     _st.stationName.Contains("终到") ||
                     _st.stationName.Contains("车站") ||
@@ -2257,7 +2270,12 @@ namespace TimeTableAutoCompleteTool
                     else
                     {
                         //统计数据+1
-                        trainCount++;
+                        if(row.GetCell(targetStationColumn).ToString().Trim().Contains(":")||
+                            row.GetCell(targetStationColumn).ToString().Trim().Contains("："))
+                        {
+                            trainCount++;
+                        }
+
                     }
                 }
 
@@ -2278,7 +2296,23 @@ namespace TimeTableAutoCompleteTool
                     if (targetStationColumn < mainStationAt[0])
                     {
                         //xx方向来
-                        text = text + _st.stationName + "方向来" + trainCount + "列;\n";
+                        bool hasGot = false;
+                        for(int k = 0; k < texts.Count; k++)
+                        {
+                            if (hasGot)
+                            {
+                                break;
+                            }
+                            if (texts[k].Split('-')[0].Equals(_st.stationName))
+                            {
+                                texts[k] = texts[k] + "，"+_st.stationName + "-方向来" + trainCount + "列";
+                                hasGot = true;
+                            }
+                        }
+                        if (!hasGot)
+                        {
+                            texts.Add(_st.stationName + "-方向来" + trainCount + "列");
+                        }
                     }
                     else if (mainStationAt.Count > 1)
                     {
@@ -2288,21 +2322,74 @@ namespace TimeTableAutoCompleteTool
                             if (upOrDownChanged)
                             {
                                 //变了，xx方向来
-                                text = text + _st.stationName + "方向来" + trainCount + "列;\n";
+                                bool hasGot = false;
+                                for (int k = 0; k < texts.Count; k++)
+                                {
+                                    if (hasGot)
+                                    {
+                                        break;
+                                    }
+                                    if (texts[k].Split('-')[0].Equals(_st.stationName))
+                                    {
+                                        texts[k] = texts[k] + "，" + _st.stationName + "-方向来" + trainCount + "列";
+                                        hasGot = true;
+                                    }
+                                }
+                                if (!hasGot)
+                                {
+                                    texts.Add(_st.stationName + "-方向来" + trainCount + "列");
+                                }
                             }
                             else
                             {
                                 //没变，去xx方向
-                                text = text + "去" + _st.stationName + "方向" + trainCount + "列;\n";
+                                bool hasGot = false;
+                                for (int k = 0; k < texts.Count; k++)
+                                {
+                                    if (hasGot)
+                                    {
+                                        break;
+                                    }
+                                    if (texts[k].Split('-')[0].Equals(_st.stationName))
+                                    {
+                                        texts[k] = texts[k] + "，" + "去" + _st.stationName + "-方向" + trainCount + "列";
+                                        hasGot = true;
+                                    }
+                                }
+                                if (!hasGot)
+                                {
+                                    texts.Add("去" + _st.stationName + "-方向" + trainCount + "列");
+                                }
                             }
                         }
                         else
                         {
                             //去xx方向
-                            text = text + "去" + _st.stationName + "方向" + trainCount + "列;\n";
+                            bool hasGot = false;
+                            for (int k = 0; k < texts.Count; k++)
+                            {
+                                if (hasGot)
+                                {
+                                    break;
+                                }
+                                if (texts[k].Split('-')[0].Equals(_st.stationName))
+                                {
+                                    texts[k] = texts[k] + "，" + "去" + _st.stationName + "-方向" + trainCount + "列";
+                                    hasGot = true;
+                                }
+                            }
+                            if (!hasGot)
+                            {
+                                texts.Add("去" + _st.stationName + "-方向" + trainCount + "列");
+                            }
                         }
                     }
                 }
+            }
+            string text = "";
+            foreach(string _t in texts)
+            {
+                text = text + _t.Replace("-","") + "\n";
             }
             return text;
         }
