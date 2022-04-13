@@ -80,8 +80,8 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 78 - v20220412";
-        string readMe = "build78更新内容:\n" +
+        string build = "build 79 - v20220413";
+        string readMe = "build79更新内容:\n" +
             " 运转增加将停开车删除功能，增加按方向进行统计功能，增加未在图列车展示\n";
         //综控可以读取07版Excel（运转仅03版）
         public Main()
@@ -1977,6 +1977,7 @@ namespace TimeTableAutoCompleteTool
             //把下方空白区域直接删除,把加开车次挪到上面
             //此算法用于找到加开车次并挪动，已弃用（原有删除方法可以把加开车次自动挪上来）
             //把加开车次合并
+            /*
             for (int addedTrainRow = 0; addedTrainRow <= sheet.LastRowNum; addedTrainRow++)
             {
                 IRow row = sheet.GetRow(addedTrainRow);
@@ -1998,6 +1999,7 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
             }
+            */
 
             //删除空行
             int lastRow = sheet.LastRowNum;
@@ -2112,6 +2114,13 @@ namespace TimeTableAutoCompleteTool
             empty.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             empty.TopBorderColor = HSSFColor.Black.Index;
 
+            //仅左右有杠格式
+            ICellStyle onlyLR = workbook.CreateCellStyle();
+            onlyLR.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            onlyLR.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            onlyLR.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            onlyLR.TopBorderColor = HSSFColor.Black.Index;
+
             //空的加斜杠，不空的加空格，有“续”，“改”的，变小字
             for (int i = 4; i <= sheet.LastRowNum; i++)
             {
@@ -2134,7 +2143,15 @@ namespace TimeTableAutoCompleteTool
                         {
                             if (_row.GetCell(j).ToString().Trim().Length == 0)
                             {
+                                //上下行中间的位置不填斜杠
+                                if(j != stoppedStationAt[0] + 1)
+                                {
                                     _row.GetCell(j).CellStyle = empty;
+                                }
+                                else
+                                {
+                                    _row.GetCell(j).CellStyle = onlyLR;
+                                }
                             }
                             else
                             {
@@ -2571,6 +2588,10 @@ namespace TimeTableAutoCompleteTool
                     {
                         station = "南城际";
                     }
+                    else if (title.Contains("寺后"))
+                    {
+                        station = "寺后";
+                    }
 
                     //20220411读取时刻表内容
                     currentTimeTable = GetStationsFromCurrentTables(workbook);
@@ -2754,8 +2775,10 @@ namespace TimeTableAutoCompleteTool
                             }
                         }
                         //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                        /*
                         sheet.AddMergedRegion(new CellRangeAddress(currentLast + 1, currentLast + 1, 0, lastCell ));
                         sheet.AddMergedRegion(new CellRangeAddress(currentLast + 2, sheet.LastRowNum, 0, lastCell));
+                        */
                     }
                     for (int i = 0; i <= sheet.LastRowNum; i++)  //对工作表每一行  
                     {
@@ -3525,15 +3548,34 @@ namespace TimeTableAutoCompleteTool
                     }
                     sheet.GetRow(0).GetCell(0).SetCellValue(title);
                     /*重新修改文件指定单元格样式*/
-                    FileStream fs1 = File.OpenWrite(fileName.Replace(".xls","").Replace(".XLS","") + "-"+title.Split('-')[0]+".xls");
+                    string newFileName = "";
+                    string filePath = "";
+                    int fileNameSplitCount = fileName.Split('\\').Length;
+                    for(int fileCount = 0;fileCount< fileNameSplitCount; fileCount++)
+                    {
+                        if(fileCount<= fileNameSplitCount - 2)
+                        {
+                            newFileName = newFileName + fileName.Split('\\')[fileCount] + "\\";
+                        }
+                        else
+                        {
+                            filePath = newFileName;
+                            newFileName = newFileName + "\\处理后-" + station + "-"+title.Split('-')[0] + ".xls";
+                        }
+                    }
+                    FileStream fs1 = File.OpenWrite(newFileName);
                     workbook.Write(fs1);
                     fs1.Close();
                     fileStream.Close();
                     workbook.Close();
                     System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
                     //info.WorkingDirectory = Application.StartupPath;
-                    info.FileName = fileName.Replace(".xls", "").Replace(".XLS", "") + "-" + title.Split('-')[0] + ".xls";
+                    info.FileName = newFileName;
                     info.Arguments = "";
+                    System.Diagnostics.ProcessStartInfo info1 = new System.Diagnostics.ProcessStartInfo();
+                    //info.WorkingDirectory = Application.StartupPath;
+                    info1.FileName = filePath;
+                    info1.Arguments = "";
                     if (checkedText.Length != 0)
                     {
                         //MessageBox.Show("请人工核对以下车次（时刻表内有标注）：\n" + checkedText, "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -3553,6 +3595,7 @@ namespace TimeTableAutoCompleteTool
                     try
                     {
                         System.Diagnostics.Process.Start(info);
+                        System.Diagnostics.Process.Start(info1);
                     }
                     catch (System.ComponentModel.Win32Exception we)
                     {

@@ -241,15 +241,15 @@ namespace TimeTableAutoCompleteTool
                 }
                 if(_cm.trainType == 4)
                 {
-                    unrecognazedTrains = unrecognazedTrains + "-标注加开\n";
+                    unrecognazedTrains = unrecognazedTrains + "-标注加开、";
                 }
                 else
                 {
-                    unrecognazedTrains = unrecognazedTrains + "\n";
+                    unrecognazedTrains = unrecognazedTrains + "、";
                 }
 
             }
-            unrecognazedTrains = unrecognazedTrains + "\n共" + count + "列";
+            unrecognazedTrains = unrecognazedTrains + "\n共" + count + "列\n";
             operationChanged_rtb.Text = statisticsText;
             unrecognizedTrain_rtb.Text = unrecognazedTrains;
             continueTrainProblems_rtb.Text = continueTrainAnalyse;
@@ -355,7 +355,7 @@ namespace TimeTableAutoCompleteTool
             Para2.AppendText("列车开行情况：\n"+staticText + "\n\n");
 
             Paragraph Para3 = section.AddParagraph();
-            Para3.AppendText("未在图列车（可能出现加开车，请核对命令）：\n" + unrecognazedTrains);
+            Para3.AppendText("客调命令多出列车（包含识别错误车次，可能有加开车，请三场留存）：\n" + unrecognazedTrains);
 
             Paragraph Para4 = section.AddParagraph();
             Para4.AppendText("接续列车修改情况：\n"+continueTrainText);
