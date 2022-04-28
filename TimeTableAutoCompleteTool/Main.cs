@@ -80,9 +80,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 79 - v20220413";
-        string readMe = "build79更新内容:\n" +
-            " 运转增加将停开车删除功能，增加按方向进行统计功能，增加未在图列车展示\n";
+        string build = "build 80 - v20220428";
+        string readMe = "build80更新内容:\n" +
+            " 运转增加将停开车删除功能，增加按方向进行统计功能，增加未在图列车展示\n△修复因罗马数字导致车次统计少的问题\n修复了最下面一行被删除的问题\n修复了DJ5902/0J5901重复统计的问题\n修复了去动车所方向未纳入统计的问题\n现在接续列车可辅助查找不在底图列车";
         //综控可以读取07版Excel（运转仅03版）
         public Main()
         {
@@ -1872,8 +1872,7 @@ namespace TimeTableAutoCompleteTool
             //首次循环，找空行
             for (int i =titleRow + 1; i <= sheet.LastRowNum; i++)
             {
-                {
-                    if (sheet.GetRow(i) != null)
+                if (sheet.GetRow(i) != null)
                     {
                         IRow row = sheet.GetRow(i);
                         //如果是空的（车次那一列被删了）
@@ -1905,13 +1904,15 @@ namespace TimeTableAutoCompleteTool
                                         nextRow.GetCell(j1).SetCellValue("");
                                     }
                                     //因为把字挪动到上面行了，因此上面行作为“最后找到有字的行”标识
-                                    lastFoundRow = i;
+                                    if (i > lastFoundRow)
+                                    {
+                                        lastFoundRow = i;
+                                    }
                                     break;
                                 }
                             }
                         }
                     }
-                }
                 if(stoppedStationAt.Count == 2 && trainNumAt.Count == 2)
                 {
                     if (sheet.GetRow(i) != null)
@@ -1925,7 +1926,6 @@ namespace TimeTableAutoCompleteTool
                         if (row.GetCell(trainNumAt[1]).ToString().Length == 0)
                         {
                             //往下找内容，挪动到这一行
-
                             for (int next = i + 1; next <= sheet.LastRowNum; next++)
                             {
                                 if (sheet.GetRow(next) == null)
@@ -1947,7 +1947,10 @@ namespace TimeTableAutoCompleteTool
                                         nextRow.GetCell(j2).SetCellValue("");
                                     }
                                     //因为把字挪动到上面行了，因此上面行作为“最后找到有字的行”标识
-                                    lastFoundRow = i;
+                                    if(i > lastFoundRow)
+                                    {
+                                        lastFoundRow = i;
+                                    }
                                     break;
                                 }
                             }
@@ -2001,9 +2004,10 @@ namespace TimeTableAutoCompleteTool
             }
             */
 
+
             //删除空行
             int lastRow = sheet.LastRowNum;
-                for (int ij = lastFoundRow; ij <= lastRow; ij++)
+                for (int ij = lastFoundRow + 1; ij <= lastRow; ij++)
                 {
                     if (ij > sheet.LastRowNum - 1)
                     {
@@ -2035,6 +2039,23 @@ namespace TimeTableAutoCompleteTool
                     }
 
                 }
+            //202204找遗漏车：G1263
+            /*
+            for (int testR = 5; testR <= sheet.LastRowNum; testR++)
+            {
+                IRow testRow = sheet.GetRow(testR);
+                for (int testC = 0; testC <= testRow.LastCellNum; testC++)
+                {
+                    if (testRow.GetCell(testC) != null)
+                    {
+                        if (testRow.GetCell(testC).ToString().Contains("G1263"))
+                        {
+                            bool found = true;
+                        }
+                    }
+                }
+            }
+            */
             //把表的格式刷一下（用制表工具的方法）
             //用来给表格填斜杠用的
             //格式-标准
@@ -2271,7 +2292,15 @@ namespace TimeTableAutoCompleteTool
                     record_upOrDown = _uod;
                 }
                 targetStationColumn = _st.startedTimeColumn;
+                if(targetStationColumn == 0)
+                {
+                    targetStationColumn = _st.stoppedTimeColumn;
+                }
                 //获得了数据，开始找有多少车
+                if (_st.stationName.Contains("动车所"))
+                {
+                    int test = 0;
+                }
                 for(int i = 4; i <= sheet.LastRowNum; i++)
                 {
                     if(sheet.GetRow(i) == null)
@@ -2411,6 +2440,71 @@ namespace TimeTableAutoCompleteTool
             return text;
         }
 
+        //罗马数字转阿拉伯数字
+        public int RomanToInt(string roman)
+        {
+
+            roman = roman.ToUpper();
+            roman.Replace("_V", "S");
+            roman.Replace("_X", "R");
+            roman.Replace("_L", "Q");
+            roman.Replace("_C", "P");
+            roman.Replace("_D", "O");
+            roman.Replace("_M", "N");
+
+            int arabic = 0, sidx = 0;
+            int len = roman.Length - 1;
+            char[] data = roman.ToCharArray();
+
+            while (len >= 0)
+            {
+                int i = 0;
+                sidx = len;
+
+                arabic += Convert2(data[sidx]);
+                i++;
+                len--;
+            }
+
+            return arabic;
+        }
+
+        private int Convert2(char c)
+        {
+            switch (c)
+            {
+                case 'I':
+                    return 1;
+                case 'V':
+                    return 5;
+                case 'X':
+                    return 10;
+                case 'L':
+                    return 50;
+                case 'C':
+                    return 100;
+                case 'D':
+                    return 500;
+                case 'M':
+                    return 1000;
+                case 'S':
+                    return 5000;
+                case 'R':
+                    return 10000;
+                case 'Q':
+                    return 50000;
+                case 'P':
+                    return 100000;
+                case 'O':
+                    return 500000;
+                case 'N':
+                    return 1000000;
+                default:
+                    return 0;
+
+            }
+        }
+
 
         private void updateTimeTable()
         {
@@ -2433,6 +2527,9 @@ namespace TimeTableAutoCompleteTool
                 //仅本场开行列车
                 int onlyThisStationStartTrains = 0;
                 int onlyThisStationStopTrains = 0;
+                //京广场两个车次删掉一个
+                bool hasFoundDJ5902 = false;
+                bool hasFound0J5901 = false;
                 //高峰临客周末统计
                 int rushHourTrain = 0;
                 int tempTrain = 0;
@@ -2826,6 +2923,7 @@ namespace TimeTableAutoCompleteTool
                                             !row.GetCell(j).ToString().Contains("续") &&
                                             !row.GetCell(j).ToString().Contains("开行"))
                                         {
+
                                             //时刻表中车次+1
                                             allTrainsInTimeTable++;
                                             //去中文后再找-去掉高峰-周末-临客等字
@@ -2850,6 +2948,7 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         //若遍历后都没有找到 停运+1
                                         bool ContainsTrainNumber = false;
+
                                         for (int ij = 0; ij < commandModel.Count; ij++)
                                         {
                                             //客调不含的停运车
@@ -2866,7 +2965,44 @@ namespace TimeTableAutoCompleteTool
                                                 commandModel[ij].MatchedWithTimeTable = true;
                                                 //车次统计+1
                                                 allTrainsCount++;
-
+                                                //202204两个DJ5902只统计一次（特殊车统计方法）
+                                                if (station.Contains("京广") && 
+                                                    commandModel[ij].trainNumber.Equals("DJ5902") &&
+                                                    commandModel[ij].streamStatus != 0 &&
+                                                    !hasFoundDJ5902)
+                                                {
+                                                    allTrainsInTimeTable = allTrainsInTimeTable - 1;
+                                                    hasFoundDJ5902 = true;
+                                                    onlyThisStationStartTrains = onlyThisStationStartTrains - 1;
+                                                }
+                                                else if(station.Contains("京广") &&
+                                                    commandModel[ij].trainNumber.Equals("DJ5902") &&
+                                                    commandModel[ij].streamStatus == 0 &&
+                                                    !hasFoundDJ5902)
+                                                {
+                                                    stoppedTrainsCount = stoppedTrainsCount - 1;
+                                                    hasFoundDJ5902 = true;
+                                                    onlyThisStationStopTrains = onlyThisStationStopTrains - 1;
+                                                }
+                                                //202204两个0J5901只统计一次（特殊车统计方法）
+                                                if (station.Contains("京广") &&
+                                                    commandModel[ij].trainNumber.Equals("0J5901") &&
+                                                    commandModel[ij].streamStatus != 0 &&
+                                                    !hasFound0J5901)
+                                                {
+                                                    allTrainsInTimeTable = allTrainsInTimeTable - 1;
+                                                    hasFound0J5901 = true;
+                                                    onlyThisStationStartTrains = onlyThisStationStartTrains - 1;
+                                                }
+                                                else if (station.Contains("京广") &&
+                                                    commandModel[ij].trainNumber.Equals("0J5901") &&
+                                                    commandModel[ij].streamStatus == 0 &&
+                                                    !hasFound0J5901)
+                                                {
+                                                    stoppedTrainsCount = stoppedTrainsCount - 1;
+                                                    hasFound0J5901 = true;
+                                                    onlyThisStationStopTrains = onlyThisStationStopTrains - 1;
+                                                }
 
                                                 int _trainNumber = -1;
                                                 string getNumber = Regex.Replace(row.GetCell(j).ToString().Trim(), @"[^0-9]+", "");
@@ -3134,9 +3270,16 @@ namespace TimeTableAutoCompleteTool
                                                 int tempTrack = 0;
                                                 if (station.Contains("徐兰"))
                                                 {//相应的股道列不为空，并且是21-32
-                                                    if (row.GetCell(j)!=null &&row.GetCell(trackNumColumnNum[currentTrainNumIndex])!=null)
+                                                    if (row.GetCell(j)!=null &&row.GetCell(trackNumColumnNum[currentTrainNumIndex])!=null &&
+                                                    row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim().Length != 0)
                                                     {
-                                                        int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
+                                                    string numberOfTrack = row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim();
+                                                    int.TryParse(numberOfTrack, out tempTrack);
+                                                    if(tempTrack == 0)
+                                                    {
+                                                        //罗马转阿拉伯数字
+                                                        tempTrack = RomanToInt(numberOfTrack);
+                                                    }
                                                         if (tempTrack >= 21 && tempTrack <= 32)
                                                         {//是本场车，+1
                                                         isCurrentStationTrain = true;
@@ -3152,7 +3295,13 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     if (row.GetCell(j) != null && row.GetCell(trackNumColumnNum[currentTrainNumIndex]) != null)
                                                     {
-                                                        int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
+                                                    string numberOfTrack = row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim();
+                                                    int.TryParse(numberOfTrack, out tempTrack);
+                                                    if (tempTrack == 0)
+                                                    {
+                                                        //罗马转阿拉伯数字
+                                                        tempTrack = RomanToInt(numberOfTrack);
+                                                    }
                                                         if (tempTrack >= 1 && tempTrack <= 16)
                                                         {//是本场车，+1
                                                         isCurrentStationTrain = true;
@@ -3167,8 +3316,14 @@ namespace TimeTableAutoCompleteTool
                                                 {
                                                     if (row.GetCell(j) != null && row.GetCell(trackNumColumnNum[currentTrainNumIndex]) != null)
                                                     {
-                                                        int.TryParse(row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim(), out tempTrack);
-                                                        if (tempTrack >= 17 && tempTrack <= 20)
+                                                    string numberOfTrack = row.GetCell(trackNumColumnNum[currentTrainNumIndex]).ToString().Trim();
+                                                    int.TryParse(numberOfTrack, out tempTrack);
+                                                    if (tempTrack == 0)
+                                                    {
+                                                        //罗马转阿拉伯数字
+                                                        tempTrack = RomanToInt(numberOfTrack);
+                                                    }
+                                                    if (tempTrack >= 17 && tempTrack <= 20)
                                                         {//是本场车，+1
                                                         isCurrentStationTrain = true;
                                                         if (row.GetCell(j).ToString().Contains("√"))
@@ -3178,6 +3333,7 @@ namespace TimeTableAutoCompleteTool
                                                         }
                                                     }
                                                 }
+                                                
 
                                             //寻找接续问题
                                             string currentTrainNum = "";
@@ -3309,6 +3465,13 @@ namespace TimeTableAutoCompleteTool
                                                                             {
                                                                                 break;
                                                                             }
+                                                                            //202204 接续列车不在图里
+                                                                            else
+                                                                            {
+                                                                                hasGotThat = true;
+                                                                                newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                log = "【！】" + station + "场的" + newContinueTrainNum + "次开行，且不在底图内，请立即检查底图\n" + station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -3431,6 +3594,13 @@ namespace TimeTableAutoCompleteTool
                                                                             if (hasGotThat)
                                                                             {
                                                                                 break;
+                                                                            }
+                                                                            //202204 接续列车不在图里
+                                                                            else
+                                                                            {
+                                                                                hasGotThat = true;
+                                                                                newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                log = "【！】" + station + "场的" + newContinueTrainNum + "次开行，且不在底图内，请立即检查底图\n" + station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
                                                                             }
                                                                         }
                                                                     }

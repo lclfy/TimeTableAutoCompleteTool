@@ -218,11 +218,25 @@ namespace TimeTableAutoCompleteTool
                     continue;
                 }
             }
-            string statisticsText = "郑州东（本站）本日实际开行旅客列车" + startPsngerTrains.Count +
+            string statisticsText = "";
+            if (getSelectedTrains(true, true, false, false, true, true, false, true, false).Count != 0)
+            {
+                statisticsText = "郑州东（本站）本日实际开行旅客列车" + startPsngerTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, true, false, false, true, true, false, true, false).Count + "列），开行其他列车" + startOtherTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, true, false, false, true, false, true, true, false).Count + "列）;停运旅客列车" + stopPsngerTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, false, true, false, true, true, false, true, false).Count + "列）;停运其他列车" + stopOtherTrains.Count +
                 "列（其中临客" + getSelectedTrains(true, false, true, false, true, false, true, true, false).Count + "列。\n" + operationString + "\n";
+
+            }
+            else
+            {
+                statisticsText = "郑州东（本站）本日实际开行旅客列车" + startPsngerTrains.Count +
+                "列，开行其他列车" + startOtherTrains.Count +
+                "列;停运旅客列车" + stopPsngerTrains.Count +
+                "列;停运其他列车" + stopOtherTrains.Count +
+                "列\n" + operationString + "\n";
+
+            }
 
             string unrecognazedTrains = "";
             string notMatchedTrains = "";
@@ -352,13 +366,13 @@ namespace TimeTableAutoCompleteTool
             Para1.AppendText(title + "\n\n");
 
             Paragraph Para2 = section.AddParagraph();
-            Para2.AppendText("列车开行情况：\n"+staticText + "\n\n");
+            Para2.AppendText("一、列车开行情况：\n"+staticText + "\n\n");
 
             Paragraph Para3 = section.AddParagraph();
-            Para3.AppendText("客调命令多出列车（包含识别错误车次，可能有加开车，请三场留存）：\n" + unrecognazedTrains);
+            Para3.AppendText("二、客调命令多出列车（包含识别错误车次，可能有加开车，请三场留存）：\n" + unrecognazedTrains);
 
             Paragraph Para4 = section.AddParagraph();
-            Para4.AppendText("接续列车修改情况：\n"+continueTrainText);
+            Para4.AppendText("三、接续列车修改情况：（！出现错误时，请联系车间修改底图）\n"+continueTrainText);
 
             
 
