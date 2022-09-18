@@ -80,9 +80,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 80 - v20220428";
-        string readMe = "build80更新内容:\n" +
-            " 运转增加将停开车删除功能，增加按方向进行统计功能，增加未在图列车展示\n△修复因罗马数字导致车次统计少的问题\n修复了最下面一行被删除的问题\n修复了DJ5902/0J5901重复统计的问题\n修复了去动车所方向未纳入统计的问题\n现在接续列车可辅助查找不在底图列车";
+        string build = "build 83 - v20220918";
+        string readMe = "build83更新内容:\n" +
+            "增加400 GZ G AZ BZ车型识别";
         //综控可以读取07版Excel（运转仅03版）
         public Main()
         {
@@ -1256,8 +1256,11 @@ namespace TimeTableAutoCompleteTool
                     trainConnectType = 3;
                 }
                 else if (trainModel.Contains("AF-Z") ||
-                    trainModel.Contains("BF-Z"))
+                    trainModel.Contains("BF-Z")||
+                    trainModel.Contains("AF-GZ") ||
+                    trainModel.Contains("BF-GZ"))
                 {
+                    trainConnectType = 0;
                     int test = 0;
                 }
                 else
@@ -1311,7 +1314,15 @@ namespace TimeTableAutoCompleteTool
             }
             if (!trainModel.Contains("+"))
             {
-                if (trainModel.Contains("-A"))
+                if (trainModel.Contains("-AZ"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-AZ";
+                }
+                else if (trainModel.Contains("-BZ"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BZ";
+                }
+                else if (trainModel.Contains("-A"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-A";
                 }
@@ -1319,13 +1330,14 @@ namespace TimeTableAutoCompleteTool
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-B";
                 }
-                else if (trainModel.Contains("-BZ"))
-                {
-                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BZ";
-                }
+
                 else if (trainModel.Contains("-Z"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-Z";
+                }
+                else if (trainModel.Contains("-G"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G";
                 }
                 else
                 {
@@ -1345,6 +1357,14 @@ namespace TimeTableAutoCompleteTool
                 else if (trainModel.Contains("-Z"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-Z+";
+                }
+                else if (trainModel.Contains("-GZ"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-GZ+";
+                }
+                else if (trainModel.Contains("-G"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
                 }
                 else
                 {
@@ -2106,7 +2126,7 @@ namespace TimeTableAutoCompleteTool
             startAndStop.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
             HSSFFont startAndStopFont = (HSSFFont)workbook.CreateFont();
             startAndStopFont.FontName = "宋体";//字体  
-            startAndStopFont.FontHeightInPoints = 15;//字号  
+            startAndStopFont.FontHeightInPoints = 13;//字号  
             startAndStop.SetFont(startAndStopFont);
 
             //格式-车次
@@ -4250,7 +4270,7 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         trainNumberColumn = j;
                                     }
-                                    else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("到时"))
+                                    else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("到时") || row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("到达"))
                                     {
                                         stopTimeColumn = j;
                                     }
@@ -4258,7 +4278,7 @@ namespace TimeTableAutoCompleteTool
                                     {
                                         trackNumColumn = j;
                                     }
-                                    else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("开时"))
+                                    else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("开时") || row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("发车"))
                                     {
                                         startTimeColumn = j;
                                     }
@@ -4280,7 +4300,7 @@ namespace TimeTableAutoCompleteTool
 
             //找数据
             int lastRow = sheet1.LastRowNum;
-            for (int j = titleRow; j < lastRow; j++)
+            for (int j = titleRow; j <= lastRow; j++)
             {
                 IRow _readingRow = sheet1.GetRow(j);
                 if (_readingRow != null)
@@ -4299,7 +4319,7 @@ namespace TimeTableAutoCompleteTool
                     {//车次
                         if (_readingRow.GetCell(trainNumberColumn).ToString().Length != 0)
                         {
-                            _tempModel.trainNumber = _readingRow.GetCell(trainNumberColumn).ToString();
+                            _tempModel.trainNumber = _readingRow.GetCell(trainNumberColumn).ToString().Replace("TQ","");
                         }
                     }
                     if (_readingRow.GetCell(startStationColumn) != null && startStationColumn != 0)
@@ -5570,6 +5590,14 @@ namespace TimeTableAutoCompleteTool
                 bool hasGotOne = false;
                 for (int i = 0; i < emuCheckModel.Count; i++)
                 {
+                    if (emuCheckModel[i].trainNumber.Trim().Contains("0G370"))
+                    {
+                        int test = 0;
+                        if (commandModel[i].trainNumber.Trim().Contains("0G370"))
+                        {
+                            int test1 = 0;
+                        }
+                    }
                     if (emuCheckModel[i].trainNumber.Trim().Equals(commandModel[j].trainNumber.Trim()) ||
                         emuCheckModel[i].trainNumber.Trim().Equals(commandModel[j].secondTrainNumber.Trim()))
                     {//对比车次
@@ -5662,8 +5690,43 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
             }
-            _emuCheckModel.Sort();
-            allEmuCheckModel = _emuCheckModel;
+            //_emuCheckModel.Sort();
+            List<EMUCheckModel> _sortedCheckModel = new List<EMUCheckModel>();
+            List<EMUCheckModel> _nonContainedCheckModel = new List<EMUCheckModel>();
+            //202206 EMUTrain Sort
+            foreach(EMUCheckModel _temp in _emuCheckModel)
+            {
+                if(_temp.startTime != null)
+                {
+                    if(_temp.startTime.Trim().Length != 0)
+                    {
+                        _sortedCheckModel.Add(_temp);
+                    }
+                    else
+                    {
+                        _nonContainedCheckModel.Add(_temp);
+                    }
+                }
+                else
+                {
+                    _nonContainedCheckModel.Add(_temp);
+                }
+            }
+            _sortedCheckModel.Sort();
+            for(int ij = 0; ij < _sortedCheckModel.Count; ij++)
+            {
+                _sortedCheckModel[ij].id = ij + 1;
+            }
+            List<EMUCheckModel> newEMUCheckModel = new List<EMUCheckModel>();
+            foreach(EMUCheckModel _temp1 in _nonContainedCheckModel)
+            {
+                newEMUCheckModel.Add(_temp1);
+            }
+            foreach (EMUCheckModel _temp2 in _sortedCheckModel)
+            {
+                newEMUCheckModel.Add(_temp2);
+            }
+            allEmuCheckModel = newEMUCheckModel;
             //最后一步 打印
             createEMUC_Table();
         }
@@ -8587,7 +8650,7 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 _pm.trainConnectType = 2;
                                                 //400AF-Z-XXX+XXX
-                                                if (trainID.Contains("-Z") || trainID.Contains("-z"))
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz"))
                                                 {
                                                     if(value.Split('-').Length >= 3)
                                                     {
@@ -8611,7 +8674,7 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 //400AF-Z-XXX
                                                 _pm.trainConnectType = 0;
-                                                if (trainID.Contains("-Z") || trainID.Contains("-z"))
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz"))
                                                 {
                                                     if (value.Split('-').Length >= 3)
                                                     {
