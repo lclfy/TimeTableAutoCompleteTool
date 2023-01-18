@@ -145,3 +145,4 @@ E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAu
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CopyComplete
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll

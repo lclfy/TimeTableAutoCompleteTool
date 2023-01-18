@@ -82,9 +82,9 @@ namespace TimeTableAutoCompleteTool
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
         string build = "build 84 - v20230118";
         string readMe = "build84更新内容:\n" +
-            "修复大令bug，“删除停运车”改为默认不勾选";
+            "修复大令bug，“删除停运车”改为默认不勾选，运转接续列车纠错时显示全部车次";
         //综控可以读取07版Excel（运转仅03版）
-        //230118，统一用3.5版本，没有的装包
+        //230118，用3.5版本或者4.6.2
         public Main()
         {
             InitializeComponent();
@@ -1407,26 +1407,6 @@ namespace TimeTableAutoCompleteTool
                    AllTrainNumberInOneRaw[k].Contains("J") ||
                    AllTrainNumberInOneRaw[k].Contains("00"))
                 {
-                    //230118，把车次前面的无关字符去掉，避免bug
-                    Char[] TrainChar = AllTrainNumberInOneRaw[k].ToCharArray();
-                    string tempWord = "";
-                    for(int p = 0; p < TrainChar.Length; p++)
-                    {
-                        if (TrainChar[p].ToString().Contains("G")||
-                            TrainChar[p].ToString().Contains("D") ||
-                            TrainChar[p].ToString().Contains("C") ||
-                            TrainChar[p].ToString().Contains("J") ||
-                            TrainChar[p].ToString().Contains("00"))
-                        {
-                            //找到了，后面的都是车次
-                            for(int u = p; u < TrainChar.Length; u++)
-                            {
-                                tempWord = tempWord + TrainChar[u];
-                            }
-                            break;
-                        }
-                    }
-                    AllTrainNumberInOneRaw[k] = tempWord;
                     if (AllTrainNumberInOneRaw[k].Contains("/") && !AllTrainNumberInOneRaw[k].Contains("G/"))
                     {
                         string _trainNumber = "";
@@ -1466,7 +1446,8 @@ namespace TimeTableAutoCompleteTool
                         }
                         Char[] firstTrainWord = trainWithDoubleNumber[0].ToCharArray();
                         String secondTrainWord = "";
-                        if(trainWithDoubleNumber.Length > 1)
+                        //230118，把车次前面的无关字符去掉，避免bug
+                        if (trainWithDoubleNumber.Length > 1)
                         {
                             for (int q = 0; q < firstTrainWord.Length; q++)
                             {
@@ -3515,6 +3496,29 @@ namespace TimeTableAutoCompleteTool
                                                                             {
                                                                                 hasGotThat = true;
                                                                                 newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                if (commandModel[il].secondTrainNumber.Length != 0&&
+                                                                                    !commandModel[il].secondTrainNumber.Contains("null"))
+                                                                                {
+                                                                                    char[] firstTrainNum = commandModel[il].trainNumber.ToCharArray();
+                                                                                    char[] secondTrainNum = commandModel[il].secondTrainNumber.ToCharArray();
+                                                                                    string addedText = "";
+                                                                                    for (int lk = 0;lk < firstTrainNum.Length; lk++)
+                                                                                    {
+                                                                                        if(secondTrainNum.Length > lk)
+                                                                                        {
+                                                                                            if (firstTrainNum[lk].Equals(secondTrainNum[lk]))
+                                                                                            {
+                                                                                                continue;
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                addedText = addedText + secondTrainNum[lk];
+                                                                                            }
+                                                                                        }
+
+                                                                                    }
+                                                                                    newContinueTrainNum = newContinueTrainNum + "/" + addedText;
+                                                                                }
                                                                                 log = "【！】" + station + "场的" + newContinueTrainNum + "次开行，且不在底图内，请立即检查底图\n" + station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
                                                                             }
                                                                         }
