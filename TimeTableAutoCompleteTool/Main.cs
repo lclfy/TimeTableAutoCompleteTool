@@ -84,6 +84,7 @@ namespace TimeTableAutoCompleteTool
         string readMe = "build84更新内容:\n" +
             "修复大令bug，“删除停运车”改为默认不勾选";
         //综控可以读取07版Excel（运转仅03版）
+        //230118，统一用3.5版本，没有的装包
         public Main()
         {
             InitializeComponent();
