@@ -177,14 +177,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="301568">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="302080">
       <assemblyIdentity name="TimeTableAutoCompleteTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>vfJo660g5rEHHrtaQYM7VZT0jpo=</dsig:DigestValue>
+        <dsig:DigestValue>OgFc7ZIrjdp3peMQYeUMDwm2YJc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -206,15 +206,6 @@
       <dsig:DigestValue>/cD5FgNjE7+1HTGBVwqJwM6tSd4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Spire.Doc.dll" size="7188480">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>qCrwluRgWtqfxVxMkntbxLhBB6A=</dsig:DigestValue>
-    </hash>
-  </file>
   <file name="Spire.Doc.XML" size="764515" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
@@ -224,15 +215,6 @@
       <dsig:DigestValue>kJM3pUGZzXUz42AGJoXyUgply0I=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Spire.License.dll" size="55296">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>3QZsFm1KzH9LKmnO3dgDymlL+rw=</dsig:DigestValue>
-    </hash>
-  </file>
   <file name="Spire.License.xml" size="4674" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
@@ -240,15 +222,6 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
       <dsig:DigestValue>pzJNJgK7NPZt20mxKsc/ANKsib0=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Spire.Pdf.dll" size="13258752">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>8c6QvA1GcIEgP/xqcSgMX7WY2ys=</dsig:DigestValue>
     </hash>
   </file>
   <file name="TimeTableAutoCompleteTool.exe.config" size="252">
