@@ -80,9 +80,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 84 - v20230118";
-        string readMe = "build84更新内容:\n" +
-            "修复大令bug，“删除停运车”改为默认不勾选，运转接续列车纠错时显示全部车次";
+        string build = "build 85 - v20230119";
+        string readMe = "build85更新内容:\n" +
+            "修复大令问题，运转查错增加全车次，“删除停运车”默认不勾选，增加上水计划";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -194,7 +194,7 @@ namespace TimeTableAutoCompleteTool
                 yesterdayCommand_rtb.Text = "";
                 developerLabel.Text = developer;
                 startBtnCheck();
-                radioButton4.Checked = true;
+                radioButton6.Checked = true;
                 label111.Visible = false;
                 label222.Visible = false;
                 FontSize_tb.Visible = false;
@@ -420,11 +420,15 @@ namespace TimeTableAutoCompleteTool
                 {
                     if (radioButton4.Checked)
                     {
-                        readBasicTrainTable();
+                        readBasicTrainTable(false, false, false);
                     }
                     else if (radioButton5.Checked)
                     {
                         readEMUCTable();
+                    }
+                    else if (radioButton6.Checked)//上水
+                    {
+                        readBasicTrainTable(false, false, true);
                     }
                 }
                 else if (commandModel.Count != 0 && radioButton3.Checked)
@@ -3848,14 +3852,14 @@ namespace TimeTableAutoCompleteTool
         }
 
         //读基本图-存模型
-        private void readBasicTrainTable(bool isComparing = false,bool isCompareingDailySchedues = false)
+        private void readBasicTrainTable(bool isComparing = false, bool isCompareingDailySchedues = false, bool isSupplyWater = false)
         {
             if (ExcelFile == null)
             {
                 MessageBox.Show("请重新选择班计划文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            if(isCompareingDailySchedues && yesterdayExcelFile.Length == 0)
+            if (isCompareingDailySchedues && yesterdayExcelFile.Length == 0)
             {
                 MessageBox.Show("请重新选择用于对比的班计划文件~", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -3871,6 +3875,7 @@ namespace TimeTableAutoCompleteTool
             }
             IWorkbook workbook = null;  //新建IWorkbook对象  
             basicTrainGraphTitle titleInfo = new basicTrainGraphTitle();
+            //上水
             List<DailySchedule> _dailyScheduleModel = new List<DailySchedule>();
             try
             {
@@ -3915,8 +3920,8 @@ namespace TimeTableAutoCompleteTool
                         if (row.GetCell(0) != null && row.GetCell(1) != null)
                         {//发送为民权北
                             if (row.GetCell(0).ToString().Contains("序号") ||
-                                row.GetCell(0).ToString().Contains("预售")||
-                                row.GetCell(0).ToString().Contains("发送")||
+                                row.GetCell(0).ToString().Contains("预售") ||
+                                row.GetCell(0).ToString().Contains("发送") ||
                                 row.GetCell(1).ToString().Contains("车次"))
                             {
                                 titleRow.Add(i);
@@ -3941,6 +3946,11 @@ namespace TimeTableAutoCompleteTool
                                         else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("终到站"))
                                         {
                                             titleInfo.stopStationColumn = j;
+                                        }
+                                        else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("区间"))
+                                        {
+                                            isSupplyWater = true;
+                                            titleInfo.startStationColumn = j;
                                         }
                                         else if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("到时"))
                                         {
@@ -4024,7 +4034,15 @@ namespace TimeTableAutoCompleteTool
                             {//始发站
                                 if (_readingRow.GetCell(titleInfo.startStationColumn).ToString().Length != 0)
                                 {
-                                    tempModel.startStation = _readingRow.GetCell(titleInfo.startStationColumn).ToString();
+                                    if (isSupplyWater)
+                                    {
+                                        tempModel.startStation = _readingRow.GetCell(titleInfo.startStationColumn).ToString();
+                                    }
+                                    else
+                                    {
+                                        tempModel.startStation = _readingRow.GetCell(titleInfo.startStationColumn).ToString();
+                                    }
+
                                 }
                             }
                             if (_readingRow.GetCell(titleInfo.stopStationColumn) != null && titleInfo.stopStationColumn != 0)
@@ -4180,7 +4198,7 @@ namespace TimeTableAutoCompleteTool
                     //下一步-处理数据
                     if (!isComparing)
                     {
-                        analyzeDailyScheduleData(_dailyScheduleModel);
+                        analyzeDailyScheduleData(_dailyScheduleModel, isSupplyWater);
                     }
                     else
                     {
@@ -4194,7 +4212,7 @@ namespace TimeTableAutoCompleteTool
                     }
                 }
                 //双班计划对比
-                else if(isCompareingDailySchedues)
+                else if (isCompareingDailySchedues)
                 {
                     yesterdayAllDailyScheduleModel = _dailyScheduleModel;
                 }
@@ -4205,7 +4223,7 @@ namespace TimeTableAutoCompleteTool
             }
             catch (Exception e)
             {
-                MessageBox.Show("请确认是否选择了正确的班计划文件~\n" + "错误内容："+e.Message.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("请确认是否选择了正确的班计划文件~\n" + "错误内容：" + e.Message.ToString(), "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
         }
@@ -5190,7 +5208,7 @@ namespace TimeTableAutoCompleteTool
         }
 
         //核对客调令，处理班计划顺序
-        private void analyzeDailyScheduleData(List<DailySchedule> dailyScheduleModel)
+        private void analyzeDailyScheduleData(List<DailySchedule> dailyScheduleModel, bool isSupplyWater)
         {
             int counter = 1;
             List<DailySchedule> _dailyScheduleModel = new List<DailySchedule>();
@@ -5200,7 +5218,7 @@ namespace TimeTableAutoCompleteTool
                 bool hasGotOne = false;
                 for (int i = 0; i < dailyScheduleModel.Count; i++)
                 {
-                    if(dailyScheduleModel[i].trainNumber == null)
+                    if (dailyScheduleModel[i].trainNumber == null)
                     {
                         continue;
                     }
@@ -5537,7 +5555,7 @@ namespace TimeTableAutoCompleteTool
                                 {
                                     _ds.trainModel = commandModel[j].trainModel;
                                 }
-                                if (_ds.streamStatus != 0)
+                                if (_ds.streamStatus != 0 && !isSupplyWater)
                                 {
                                     _ds.id = -1;
                                     _ds.extraText = "人工核对-客调令多出";
@@ -5605,7 +5623,7 @@ namespace TimeTableAutoCompleteTool
             }
             allDailyScheduleModel = _dailyScheduleModel;
             //最后一步 打印
-            createDailySchedule();
+            createDailySchedule(isSupplyWater);
         }
 
         //筛选不开行的动检车
@@ -5723,11 +5741,11 @@ namespace TimeTableAutoCompleteTool
             List<EMUCheckModel> _sortedCheckModel = new List<EMUCheckModel>();
             List<EMUCheckModel> _nonContainedCheckModel = new List<EMUCheckModel>();
             //202206 EMUTrain Sort
-            foreach(EMUCheckModel _temp in _emuCheckModel)
+            foreach (EMUCheckModel _temp in _emuCheckModel)
             {
-                if(_temp.startTime != null)
+                if (_temp.startTime != null)
                 {
-                    if(_temp.startTime.Trim().Length != 0)
+                    if (_temp.startTime.Trim().Length != 0)
                     {
                         _sortedCheckModel.Add(_temp);
                     }
@@ -5742,12 +5760,12 @@ namespace TimeTableAutoCompleteTool
                 }
             }
             _sortedCheckModel.Sort();
-            for(int ij = 0; ij < _sortedCheckModel.Count; ij++)
+            for (int ij = 0; ij < _sortedCheckModel.Count; ij++)
             {
                 _sortedCheckModel[ij].id = ij + 1;
             }
             List<EMUCheckModel> newEMUCheckModel = new List<EMUCheckModel>();
-            foreach(EMUCheckModel _temp1 in _nonContainedCheckModel)
+            foreach (EMUCheckModel _temp1 in _nonContainedCheckModel)
             {
                 newEMUCheckModel.Add(_temp1);
             }
@@ -5761,600 +5779,765 @@ namespace TimeTableAutoCompleteTool
         }
 
         //创建班计划
-        private void createDailySchedule(bool isCompareingDailySchedues = false)
+        private void createDailySchedule(bool isSupplyWater, bool isCompareingDailySchedues = false)
         {
             //创建Excel文件名称
 
             try
             {
-            FileStream fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
-            if (isCompareingDailySchedues)
-            {
-                fs.Close();
-                fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls");
-            }
-
-            //创建工作薄
-            IWorkbook workbook = new HSSFWorkbook();
-
-            //表格样式
-            ICellStyle boldStyle = workbook.CreateCellStyle();
-            boldStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            boldStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            boldStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            boldStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            boldStyle.WrapText = true;
-            boldStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            boldStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            boldStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
-            HSSFFont fontBold = (HSSFFont)workbook.CreateFont();
-            fontBold.FontName = "宋体";//字体  
-            fontBold.FontHeightInPoints = 10;//字号  
-            fontBold.IsBold = true;//加粗  
-            boldStyle.SetFont(fontBold);
-
-            //表格样式
-            ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
-            stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-            stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
-            stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-            stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            stoppedTrainStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
-
-            ICellStyle stoppedTimeStyle = workbook.CreateCellStyle();
-            stoppedTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-            stoppedTimeStyle.FillPattern = FillPattern.SolidForeground;
-            stoppedTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
-            stoppedTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            stoppedTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            stoppedTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            stoppedTimeStyle.DataFormat = 20;
-
-            //对比出不同的值时候的黄色
-            ICellStyle differentCellStyle = workbook.CreateCellStyle();
-            differentCellStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-            differentCellStyle.FillPattern = FillPattern.SolidForeground;
-            differentCellStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-            differentCellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentCellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentCellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentCellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentCellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            differentCellStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            differentCellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
-
-            ICellStyle differentTimeStyle = workbook.CreateCellStyle();
-            differentTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-            differentTimeStyle.FillPattern = FillPattern.SolidForeground;
-            differentTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
-            differentTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            differentTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            differentTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            differentTimeStyle.DataFormat = 20;
-
-            HSSFFont font = (HSSFFont)workbook.CreateFont();
-            font.FontName = "宋体";//字体  
-            font.FontHeightInPoints = 10;//字号  
-            font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
-            stoppedTimeStyle.SetFont(font);
-            stoppedTrainStyle.SetFont(font);
-
-            ICellStyle normalStyle = workbook.CreateCellStyle();
-            normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalStyle.WrapText = true;
-            normalStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-            normalStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
-
-
-            //IDataFormat dataformat = workbook.CreateDataFormat();
-            ICellStyle normalTimeStyle = workbook.CreateCellStyle();
-            normalTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalTimeStyle.WrapText = true;
-            normalTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            normalTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
-            normalTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
-                                                                                           //176是综控用于时间的格式
-            normalTimeStyle.DataFormat = 20;
-            //normalTimeStyle.DataFormat = dataformat.GetFormat("HH:mm");
-
-            HSSFFont fontNormal = (HSSFFont)workbook.CreateFont();
-            fontNormal.FontName = "宋体";//字体  
-            fontNormal.FontHeightInPoints = 10;//字号  
-            normalStyle.SetFont(fontNormal);
-            normalTimeStyle.SetFont(fontNormal);
-            differentCellStyle.SetFont(fontNormal);
-            differentTimeStyle.SetFont(fontNormal);
-
-            //创建sheet
-            ISheet sheet = workbook.CreateSheet("基本图");
-            //标注预售
-            int presaleHour = 0;
-            int startPresaleRow = 0;
-            for (int i = 0; i < 2 + allDailyScheduleModel.Count; i++)
-            {
-                IRow row = sheet.CreateRow(i);
-                if (i == 0)
+                FileStream fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls");
+                if (isCompareingDailySchedues)
                 {
-                    for (int count = 0; count < 16; count++)
+                    fs.Close();
+                    fs = File.Create(Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls");
+                }
+
+                //创建工作薄
+                IWorkbook workbook = new HSSFWorkbook();
+
+                //表格样式
+                ICellStyle boldStyle = workbook.CreateCellStyle();
+                boldStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                boldStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                boldStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                boldStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                boldStyle.WrapText = true;
+                boldStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                boldStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                boldStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+                HSSFFont fontBold = (HSSFFont)workbook.CreateFont();
+                fontBold.FontName = "宋体";//字体  
+                fontBold.FontHeightInPoints = 10;//字号  
+                fontBold.IsBold = true;//加粗  
+                boldStyle.SetFont(fontBold);
+
+                //表格样式
+                ICellStyle stoppedTrainStyle = workbook.CreateCellStyle();
+                stoppedTrainStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.FillPattern = FillPattern.SolidForeground;
+                stoppedTrainStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTrainStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTrainStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                stoppedTrainStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                stoppedTrainStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+                ICellStyle stoppedTimeStyle = workbook.CreateCellStyle();
+                stoppedTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTimeStyle.FillPattern = FillPattern.SolidForeground;
+                stoppedTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+                stoppedTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                stoppedTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                stoppedTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                stoppedTimeStyle.DataFormat = 20;
+
+                //对比出不同的值时候的黄色
+                ICellStyle differentCellStyle = workbook.CreateCellStyle();
+                differentCellStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                differentCellStyle.FillPattern = FillPattern.SolidForeground;
+                differentCellStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                differentCellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentCellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentCellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentCellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentCellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                differentCellStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                differentCellStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+                ICellStyle differentTimeStyle = workbook.CreateCellStyle();
+                differentTimeStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                differentTimeStyle.FillPattern = FillPattern.SolidForeground;
+                differentTimeStyle.FillBackgroundColor = NPOI.HSSF.Util.HSSFColor.LightYellow.Index;
+                differentTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                differentTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                differentTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                differentTimeStyle.DataFormat = 20;
+
+                HSSFFont font = (HSSFFont)workbook.CreateFont();
+                font.FontName = "宋体";//字体  
+                font.FontHeightInPoints = 10;//字号  
+                font.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+                stoppedTimeStyle.SetFont(font);
+                stoppedTrainStyle.SetFont(font);
+
+                ICellStyle normalStyle = workbook.CreateCellStyle();
+                normalStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalStyle.WrapText = true;
+                normalStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                normalStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                normalStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("@");
+
+
+                //IDataFormat dataformat = workbook.CreateDataFormat();
+                ICellStyle normalTimeStyle = workbook.CreateCellStyle();
+                normalTimeStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTimeStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTimeStyle.WrapText = true;
+                normalTimeStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTimeStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                normalTimeStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+                normalTimeStyle.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;//垂直
+                                                                                               //176是综控用于时间的格式
+                normalTimeStyle.DataFormat = 20;
+                //normalTimeStyle.DataFormat = dataformat.GetFormat("HH:mm");
+
+                HSSFFont fontNormal = (HSSFFont)workbook.CreateFont();
+                fontNormal.FontName = "宋体";//字体  
+                fontNormal.FontHeightInPoints = 10;//字号  
+                normalStyle.SetFont(fontNormal);
+                normalTimeStyle.SetFont(fontNormal);
+                differentCellStyle.SetFont(fontNormal);
+                differentTimeStyle.SetFont(fontNormal);
+
+                //创建sheet
+                ISheet sheet = workbook.CreateSheet("基本图");
+                //标注预售
+                int presaleHour = 0;
+                int startPresaleRow = 0;
+                for (int i = 0; i < 2 + allDailyScheduleModel.Count; i++)
+                {
+                    IRow row = sheet.CreateRow(i);
+                    if (i == 0)
                     {
-                        row.CreateCell(count);
-                        row.GetCell(count).CellStyle = boldStyle;
+                        for (int count = 0; count < 16; count++)
+                        {
+                            row.CreateCell(count);
+                            row.GetCell(count).CellStyle = boldStyle;
+                        }
+                        //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                        if (!isSupplyWater)
+                        {
+                            sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, 15));
+                        }
+                        else
+                        {
+                            sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, 10));
+                        }
+
+                        row.Height = 15 * 20;
+                        if (!isCompareingDailySchedues)
+                        {
+                            row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日班计划");
+                        }
+                        else
+                        {
+                            row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日对比");
+                        }
+                        row.GetCell(0).CellStyle = boldStyle;
                     }
-                    //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
-                    sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, 15));
-                    row.Height = 15 * 20;
-                    if (!isCompareingDailySchedues)
+                    else if (i == 1)
                     {
-                        row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日班计划");
+                        row.Height = 32 * 20;
+                        for (int count = 0; count < 17; count++)
+                        {
+                            if (count == 16 && !isCompareingDailySchedues)
+                            {
+                                break;
+                            }
+                            if (isSupplyWater)
+                            {
+                                switch (count)
+                                {
+                                    case 0:
+                                        row.CreateCell(count).SetCellValue("序\n号");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 1:
+                                        row.CreateCell(count).SetCellValue("车次");
+                                        sheet.SetColumnWidth(count, 9 * 256);
+                                        break;
+                                    case 2:
+                                        row.CreateCell(count).SetCellValue("区间");
+                                        sheet.SetColumnWidth(count, 20 * 256);
+                                        break;
+                                    case 3:
+                                        row.CreateCell(count).SetCellValue("到时");
+                                        sheet.SetColumnWidth(count, 6 * 256);
+                                        break;
+                                    case 4:
+                                        row.CreateCell(count).SetCellValue("开时");
+                                        sheet.SetColumnWidth(count, 6 * 256);
+                                        break;
+                                    case 5:
+                                        row.CreateCell(count).SetCellValue("停\n时");
+                                        sheet.SetColumnWidth(count, 3 * 256);
+                                        break;
+                                    case 6:
+                                        row.CreateCell(count).SetCellValue("股道");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 7:
+                                        row.CreateCell(count).SetCellValue("编\n组");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 8:
+                                        row.CreateCell(count).SetCellValue("车型");
+                                        sheet.SetColumnWidth(count, 12 * 256);
+                                        break;
+                                    case 9:
+                                        row.CreateCell(count).SetCellValue("担当");
+                                        sheet.SetColumnWidth(count, 12 * 256);
+                                        break;
+                                    case 10:
+                                        row.CreateCell(count).SetCellValue("备注");
+                                        sheet.SetColumnWidth(count, 20 * 256);
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (count)
+                                {
+                                    case 0:
+                                        row.CreateCell(count).SetCellValue("预售");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 1:
+                                        row.CreateCell(count).SetCellValue("序\n号");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 2:
+                                        row.CreateCell(count).SetCellValue("车次");
+                                        sheet.SetColumnWidth(count, 9 * 256);
+                                        break;
+                                    case 3:
+                                        row.CreateCell(count).SetCellValue("始发站");
+                                        sheet.SetColumnWidth(count, 9 * 256);
+                                        break;
+                                    case 4:
+                                        row.CreateCell(count).SetCellValue("终到站");
+                                        sheet.SetColumnWidth(count, 9 * 256);
+                                        break;
+                                    case 5:
+                                        row.CreateCell(count).SetCellValue("到时");
+                                        sheet.SetColumnWidth(count, 6 * 256);
+                                        break;
+                                    case 6:
+                                        row.CreateCell(count).SetCellValue("开时");
+                                        sheet.SetColumnWidth(count, 6 * 256);
+                                        break;
+                                    case 7:
+                                        row.CreateCell(count).SetCellValue("停\n时");
+                                        sheet.SetColumnWidth(count, 3 * 256);
+                                        break;
+                                    case 8:
+                                        row.CreateCell(count).SetCellValue("实\n到");
+                                        sheet.SetColumnWidth(count, 3 * 256);
+                                        break;
+                                    case 9:
+                                        row.CreateCell(count).SetCellValue("实\n开");
+                                        sheet.SetColumnWidth(count, 3 * 256);
+                                        break;
+                                    case 10:
+                                        row.CreateCell(count).SetCellValue("正\n晚");
+                                        sheet.SetColumnWidth(count, 3 * 256);
+                                        break;
+                                    case 11:
+                                        row.CreateCell(count).SetCellValue("股道");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 12:
+                                        row.CreateCell(count).SetCellValue("编\n组");
+                                        sheet.SetColumnWidth(count, 5 * 256);
+                                        break;
+                                    case 13:
+                                        row.CreateCell(count).SetCellValue("车型");
+                                        sheet.SetColumnWidth(count, 12 * 256);
+                                        break;
+                                    case 14:
+                                        row.CreateCell(count).SetCellValue("担当");
+                                        sheet.SetColumnWidth(count, 7 * 256);
+                                        break;
+                                    case 15:
+                                        row.CreateCell(count).SetCellValue("备注");
+                                        sheet.SetColumnWidth(count, 20 * 256);
+                                        break;
+                                    case 16:
+                                        if (isCompareingDailySchedues)
+                                        {
+                                            row.CreateCell(count).SetCellValue("对比信息");
+                                            sheet.SetColumnWidth(count, 20 * 256);
+                                        }
+                                        break;
+                                }
+                            }
+                            if (isSupplyWater && count > 10)
+                            {
+                                break;
+                            }
+                            row.GetCell(count).CellStyle = boldStyle;
+                        }
                     }
                     else
                     {
-                        row.CreateCell(0).SetCellValue(DateTime.Now.AddDays(1).ToString("yyyy.MM.dd") + "日对比");
-                    }
-                    row.GetCell(0).CellStyle = boldStyle;
-                }
-                else if (i == 1)
-                {
-                    row.Height = 32 * 20;
-                    for (int count = 0; count < 17; count++)
-                    {
-                        if (count == 16 && !isCompareingDailySchedues)
+                        row.Height = 15 * 20;
+                        for (int column = 0; column < 17; column++)
                         {
-                            break;
-                        }
-                        switch (count)
-                        {
-                            case 0:
-                                row.CreateCell(count).SetCellValue("预售");
-                                sheet.SetColumnWidth(count, 5 * 256);
-                                break;
-                            case 1:
-                                row.CreateCell(count).SetCellValue("序\n号");
-                                sheet.SetColumnWidth(count, 5 * 256);
-                                break;
-                            case 2:
-                                row.CreateCell(count).SetCellValue("车次");
-                                sheet.SetColumnWidth(count, 9 * 256);
-                                break;
-                            case 3:
-                                row.CreateCell(count).SetCellValue("始发站");
-                                sheet.SetColumnWidth(count, 9 * 256);
-                                break;
-                            case 4:
-                                row.CreateCell(count).SetCellValue("终到站");
-                                sheet.SetColumnWidth(count, 9 * 256);
-                                break;
-                            case 5:
-                                row.CreateCell(count).SetCellValue("到时");
-                                sheet.SetColumnWidth(count, 6 * 256);
-                                break;
-                            case 6:
-                                row.CreateCell(count).SetCellValue("开时");
-                                sheet.SetColumnWidth(count, 6 * 256);
-                                break;
-                            case 7:
-                                row.CreateCell(count).SetCellValue("停\n时");
-                                sheet.SetColumnWidth(count, 3 * 256);
-                                break;
-                            case 8:
-                                row.CreateCell(count).SetCellValue("实\n到");
-                                sheet.SetColumnWidth(count, 3 * 256);
-                                break;
-                            case 9:
-                                row.CreateCell(count).SetCellValue("实\n开");
-                                sheet.SetColumnWidth(count, 3 * 256);
-                                break;
-                            case 10:
-                                row.CreateCell(count).SetCellValue("正\n晚");
-                                sheet.SetColumnWidth(count, 3 * 256);
-                                break;
-                            case 11:
-                                row.CreateCell(count).SetCellValue("股道");
-                                sheet.SetColumnWidth(count, 5 * 256);
-                                break;
-                            case 12:
-                                row.CreateCell(count).SetCellValue("编\n组");
-                                sheet.SetColumnWidth(count, 5 * 256);
-                                break;
-                            case 13:
-                                row.CreateCell(count).SetCellValue("车型");
-                                sheet.SetColumnWidth(count, 7 * 256);
-                                break;
-                            case 14:
-                                row.CreateCell(count).SetCellValue("担当");
-                                sheet.SetColumnWidth(count, 5 * 256);
-                                break;
-                            case 15:
-                                row.CreateCell(count).SetCellValue("备注");
-                                sheet.SetColumnWidth(count, 20 * 256);
-                                break;
-                            case 16:
-                                if (isCompareingDailySchedues)
+                            //上水用的
+                            if (isSupplyWater)
+                            {
+                                switch (column)
                                 {
-                                    row.CreateCell(count).SetCellValue("对比信息");
-                                    sheet.SetColumnWidth(count, 20 * 256);
+                                    case 0:
+                                        if (allDailyScheduleModel[i - 2].id != 0)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].id);
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(" ");
+                                        }
+                                        break;
+                                    case 1:
+                                        string trainNumber = allDailyScheduleModel[i - 2].trainNumber;
+                                        if (trainNumber.Split('/').Length > 2)
+                                        {
+                                            trainNumber = trainNumber.Split('/')[0] + "/" + trainNumber.Split('/')[1];
+                                        }
+                                        row.CreateCell(column).SetCellValue(trainNumber);
+                                        break;
+                                    case 2:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation);
+                                        break;
+
+                                    case 3:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                        break;
+                                    case 4:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                        break;
+                                    case 5:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime);
+                                        break;
+                                    case 6:
+                                        int outTrackNum = 0;
+                                        int.TryParse(allDailyScheduleModel[i - 2].trackNum, out outTrackNum);
+                                        if (outTrackNum == 0)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum);
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(outTrackNum);
+                                        }
+
+                                        break;
+                                    case 7:
+                                        int outConnectType = 0;
+                                        int.TryParse(allDailyScheduleModel[i - 2].trainConnectType, out outConnectType);
+                                        if (outConnectType == 0)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType);
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(outConnectType);
+                                        }
+
+
+                                        break;
+                                    case 8:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel);
+                                        break;
+                                    case 9:
+                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo);
+                                        break;
+                                    case 10:
+                                        if (allDailyScheduleModel[i - 2].streamStatus != 0)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue("停运");
+                                        }
+                                        break;
                                 }
-                                break;
+                            }
+                            else
+                            {
+                                switch (column)
+                                {
+                                    case 0:
+                                        if (presaleHour != allDailyScheduleModel[i - 2].presaleTime &&
+                                            allDailyScheduleModel[i - 2].presaleTime != 0 &&
+                                            allDailyScheduleModel[i - 2].streamStatus != 0)
+                                        {
+                                            //先把上一个合并一下
+                                            if (startPresaleRow != 0)
+                                            {//第一个必须还是要有的
+                                             //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
+                                                sheet.AddMergedRegion(new CellRangeAddress(startPresaleRow, i - 1, 0, 0));
+                                                if (presaleHour >= 5)
+                                                {
+                                                    sheet.GetRow(startPresaleRow).GetCell(0).SetCellValue(presaleHour + "点列车预售");
+                                                }
+                                            }
+                                            if (allDailyScheduleModel[i - 2].presaleTime >= 5)
+                                            {
+                                                startPresaleRow = i;
+                                                row.CreateCell(column);
+                                                presaleHour = allDailyScheduleModel[i - 2].presaleTime;
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column);
+                                        }
+                                        break;
+                                    case 1:
+                                        if (allDailyScheduleModel[i - 2].id != 0)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].id);
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(" ");
+                                        }
+                                        break;
+                                    case 2:
+                                        string trainNumber = allDailyScheduleModel[i - 2].trainNumber;
+                                        if (trainNumber.Split('/').Length > 2)
+                                        {
+                                            trainNumber = trainNumber.Split('/')[0] + "/" + trainNumber.Split('/')[1];
+                                        }
+                                        row.CreateCell(column).SetCellValue(trainNumber);
+                                        break;
+                                    case 3:
+                                        if (allDailyScheduleModel[i - 2].startStation.Contains("<difference>"))
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation.Split('<')[0]);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation);
+                                        }
+                                        break;
+                                    case 4:
+                                        if (allDailyScheduleModel[i - 2].stopStation.Contains("<difference>"))
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation.Split('<')[0]);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation);
+                                        }
+                                        break;
+                                    case 5:
+                                        DateTime dtStop;
+                                        DateTime dtTest;
+                                        DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+                                        dtFormat.ShortDatePattern = "HH:mm";
+                                        if (allDailyScheduleModel[i - 2].stopTime != null && allDailyScheduleModel[i - 2].stopTime.Length != 0)
+                                        {
+                                            if (allDailyScheduleModel[i - 2].stopTime.Contains("<difference>"))
+                                            {
+                                                try
+                                                {
+                                                    dtTest = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime.Split('<')[0], dtFormat);
+                                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                                    row.CreateCell(column).SetCellValue(dtTest);
+                                                    row.GetCell(column).CellStyle = differentTimeStyle;
+                                                }
+                                                catch
+                                                {
+                                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                try
+                                                {
+                                                    dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime, dtFormat);
+                                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                                    row.CreateCell(column).SetCellValue(dtStop);
+                                                }
+                                                catch
+                                                {
+                                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                                }
+
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
+                                        }
+                                        break;
+                                    case 6:
+                                        DateTime dtStart;
+                                        DateTime dtTestStart;
+                                        DateTimeFormatInfo dtFormat1 = new DateTimeFormatInfo();
+                                        dtFormat1.ShortDatePattern = "HH:mm";
+                                        if (allDailyScheduleModel[i - 2].startTime != null && allDailyScheduleModel[i - 2].startTime.Length != 0)
+                                        {
+                                            if (allDailyScheduleModel[i - 2].startTime.Contains("<difference>"))
+                                            {
+                                                try
+                                                {
+                                                    dtTestStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime.Split('<')[0], dtFormat1);
+                                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                                    row.CreateCell(column).SetCellValue(dtTestStart);
+                                                    row.GetCell(column).CellStyle = differentTimeStyle;
+                                                }
+                                                catch
+                                                {
+                                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                try
+                                                {
+                                                    dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime, dtFormat1);
+                                                    row.CreateCell(column).SetCellType(CellType.Numeric);
+                                                    row.CreateCell(column).SetCellValue(dtStart);
+                                                }
+                                                catch
+                                                {
+                                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                                }
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
+                                        }
+                                        break;
+                                    case 7:
+                                        if (allDailyScheduleModel[i - 2].stopToStartTime.Contains("<difference>"))
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime.Split('<')[0]);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime);
+                                        }
+                                        break;
+                                    case 8:
+                                        row.CreateCell(column);
+                                        break;
+                                    case 9:
+                                        row.CreateCell(column);
+                                        break;
+                                    case 10:
+                                        row.CreateCell(column);
+                                        break;
+                                    case 11:
+                                        int outTrackNum = 0;
+                                        if (allDailyScheduleModel[i - 2].trackNum.Contains("<difference>"))
+                                        {
+                                            int.TryParse(allDailyScheduleModel[i - 2].trackNum.Split('<')[0], out outTrackNum);
+                                            if (outTrackNum == 0)
+                                            {
+                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum.Split('<')[0]);
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column).SetCellValue(outTrackNum);
+                                            }
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            int.TryParse(allDailyScheduleModel[i - 2].trackNum, out outTrackNum);
+                                            if (outTrackNum == 0)
+                                            {
+                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum);
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column).SetCellValue(outTrackNum);
+                                            }
+                                        }
+
+                                        break;
+                                    case 12:
+                                        int outConnectType = 0;
+                                        if (allDailyScheduleModel[i - 2].trainConnectType.Contains("<difference>"))
+                                        {
+                                            int.TryParse(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0], out outConnectType);
+                                            if (outConnectType == 0)
+                                            {
+                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0]);
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column).SetCellValue(outConnectType);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            int.TryParse(allDailyScheduleModel[i - 2].trainConnectType, out outConnectType);
+                                            if (outConnectType == 0)
+                                            {
+                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType);
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column).SetCellValue(outConnectType);
+                                            }
+                                        }
+
+
+                                        break;
+                                    case 13:
+                                        if (allDailyScheduleModel[i - 2].trainModel.Contains("<difference>"))
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel.Split('<')[0]);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel);
+                                        }
+                                        break;
+                                    case 14:
+                                        if (allDailyScheduleModel[i - 2].trainBelongsTo.Contains("<difference>"))
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo.Split('<')[0]);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo);
+                                        }
+                                        break;
+                                    case 15:
+                                        if (allDailyScheduleModel[i - 2].extraHasDifference)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
+                                            row.GetCell(column).CellStyle = differentCellStyle;
+                                        }
+                                        else
+                                        {
+                                            if (allDailyScheduleModel[i - 2].streamStatus != 0)
+                                            {
+                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
+                                            }
+                                            else
+                                            {
+                                                row.CreateCell(column).SetCellValue("停运");
+                                            }
+                                        }
+                                        break;
+                                    case 16:
+                                        if (isCompareingDailySchedues)
+                                        {
+                                            row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].tipsText);
+                                        }
+                                        break;
+                                }
+                            }
+
+                            if (!isCompareingDailySchedues && !isSupplyWater)
+                            {
+                                if (column > 15)
+                                {
+                                    break;
+                                }
+                                if (column > 1)
+                                {
+                                    row.GetCell(column).CellStyle = normalStyle;
+                                }
+                                else if (column == 1 || column == 0)
+                                {
+                                    row.GetCell(column).CellStyle = boldStyle;
+                                }
+                                if (column == 5 || column == 6)
+                                {
+                                    row.GetCell(column).CellStyle = normalTimeStyle;
+                                }
+                                if (allDailyScheduleModel[i - 2].streamStatus == 0 && column != 0)
+                                {
+                                    if (column == 5 || column == 6)
+                                    {
+                                        row.GetCell(column).CellStyle = stoppedTimeStyle;
+                                    }
+                                    else
+                                    {
+                                        row.GetCell(column).CellStyle = stoppedTrainStyle;
+                                    }
+                                }
+                            }
+                            else if (isSupplyWater && column < 11)
+                            {
+                                if (column >= 1)
+                                {
+                                    row.GetCell(column).CellStyle = normalStyle;
+                                }
+                                else if (column == 0)
+                                {
+                                    row.GetCell(column).CellStyle = boldStyle;
+                                }
+                                if (column == 4 || column == 5)
+                                {
+                                    row.GetCell(column).CellStyle = normalTimeStyle;
+                                }
+                            }
+
+
                         }
-                        row.GetCell(count).CellStyle = boldStyle;
                     }
+                }
+
+                //向excel文件中写入数据并保存
+                workbook.Write(fs);
+                fs.Close();
+                System.Diagnostics.ProcessStartInfo info1 = new System.Diagnostics.ProcessStartInfo();
+                //info.WorkingDirectory = Application.StartupPath;
+                info1.FileName = Application.StartupPath + "\\" + startPath + "\\";
+                info1.Arguments = "";
+                try
+                {
+                    System.Diagnostics.Process.Start(info1);
+                }
+                catch (System.ComponentModel.Win32Exception we)
+                {
+                    MessageBox.Show(this, we.Message);
+                    return;
+                }
+                System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
+                //info.WorkingDirectory = Application.StartupPath;
+                if (!isCompareingDailySchedues)
+                {
+                    info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls";
                 }
                 else
                 {
-                    row.Height = 15 * 20;
-                    for (int column = 0; column < 17; column++)
-                    {
-                        switch (column)
-                        {
-                            case 0:
-                                if (presaleHour != allDailyScheduleModel[i - 2].presaleTime &&
-                                    allDailyScheduleModel[i - 2].presaleTime != 0 &&
-                                    allDailyScheduleModel[i - 2].streamStatus != 0)
-                                {
-                                    //先把上一个合并一下
-                                    if (startPresaleRow != 0)
-                                    {//第一个必须还是要有的
-                                     //CellRangeAddress四个参数为：起始行，结束行，起始列，结束列
-                                        sheet.AddMergedRegion(new CellRangeAddress(startPresaleRow, i - 1, 0, 0));
-                                        if (presaleHour >= 5)
-                                        {
-                                            sheet.GetRow(startPresaleRow).GetCell(0).SetCellValue(presaleHour + "点列车预售");
-                                        }
-                                    }
-                                    if (allDailyScheduleModel[i - 2].presaleTime >= 5)
-                                    {
-                                        startPresaleRow = i;
-                                        row.CreateCell(column);
-                                        presaleHour = allDailyScheduleModel[i - 2].presaleTime;
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column);
-                                    }
-                                }
-                                else
-                                {
-                                    row.CreateCell(column);
-                                }
-                                break;
-                            case 1:
-                                if (allDailyScheduleModel[i - 2].id != 0)
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].id);
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(" ");
-                                }
-                                break;
-                            case 2:
-                                string trainNumber = allDailyScheduleModel[i - 2].trainNumber;
-                                if (trainNumber.Split('/').Length > 2)
-                                {
-                                    trainNumber = trainNumber.Split('/')[0] + "/" + trainNumber.Split('/')[1];
-                                }
-                                row.CreateCell(column).SetCellValue(trainNumber);
-                                break;
-                            case 3:
-                                if (allDailyScheduleModel[i - 2].startStation.Contains("<difference>"))
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation.Split('<')[0]);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startStation);
-                                }
-                                break;
-                            case 4:
-                                if (allDailyScheduleModel[i - 2].stopStation.Contains("<difference>"))
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation.Split('<')[0]);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopStation);
-                                }
-                                break;
-                                case 5:
-                                    DateTime dtStop;
-                                    DateTime dtTest;
-                                    DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
-                                    dtFormat.ShortDatePattern = "HH:mm";
-                                    if (allDailyScheduleModel[i - 2].stopTime != null && allDailyScheduleModel[i - 2].stopTime.Length != 0)
-                                    {
-                                        if (allDailyScheduleModel[i - 2].stopTime.Contains("<difference>"))
-                                        {
-                                            try
-                                            {
-                                                dtTest = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime.Split('<')[0], dtFormat);
-                                                row.CreateCell(column).SetCellType(CellType.Numeric);
-                                                row.CreateCell(column).SetCellValue(dtTest);
-                                                row.GetCell(column).CellStyle = differentTimeStyle;
-                                            }
-                                            catch
-                                            {
-                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                dtStop = Convert.ToDateTime(allDailyScheduleModel[i - 2].stopTime, dtFormat);
-                                                row.CreateCell(column).SetCellType(CellType.Numeric);
-                                                row.CreateCell(column).SetCellValue(dtStop);
-                                            }
-                                            catch
-                                            {
-                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
-                                            }
-
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopTime);
-                                    }
-                                    break;
-                                case 6:
-                                    DateTime dtStart;
-                                    DateTime dtTestStart;
-                                    DateTimeFormatInfo dtFormat1 = new DateTimeFormatInfo();
-                                    dtFormat1.ShortDatePattern = "HH:mm";
-                                    if (allDailyScheduleModel[i - 2].startTime != null && allDailyScheduleModel[i - 2].startTime.Length != 0)
-                                    {
-                                        if (allDailyScheduleModel[i - 2].startTime.Contains("<difference>"))
-                                        {
-                                            try
-                                            {
-                                                dtTestStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime.Split('<')[0], dtFormat1);
-                                                row.CreateCell(column).SetCellType(CellType.Numeric);
-                                                row.CreateCell(column).SetCellValue(dtTestStart);
-                                                row.GetCell(column).CellStyle = differentTimeStyle;
-                                            }
-                                            catch
-                                            {
-                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                dtStart = Convert.ToDateTime(allDailyScheduleModel[i - 2].startTime, dtFormat1);
-                                                row.CreateCell(column).SetCellType(CellType.Numeric);
-                                                row.CreateCell(column).SetCellValue(dtStart);
-                                            }
-                                            catch
-                                            {
-                                                row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
-                                            }
-
-                                        }
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].startTime);
-                                    }
-                                    break;
-                                case 7:
-                                if (allDailyScheduleModel[i - 2].stopToStartTime.Contains("<difference>"))
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime.Split('<')[0]);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].stopToStartTime);
-                                }
-                                break;
-                            case 8:
-                                row.CreateCell(column);
-                                break;
-                            case 9:
-                                row.CreateCell(column);
-                                break;
-                            case 10:
-                                row.CreateCell(column);
-                                break;
-                            case 11:
-                                int outTrackNum = 0;
-                                if (allDailyScheduleModel[i - 2].trackNum.Contains("<difference>"))
-                                {
-                                    int.TryParse(allDailyScheduleModel[i - 2].trackNum.Split('<')[0], out outTrackNum);
-                                    if (outTrackNum == 0)
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum.Split('<')[0]);
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(outTrackNum);
-                                    }
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    int.TryParse(allDailyScheduleModel[i - 2].trackNum, out outTrackNum);
-                                    if (outTrackNum == 0)
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trackNum);
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(outTrackNum);
-                                    }
-                                }
-
-                                break;
-                            case 12:
-                                int outConnectType = 0;
-                                if (allDailyScheduleModel[i - 2].trainConnectType.Contains("<difference>"))
-                                {
-                                    int.TryParse(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0], out outConnectType);
-                                    if (outConnectType == 0)
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType.Split('<')[0]);
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(outConnectType);
-                                    }
-                                }
-                                else
-                                {
-                                    int.TryParse(allDailyScheduleModel[i - 2].trainConnectType, out outConnectType);
-                                    if (outConnectType == 0)
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainConnectType);
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue(outConnectType);
-                                    }
-                                }
-
-
-                                break;
-                            case 13:
-                                if (allDailyScheduleModel[i - 2].trainModel.Contains("<difference>"))
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel.Split('<')[0]);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainModel);
-                                }
-                                break;
-                            case 14:
-                                if (allDailyScheduleModel[i - 2].trainBelongsTo.Contains("<difference>"))
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo.Split('<')[0]);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].trainBelongsTo);
-                                }
-                                break;
-                            case 15:
-                                if (allDailyScheduleModel[i - 2].extraHasDifference)
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
-                                    row.GetCell(column).CellStyle = differentCellStyle;
-                                }
-                                else
-                                {
-                                    if (allDailyScheduleModel[i - 2].streamStatus != 0)
-                                    {
-                                        row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].extraText);
-                                    }
-                                    else
-                                    {
-                                        row.CreateCell(column).SetCellValue("停运");
-                                    }
-                                }
-                                break;
-                            case 16:
-                                if (isCompareingDailySchedues)
-                                {
-                                    row.CreateCell(column).SetCellValue(allDailyScheduleModel[i - 2].tipsText);
-                                }
-                                break;
-                        }
-                        if (!isCompareingDailySchedues)
-                        {
-                            if (column > 15)
-                            {
-                                break;
-                            }
-                            if (column > 1)
-                            {
-                                row.GetCell(column).CellStyle = normalStyle;
-                            }
-                            else if (column == 1 || column == 0)
-                            {
-                                row.GetCell(column).CellStyle = boldStyle;
-                            }
-                            if (column == 5 || column == 6)
-                            {
-                                row.GetCell(column).CellStyle = normalTimeStyle;
-                            }
-                            if (allDailyScheduleModel[i - 2].streamStatus == 0 && column != 0)
-                            {
-                                if (column == 5 || column == 6)
-                                {
-                                    row.GetCell(column).CellStyle = stoppedTimeStyle;
-                                }
-                                else
-                                {
-                                    row.GetCell(column).CellStyle = stoppedTrainStyle;
-                                }
-                            }
-                        }
-
-
-                    }
+                    info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls";
+                }
+                info.Arguments = "";
+                try
+                {
+                    System.Diagnostics.Process.Start(info);
+                }
+                catch (System.ComponentModel.Win32Exception we)
+                {
+                    MessageBox.Show(this, we.Message);
+                    return;
                 }
             }
-
-            //向excel文件中写入数据并保存
-            workbook.Write(fs);
-            fs.Close();
-            System.Diagnostics.ProcessStartInfo info1 = new System.Diagnostics.ProcessStartInfo();
-            //info.WorkingDirectory = Application.StartupPath;
-            info1.FileName = Application.StartupPath + "\\" + startPath + "\\";
-            info1.Arguments = "";
-            try
-            {
-                System.Diagnostics.Process.Start(info1);
-            }
-            catch (System.ComponentModel.Win32Exception we)
-            {
-                MessageBox.Show(this, we.Message);
-                return;
-            }
-            System.Diagnostics.ProcessStartInfo info = new System.Diagnostics.ProcessStartInfo();
-            //info.WorkingDirectory = Application.StartupPath;
-            if (!isCompareingDailySchedues)
-            {
-                info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "班计划.xls";
-            }
-            else
-            {
-                info.FileName = Application.StartupPath + "\\" + startPath + "\\" + DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + "对比结果.xls";
-            }
-            info.Arguments = "";
-            try
-            {
-                System.Diagnostics.Process.Start(info);
-            }
-            catch (System.ComponentModel.Win32Exception we)
-            {
-                MessageBox.Show(this, we.Message);
-                return;
-            }
-        }
             catch (Exception e1)
             {
                 MessageBox.Show("出现错误，请重试，持续出现问题可联系17638570597（罗思聪）：" + e1.ToString().Split('。')[0] + "。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
