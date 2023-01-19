@@ -80,10 +80,11 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 83 - v20220918";
-        string readMe = "build83更新内容:\n" +
-            "增加400 GZ G AZ BZ车型识别";
+        string build = "build 84 - v20230118";
+        string readMe = "build84更新内容:\n" +
+            "修复大令bug，“删除停运车”改为默认不勾选，运转接续列车纠错时显示全部车次";
         //综控可以读取07版Excel（运转仅03版）
+        //230118，用3.5版本或者4.6.2
         public Main()
         {
             InitializeComponent();
@@ -130,7 +131,7 @@ namespace TimeTableAutoCompleteTool
             updateReadMe.ShowAlways = true;
             updateReadMe.SetToolTip(this.buildLBL, readMe);
             FontSize_tb.Text = fontSize.ToString();
-            checkBox1.Checked = true;
+            checkBox1.Checked = false;
         }
 
         public void ModeSelect()
@@ -1445,22 +1446,27 @@ namespace TimeTableAutoCompleteTool
                         }
                         Char[] firstTrainWord = trainWithDoubleNumber[0].ToCharArray();
                         String secondTrainWord = "";
-                        for (int q = 0; q < firstTrainWord.Length; q++)
+                        //230118，把车次前面的无关字符去掉，避免bug
+                        if (trainWithDoubleNumber.Length > 1)
                         {
-                            if (q != firstTrainWord.Length - trainWithDoubleNumber[1].Length)
+                            for (int q = 0; q < firstTrainWord.Length; q++)
                             {
-                                secondTrainWord = secondTrainWord + firstTrainWord[q];
-                            }
-                            else
-                            {
-                                secondTrainWord = secondTrainWord + trainWithDoubleNumber[1];
-                                //添加第二个车次
-                                m1.secondTrainNumber = secondTrainWord.Trim();
-                                m1.upOrDown = -1;
-                                AllModels.Add(m1);
-                                break;
+                                if (q != firstTrainWord.Length - trainWithDoubleNumber[1].Length)
+                                {
+                                    secondTrainWord = secondTrainWord + firstTrainWord[q];
+                                }
+                                else
+                                {
+                                    secondTrainWord = secondTrainWord + trainWithDoubleNumber[1];
+                                    //添加第二个车次
+                                    m1.secondTrainNumber = secondTrainWord.Trim();
+                                    m1.upOrDown = -1;
+                                    AllModels.Add(m1);
+                                    break;
+                                }
                             }
                         }
+
                     }
                     else if (AllTrainNumberInOneRaw[k].Length != 0)
                     {
@@ -3490,6 +3496,29 @@ namespace TimeTableAutoCompleteTool
                                                                             {
                                                                                 hasGotThat = true;
                                                                                 newContinueTrainNum = commandModel[il].trainNumber;
+                                                                                if (commandModel[il].secondTrainNumber.Length != 0&&
+                                                                                    !commandModel[il].secondTrainNumber.Contains("null"))
+                                                                                {
+                                                                                    char[] firstTrainNum = commandModel[il].trainNumber.ToCharArray();
+                                                                                    char[] secondTrainNum = commandModel[il].secondTrainNumber.ToCharArray();
+                                                                                    string addedText = "";
+                                                                                    for (int lk = 0;lk < firstTrainNum.Length; lk++)
+                                                                                    {
+                                                                                        if(secondTrainNum.Length > lk)
+                                                                                        {
+                                                                                            if (firstTrainNum[lk].Equals(secondTrainNum[lk]))
+                                                                                            {
+                                                                                                continue;
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                addedText = addedText + secondTrainNum[lk];
+                                                                                            }
+                                                                                        }
+
+                                                                                    }
+                                                                                    newContinueTrainNum = newContinueTrainNum + "/" + addedText;
+                                                                                }
                                                                                 log = "【！】" + station + "场的" + newContinueTrainNum + "次开行，且不在底图内，请立即检查底图\n" + station + "场" + currentTrainNum + "次(" + currentTrainTime + "到达)的后序列车在客调命令第" + commandModel[il].trainIndex + "条中可能为" + newContinueTrainNum + "次,原后序列车为" + continueTrainNum + "次。";
                                                                             }
                                                                         }
