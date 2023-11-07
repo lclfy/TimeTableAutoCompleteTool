@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using TimeTableAutoCompleteTool.Models;
 using SiEncrypt;
 using NPOI.HSSF.Util;
+using CCWin.SkinClass;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -70,7 +71,7 @@ namespace TimeTableAutoCompleteTool
         //接续列车发现问题文本
         public string continueTrainAnalyse = "";
         float dpiX, dpiY;
-        bool automaticDeleteStoppedTrains = true;
+        bool automaticDeleteStoppedTrains = false;
 
         string developer = "反馈请联系17638570597（罗思聪）\n*亦可联系黄楠/高雅雯";
         string upStations = "京广-（新乡东 安阳东 鹤壁东 邯郸东 石家庄 保定东 定州东 正定机场 邢台东 高碑店东 涿州东 北京西）石地区-（太原南 定州东 阳泉北 石家庄东 藁城南 辛集南 衡水北 景州 德州东 平原东 禹城东 齐河）京沪北-（北京南 廊坊 天津西 天津 天津南 沧州西 德州东 泰安 曲阜东 滕州东 枣庄）徐兰-（ 开封北 兰考南 商丘 永城北 砀山南 萧县北 徐州东）京沪南-（ 宿州东 蚌埠南 定远 滁州 南京南 南京 镇江南 丹阳北 常州北 无锡东 苏州 苏州北 昆山南 上海 上海虹桥）胶济-（济南西 威海 荣成 胶州北 高密 潍坊 昌乐 青州市 淄博 周村东 章丘 济南东 烟台 青岛北 青岛） 城际-（宋城路）  京东北-（ 辽阳 铁岭西 开原西 昌图西 四平东 公主岭南 长春西 德惠西 扶余北 双城北 哈尔滨西 秦皇岛 沈阳北 沈阳 承德南 承德 怀柔南 朝阳 大连北 长春 哈尔滨西 ） 郑东南-（肥东 巢北 黄庵 全椒 江浦 黄山北 金华南 宁波 杭州东 温州南 义乌 松江南 金山北 嘉善南 嘉兴南 桐乡 海宁西 余杭 ） ";
@@ -80,9 +81,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 85 - v20230119";
-        string readMe = "build85更新内容:\n" +
-            "修复大令问题，运转查错增加全车次，“删除停运车”默认不勾选，增加上水计划";
+        string build = "build 87 - v20231107";
+        string readMe = "build87更新内容:\n" +
+            "大令优化";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -132,6 +133,7 @@ namespace TimeTableAutoCompleteTool
             updateReadMe.SetToolTip(this.buildLBL, readMe);
             FontSize_tb.Text = fontSize.ToString();
             checkBox1.Checked = false;
+            automaticDeleteStoppedTrains = checkBox1.Checked;
         }
 
         public void ModeSelect()
@@ -194,7 +196,7 @@ namespace TimeTableAutoCompleteTool
                 yesterdayCommand_rtb.Text = "";
                 developerLabel.Text = developer;
                 startBtnCheck();
-                radioButton6.Checked = true;
+                radioButton4.Checked = true;
                 label111.Visible = false;
                 label222.Visible = false;
                 FontSize_tb.Visible = false;
@@ -1639,7 +1641,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 else if (_inputType == 1)
                                 {
-                                    string[] _allStations = new string[] { "曹古寺", "二郎庙", "鸿宝", "郑州东京广场", "南曹", "寺后", "郑州东徐兰场", "郑开", "郑州南郑万场", "郑州东城际场", "郑州南城际场", "郑州东疏解区", "郑州东动车所", "郑州南动车所", "新郑机场", "周口东", "民权北", "兰考南", "开封北", "许昌北", "许昌东", "鄢陵", "扶沟南", "西华", "淮阳南", "沈丘北", "长葛北", "禹州", "郏县" };
+                                    string[] _allStations = new string[] { "曹古寺", "二郎庙", "鸿宝", "郑州东京广场", "南曹", "寺后", "郑州东徐兰场", "郑开", "郑州航空港郑万场", "郑州东城际场", "郑州航空港城际场", "郑州东疏解区", "郑州东动车所", "郑州南动车所", "新郑机场", "周口东", "民权北", "兰考南", "开封北", "许昌北", "许昌东", "鄢陵", "扶沟南", "西华", "淮阳南", "沈丘北", "长葛北", "禹州", "郏县" };
                                     for (int ij = 0; ij < _allStations.Length; ij++)
                                     {
                                         if ((titleName.Contains(_allStations[ij]) &&
@@ -1753,7 +1755,7 @@ namespace TimeTableAutoCompleteTool
                                     }
                                     else
                                     {
-                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式：“郑州东站…时刻表（上行）”或“（线路所）…时刻表（上行）”，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式,请取消“删除停运车”勾以使用", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         return null;
                                     }
                                     //此时依然不能直接添加，需要寻找到达-股道-发出所在列
@@ -1820,13 +1822,13 @@ namespace TimeTableAutoCompleteTool
                                         }
                                         else
                                         {
-                                            MessageBox.Show("选定的列车时刻表表头不具有规定格式：到达-股道-发出，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            MessageBox.Show("选定的列车时刻表表头不具有规定格式,请取消“删除停运车”勾以使用", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
 
                                     }
                                     else
                                     {
-                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式：到达-股道-发出，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        MessageBox.Show("选定的列车时刻表表头不具有规定格式,请取消“删除停运车”勾以使用", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         return null;
                                     }
                                     _timeTable.currentStations.Add(_tempStation);
@@ -1846,7 +1848,7 @@ namespace TimeTableAutoCompleteTool
                 }
                 else if (_timeTable.Title == null || _timeTable.Title.Length == 0)
                 {
-                    MessageBox.Show("选定的列车时刻表表头不具有规定格式：“郑州东站…时刻表（上行）”或“（线路所）…时刻表（上行）”，不影响使用，请联系我（思聪）", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("选定的列车时刻表表头不具有规定格式,请取消“删除停运车”勾以使用", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return null;
                 }
                 allStations = allStations.Remove(0, 1);
@@ -2721,7 +2723,11 @@ namespace TimeTableAutoCompleteTool
                     }
 
                     //20220411读取时刻表内容
-                    currentTimeTable = GetStationsFromCurrentTables(workbook);
+                    if (automaticDeleteStoppedTrains)
+                    {
+                        currentTimeTable = GetStationsFromCurrentTables(workbook);
+                    }
+
 
 
                     if (title.Contains("-"))
@@ -3935,7 +3941,7 @@ namespace TimeTableAutoCompleteTool
                                         {
                                             titleInfo.idColumn = j;
                                         }
-                                        if (row.GetCell(j).ToString().Trim().Replace("\n", "").Contains("车次"))
+                                        if (row.GetCell(j).ToString().Trim().Replace("\n", "").Equals("车次"))
                                         {
                                             titleInfo.trainNumColumn = j;
                                         }
@@ -10197,6 +10203,16 @@ namespace TimeTableAutoCompleteTool
             {
                 automaticDeleteStoppedTrains = false;
             }
+        }
+
+        private void EMUorEMUC_groupBox_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void trainProjectBtnCheck()
