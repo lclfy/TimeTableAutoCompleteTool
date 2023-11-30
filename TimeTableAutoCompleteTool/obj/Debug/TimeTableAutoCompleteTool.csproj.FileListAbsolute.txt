@@ -147,3 +147,4 @@ E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAu
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll
 D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.AssemblyReference.cache
 D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.SuggestedBindingRedirects.cache
+D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll
