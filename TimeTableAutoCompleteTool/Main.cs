@@ -24,6 +24,7 @@ using TimeTableAutoCompleteTool.Models;
 using SiEncrypt;
 using NPOI.HSSF.Util;
 using CCWin.SkinClass;
+//using System.Linq;
 
 namespace TimeTableAutoCompleteTool
 {
@@ -81,9 +82,9 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 87 - v20231107";
-        string readMe = "build87更新内容:\n" +
-            "大令优化";
+        string build = "build 89 - v20231210";
+        string readMe = "build89更新内容:\n" +
+            "大令bug修复，动车所检查线识别修复";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -1217,6 +1218,8 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("[", "（");
             if (standardCommand.Contains("—"))
                 standardCommand = standardCommand.Replace("—", "-");
+            if (standardCommand.Contains("－"))
+                standardCommand = standardCommand.Replace("－", "-");
             if (standardCommand.Contains("]"))
                 standardCommand = standardCommand.Replace("]", "）");
             if (standardCommand.Contains("【"))
@@ -4210,11 +4213,13 @@ namespace TimeTableAutoCompleteTool
                     {
                         //查昨日错
                         string yesterdayUnresolvedTrains = checkCommandModelWithDailySchedule(_dailyScheduleModel, null, yesterdayCommandModel, yesterdayCommandText, true);
+
                         if (yesterdayUnresolvedTrains.Trim().Length != 0)
                         {
                             MessageBox.Show("请核对以下未识别车次：\n" + yesterdayUnresolvedTrains + "\n位于->昨日客调命令(↑)。\n", "人工核对", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         compareWithYesterday(_dailyScheduleModel, null);
+
                     }
                 }
                 //双班计划对比
@@ -4460,6 +4465,7 @@ namespace TimeTableAutoCompleteTool
             //isYesterday : 0今天 1综控昨天 2动车所昨天
             //在模型内添加新车-综控
             //type 0 1 2行车综控东所
+            
             int index = 0;
             if (isYesterDay == 0)
             {//不是昨天
@@ -4467,6 +4473,10 @@ namespace TimeTableAutoCompleteTool
             }
             else if(isYesterDay == 1)
             {//综控室昨天的
+                if (find.Equals("0G4831")|| find.Equals("G4830"))
+                {
+                    int aa = 0;
+                }
                 index = yesterdayCommand_rtb.Find(find, RichTextBoxFinds.WholeWord);//
             }
             else if(isYesterDay == 2)
@@ -4592,8 +4602,8 @@ namespace TimeTableAutoCompleteTool
                     }
                     yesterdayCommand_rtb.SelectionStart = index;
                     yesterdayCommand_rtb.SelectionLength = find.Length;
-                    yesterdayCommand_rtb.SelectionColor = Color.Red;
-                    yesterdayCommand_rtb.SelectionFont = new Font("Times New Roman", (float)12, FontStyle.Bold);
+                    //yesterdayCommand_rtb.SelectionColor = Color.Red;
+                    //yesterdayCommand_rtb.SelectionFont = new Font("Times New Roman", (float)12, FontStyle.Bold);
                     yesterdayCommand_rtb.Focus();
                     DialogResult result = MessageBox.Show("请人工核对\n" + find + "次是否为↑昨日客调文本框标红内容？\n(*请注意核查同一条命令内其他车次是否正确)", "人工核对", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
@@ -4747,8 +4757,13 @@ namespace TimeTableAutoCompleteTool
         private string checkCommandModelWithDailySchedule(List<DailySchedule> dailyScheduleModel,List<EMUCheckModel> eMUCheckModel, List<CommandModel> cModel, string cmdText, bool isYesterday = false)
         {//班计划查错(使用基本图或动检车图)
             string unresolvedTrains = "";
+            if (isYesterday)
+            {
+                int aa = 0;
+            }
             if(dailyScheduleModel != null)
             {
+                int testcount = 0;
                 foreach (DailySchedule _ds in dailyScheduleModel)
                 {
                     string checkedError = checkingError(_ds.trainNumber,cModel,cmdText,isYesterday);
@@ -4756,7 +4771,13 @@ namespace TimeTableAutoCompleteTool
                     {
                         unresolvedTrains = unresolvedTrains + checkedError;
                     }
+                    if (yesterdayCommandModel.Count == 0)
+                    {
+                        int a = testcount;
+                    }
+                    testcount++;
                 }
+
             }
             else if(eMUCheckModel != null)
             {
@@ -4774,6 +4795,10 @@ namespace TimeTableAutoCompleteTool
 
         private string checkingError(string rawTrainNumber,List<CommandModel> cModel, string cmdText, bool isYesterday = false)
         {
+            if(rawTrainNumber.Equals("G4821"))
+            {
+                int a = 0;
+            }
             string firstTrainNumber = "";
             string secondTrainNumber = "";
             if(rawTrainNumber == null)
@@ -9135,7 +9160,7 @@ namespace TimeTableAutoCompleteTool
                                         {
                                             trackNum = tNum.ToString();
                                         }
-                                        if (_currentWork.Contains("JC" + tNum + "道"))
+                                        if (_currentWork.Contains("JC" + tNum + "道") || _currentWork.Contains("检查" + tNum + "道"))
                                         {
                                             trackNum = "JC" + tNum.ToString();
                                         }
@@ -9143,6 +9168,7 @@ namespace TimeTableAutoCompleteTool
                                 }
                                 //13	0G2046次(CRH380B-5864)18:23终到后经28道西端转JC3道西端停放。
                                 //19	0G55482次(CRH380B-5654)09:31终到后经26道西端转JC5道西端停放。17:45转40道东端停放，18:35与(CRH380B-5837)进行重联作业。
+                                //(CRH380A-2809+2810)检查4道进行解编，完毕后(CRH380A-2810)检查4道东端进行一级修。完毕后00:06转34道西端停放。备开11日(04:44)DJ8582次。
                                 else if (_currentWork.Split('道').Length == 3 && _currentWork.Contains("经"))
                                 {
                                     throughTrack = _currentWork.Split('经')[1].Split('道')[0] + "G";
@@ -9160,7 +9186,7 @@ namespace TimeTableAutoCompleteTool
                                         {
                                             trackNum = tNum.ToString() + "G";
                                         }
-                                        if ((_currentWork.Split('道')[1] + "道").Contains("JC" + tNum + "道"))
+                                        if ((_currentWork.Split('道')[1] + "道").Contains("JC" + tNum + "道") || (_currentWork.Split('道')[1] + "道").Contains("检查" + tNum + "道"))
                                         {
                                             trackNum = "JC" + tNum.ToString() + "G";
                                         }

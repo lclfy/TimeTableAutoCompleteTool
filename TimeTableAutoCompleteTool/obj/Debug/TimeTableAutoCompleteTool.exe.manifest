@@ -174,14 +174,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="304640">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="303616">
       <assemblyIdentity name="TimeTableAutoCompleteTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>kXc0e6hDTLeMYOEaFGwWJky/+2xdRkxEBsTqQf1FNgc=</dsig:DigestValue>
+        <dsig:DigestValue>BWpfJ7et12ijYzzxtniSkXFH3O+HFGqxuNhU+SmWZmY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
