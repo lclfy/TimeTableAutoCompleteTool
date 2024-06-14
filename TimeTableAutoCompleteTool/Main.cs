@@ -82,9 +82,14 @@ namespace TimeTableAutoCompleteTool
         "35G1", "35G2","36G1", "36G2","37G1", "37G2","38G1", "38G2","39G1", "39G2","40G1", "40G2","41G1", "41G2","42G1", "42G2","43G", "44G","45G1", "45G2","46G1", "46G2","47G1", "47G2","48G1", "48G2"
         ,"49G1", "49G2","50G1", "50G2","51G1", "51G2","52G1", "52G2","53G1", "53G2","54G1", "54G2","55G1", "55G2","56G1", "56G2","57G1", "57G2","58G1", "58G2","59G1", "59G2","60G1", "60G2","61G1", "61G2"
         ,"62G1", "62G2","63G1", "63G2","64G1", "64G2","65G1", "65G2","66G1", "66G2","67G1", "67G2","68G1", "68G2","69G1", "69G2","70G", "71G","72G"};
-        string build = "build 89 - v20231210";
-        string readMe = "build89更新内容:\n" +
-            "大令bug修复，动车所检查线识别修复";
+        //车型-编组关系-还没写
+        Dictionary<string, string> dic_TrainType = new Dictionary<string, string>
+        {
+            
+        };
+        string build = "build 90 - v20240615";
+        string readMe = "build90更新内容:\n" +
+            "增加车型400-S/400-AS/400-BS/400-GS";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -1252,7 +1257,9 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("2E") ||
                     trainModel.Contains("1E") ||
                     trainModel.Contains("AF-A") ||
-                    trainModel.Contains("BF-A"))
+                    trainModel.Contains("BF-A") ||
+                    trainModel.Contains("AF-AS") ||
+                    trainModel.Contains("BF-AS"))
                 {
                     trainConnectType = 1;
                 }
@@ -1261,14 +1268,20 @@ namespace TimeTableAutoCompleteTool
                     trainConnectType = 2;
                 }
                 else if(trainModel.Contains("AF-B")||
-                    trainModel.Contains("BF-B"))
+                    trainModel.Contains("BF-B") ||
+                    trainModel.Contains("AF-BS")||
+                    trainModel.Contains("BF-BS"))
                 {//新增的 17节(AF-BZ BF-BZ)
                     trainConnectType = 3;
                 }
                 else if (trainModel.Contains("AF-Z") ||
                     trainModel.Contains("BF-Z")||
                     trainModel.Contains("AF-GZ") ||
-                    trainModel.Contains("BF-GZ"))
+                    trainModel.Contains("BF-GZ") ||
+                    trainModel.Contains("AF-S") ||
+                    trainModel.Contains("BF-S") ||
+                    trainModel.Contains("AF-GS") ||
+                    trainModel.Contains("BF-GS"))
                 {
                     trainConnectType = 0;
                     int test = 0;
@@ -1373,6 +1386,14 @@ namespace TimeTableAutoCompleteTool
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-GZ+";
                 }
                 else if (trainModel.Contains("-G"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                }
+                else if (trainModel.Contains("-S"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                }
+                else if (trainModel.Contains("-GS"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
                 }
@@ -8027,8 +8048,10 @@ namespace TimeTableAutoCompleteTool
                                                             {
                                                                 row.CreateCell(firstTrackNumColumn);
                                                             }
+
                                                             row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
                                                             row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
+
                                                             if (projectNum.Length != 0)
                                                             {
                                                                 if (row.GetCell(first_extraColumn) == null)
@@ -8312,6 +8335,7 @@ namespace TimeTableAutoCompleteTool
                                                             {
                                                                 row.CreateCell(firstTrackNumColumn);
                                                             }
+
                                                             row.GetCell(firstTrackNumColumn).SetCellValue(targetTrackNum);
                                                             row.GetCell(firstTrackNumColumn).CellStyle = trackNumStyle;
                                                             if (projectNum.Length != 0)
@@ -8893,7 +8917,8 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 _pm.trainConnectType = 2;
                                                 //400AF-Z-XXX+XXX
-                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz"))
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz")
+                                                    || trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs"))
                                                 {
                                                     if(value.Split('-').Length >= 3)
                                                     {
@@ -8917,7 +8942,8 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 //400AF-Z-XXX
                                                 _pm.trainConnectType = 0;
-                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz"))
+                                                if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz")||
+                                                    trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs"))
                                                 {
                                                     if (value.Split('-').Length >= 3)
                                                     {
@@ -9508,6 +9534,9 @@ namespace TimeTableAutoCompleteTool
                                     }
                                 }
                                 //长找长找到了的 后面加完计划后再找
+                                //
+                                //
+                                //
                                 //特殊情况：解编
                                 //解编时自身前半部分模型是公用的，后半部分各自引用
                                 if (_currentWork.Contains("进行解编") && _currentWork.Contains("道"))
@@ -9921,6 +9950,7 @@ namespace TimeTableAutoCompleteTool
         //In == false Out == true
         private TrainProjectWorking findGetInOrOutsideTPW(TrainProjectModel _tpm,string time,bool InOrOut,int morningOrNight)
         {
+
             TrainProjectWorking _targetTPW = new TrainProjectWorking();
             string trackNumber = "";
             int targetTimeInt = -1;
