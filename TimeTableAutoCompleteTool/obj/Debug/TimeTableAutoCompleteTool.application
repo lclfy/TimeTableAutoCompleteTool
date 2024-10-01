@@ -3,15 +3,18 @@
   <assemblyIdentity name="TimeTableAutoCompleteTool.application" version="1.0.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <description asmv2:publisher="TimeTableAutoCompleteTool" asmv2:product="TimeTableAutoCompleteTool" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" />
+  <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
+    <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
+  </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="TimeTableAutoCompleteTool.exe.manifest" size="13157">
+    <dependentAssembly dependencyType="install" codebase="TimeTableAutoCompleteTool.exe.manifest" size="13916">
       <assemblyIdentity name="TimeTableAutoCompleteTool.exe" version="1.0.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>Tehh3gNhUZ3QGHkhA6W0/zWfXbE=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>jzXxWSGOKmcxLmdpTdCqrhb54/R64LWfRxv6PopLSJ8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -87,9 +87,9 @@ namespace TimeTableAutoCompleteTool
         {
             
         };
-        string build = "build 90 - v20240615";
-        string readMe = "build90更新内容:\n" +
-            "增加车型400-S/400-AS/400-BS/400-GS";
+        string build = "build 91 - v20241001";
+        string readMe = "build91更新内容:\n" +
+            "增加车型400-E/400-AE";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -1257,9 +1257,7 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("2E") ||
                     trainModel.Contains("1E") ||
                     trainModel.Contains("AF-A") ||
-                    trainModel.Contains("BF-A") ||
-                    trainModel.Contains("AF-AS") ||
-                    trainModel.Contains("BF-AS"))
+                    trainModel.Contains("BF-A"))
                 {
                     trainConnectType = 1;
                 }
@@ -1268,9 +1266,7 @@ namespace TimeTableAutoCompleteTool
                     trainConnectType = 2;
                 }
                 else if(trainModel.Contains("AF-B")||
-                    trainModel.Contains("BF-B") ||
-                    trainModel.Contains("AF-BS")||
-                    trainModel.Contains("BF-BS"))
+                    trainModel.Contains("BF-B"))
                 {//新增的 17节(AF-BZ BF-BZ)
                     trainConnectType = 3;
                 }
@@ -1281,10 +1277,11 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("AF-S") ||
                     trainModel.Contains("BF-S") ||
                     trainModel.Contains("AF-GS") ||
-                    trainModel.Contains("BF-GS"))
+                    trainModel.Contains("BF-GS")||
+                    trainModel.Contains("AF-E") ||
+                    trainModel.Contains("BF-E") )
                 {
                     trainConnectType = 0;
-                    int test = 0;
                 }
                 else
                 {
@@ -1345,7 +1342,15 @@ namespace TimeTableAutoCompleteTool
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BZ";
                 }
-                else if (trainModel.Contains("-A"))
+                else if (trainModel.Contains("-AE"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-AE";
+                }
+                else if (trainModel.Contains("-BE"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BE";
+                }
+                else if (trainModel.Contains("-A") && !trainModel.Contains("-AZ"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-A";
                 }
@@ -1361,6 +1366,10 @@ namespace TimeTableAutoCompleteTool
                 else if (trainModel.Contains("-G"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G";
+                }
+                else if (trainModel.Contains("-E"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-E";
                 }
                 else
                 {
@@ -1391,11 +1400,15 @@ namespace TimeTableAutoCompleteTool
                 }
                 else if (trainModel.Contains("-S"))
                 {
-                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-S+";
                 }
                 else if (trainModel.Contains("-GS"))
                 {
-                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-GS+";
+                }
+                else if (trainModel.Contains("-E"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-E+";
                 }
                 else
                 {
@@ -8918,7 +8931,8 @@ namespace TimeTableAutoCompleteTool
                                                 _pm.trainConnectType = 2;
                                                 //400AF-Z-XXX+XXX
                                                 if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz")
-                                                    || trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs"))
+                                                    || trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs")||
+                                                    trainID.Contains("-E") || trainID.Contains("-e"))
                                                 {
                                                     if(value.Split('-').Length >= 3)
                                                     {
@@ -8943,7 +8957,8 @@ namespace TimeTableAutoCompleteTool
                                                 //400AF-Z-XXX
                                                 _pm.trainConnectType = 0;
                                                 if (trainID.Contains("-Z") || trainID.Contains("-z") || trainID.Contains("-GZ") || trainID.Contains("-gz")||
-                                                    trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs"))
+                                                    trainID.Contains("-S") || trainID.Contains("-s") || trainID.Contains("-GS") || trainID.Contains("-gs")||
+                                                    trainID.Contains("-E") || trainID.Contains("-e"))
                                                 {
                                                     if (value.Split('-').Length >= 3)
                                                     {
