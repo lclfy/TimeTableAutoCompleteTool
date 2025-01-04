@@ -125,7 +125,6 @@ E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\NPOI.xml
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.Doc.xml
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Spire.License.xml
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.AssemblyReference.cache
-E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.SuggestedBindingRedirects.cache
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.DataAnalyse.resources
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Display.resources
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.Main.resources
@@ -141,10 +140,8 @@ E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAu
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.TrustInfo.xml
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe.manifest
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.application
-E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CopyComplete
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
-E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll
 D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.AssemblyReference.cache
 D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.SuggestedBindingRedirects.cache
 D:\GitHub\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll
@@ -186,3 +183,4 @@ D:\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableA
 D:\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.csproj.CopyComplete
 D:\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 D:\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
+E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTabl.5CBC0A6E.Up2Date

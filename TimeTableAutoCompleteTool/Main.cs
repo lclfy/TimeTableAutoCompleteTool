@@ -1257,9 +1257,7 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("2E") ||
                     trainModel.Contains("1E") ||
                     trainModel.Contains("AF-A") ||
-                    trainModel.Contains("BF-A") ||
-                    trainModel.Contains("AF-AS") ||
-                    trainModel.Contains("BF-AS"))
+                    trainModel.Contains("BF-A"))
                 {
                     trainConnectType = 1;
                 }
@@ -1268,9 +1266,7 @@ namespace TimeTableAutoCompleteTool
                     trainConnectType = 2;
                 }
                 else if(trainModel.Contains("AF-B")||
-                    trainModel.Contains("BF-B") ||
-                    trainModel.Contains("AF-BS")||
-                    trainModel.Contains("BF-BS"))
+                    trainModel.Contains("BF-B"))
                 {//新增的 17节(AF-BZ BF-BZ)
                     trainConnectType = 3;
                 }
@@ -1284,7 +1280,6 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("BF-GS"))
                 {
                     trainConnectType = 0;
-                    int test = 0;
                 }
                 else
                 {
@@ -1345,6 +1340,22 @@ namespace TimeTableAutoCompleteTool
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BZ";
                 }
+                else if (trainModel.Contains("-AS"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-AS";
+                }
+                else if (trainModel.Contains("-BS"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BS";
+                }
+                else if (trainModel.Contains("-AE"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-AE";
+                }
+                else if (trainModel.Contains("-BE"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-BE";
+                }
                 else if (trainModel.Contains("-A"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-A";
@@ -1361,6 +1372,14 @@ namespace TimeTableAutoCompleteTool
                 else if (trainModel.Contains("-G"))
                 {
                     trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G";
+                }
+                else if (trainModel.Contains("-S"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-S";
+                }
+                else if (trainModel.Contains("-GS"))
+                {
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-GS";
                 }
                 else
                 {
@@ -1391,11 +1410,11 @@ namespace TimeTableAutoCompleteTool
                 }
                 else if (trainModel.Contains("-S"))
                 {
-                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-S+";
                 }
                 else if (trainModel.Contains("-GS"))
                 {
-                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-G+";
+                    trainModel = trainModel.Split('-')[0].Replace("CRH", "").Replace("CR", "").Trim() + "-GS+";
                 }
                 else
                 {
