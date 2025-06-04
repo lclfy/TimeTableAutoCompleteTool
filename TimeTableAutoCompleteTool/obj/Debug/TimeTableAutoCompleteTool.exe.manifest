@@ -174,14 +174,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="304640">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TimeTableAutoCompleteTool.exe" size="305152">
       <assemblyIdentity name="TimeTableAutoCompleteTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>tc34gq9nNOcwQ5BIFaHEjZA1F4cbFl6VP8T+T1Gk5YM=</dsig:DigestValue>
+        <dsig:DigestValue>yI7PwWWPFvo8xaqeD9qhsnCiHrKuOLpW7HSSA89/b/A=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -203,22 +203,22 @@
       <dsig:DigestValue>WG0ARJvyasMb61YMW2mcIXaczghBp6PrwwZUNNuNbN4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Spire.Doc.XML" size="746088" writeableType="applicationData">
+  <file name="Spire.Doc.XML" size="764515" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>yvySD2l2SojJIxtBmvUEq1Rp+r0fkq79PsB3rLYCCNQ=</dsig:DigestValue>
+      <dsig:DigestValue>FPWb3eyUFRcYa8mjaDYC4euoC0evOVXLuSPGt+3hRzU=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Spire.License.xml" size="4578" writeableType="applicationData">
+  <file name="Spire.License.xml" size="4674" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>12rxHgNuqxKi9OImd3TbkCRW4/gUb7gom6vJMhsGYVo=</dsig:DigestValue>
+      <dsig:DigestValue>3vUDOTaIEI9Z3phpcSDGBMB/Tuqtwv0bF7yKQijgP/U=</dsig:DigestValue>
     </hash>
   </file>
   <file name="TimeTableAutoCompleteTool.exe.config" size="281">
