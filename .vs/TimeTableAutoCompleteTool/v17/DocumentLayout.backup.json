@@ -1,9 +1,15 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoComleteTool\\TimeTableAutoCompleteTool\\",
+  "WorkspaceRootPath": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoCompleteTool\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C390E978-B743-4A72-98D7-C97C36F2454C}|TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj|\\\\mac\\home\\documents\\apps\\timetableautocomletetool\\timetableautocompletetool\\timetableautocompletetool\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C390E978-B743-4A72-98D7-C97C36F2454C}|TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj|\\\\mac\\home\\documents\\apps\\timetableautocompletetool\\timetableautocompletetool\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|TimeTableAutoCompleteTool||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C390E978-B743-4A72-98D7-C97C36F2454C}|TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj|\\\\mac\\home\\documents\\apps\\timetableautocompletetool\\timetableautocompletetool\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,13 +25,25 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Main.cs",
-              "DocumentMoniker": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoComleteTool\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\Main.cs",
+              "DocumentMoniker": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\Main.cs",
               "RelativeDocumentMoniker": "TimeTableAutoCompleteTool\\Main.cs",
-              "ToolTip": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoComleteTool\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\Main.cs",
+              "ToolTip": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\Main.cs",
               "RelativeToolTip": "TimeTableAutoCompleteTool\\Main.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAIwFEAAABOAAAAAAAAAA==",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAgwAkAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-26T05:08:17.629Z",
+              "WhenOpened": "2025-06-04T08:18:32.358Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TimeTableAutoCompleteTool",
+              "DocumentMoniker": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj",
+              "RelativeDocumentMoniker": "TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj",
+              "ToolTip": "\\\\Mac\\Home\\Documents\\Apps\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj",
+              "RelativeToolTip": "TimeTableAutoCompleteTool\\TimeTableAutoCompleteTool.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-06-04T08:13:07.743Z",
               "EditorCaption": ""
             }
           ]
