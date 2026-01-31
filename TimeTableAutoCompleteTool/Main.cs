@@ -87,9 +87,9 @@ namespace TimeTableAutoCompleteTool
         {
             
         };
-        string build = "build 93 - v20250604";
-        string readMe = "build93更新内容:\n" +
-            "综控恢复使用原班计划对比功能";
+        string build = "build 94 - v20260131";
+        string readMe = "build94更新内容:\n" +
+            "修复因大令中出现00XX车号导致识别错误问题";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -1095,6 +1095,7 @@ namespace TimeTableAutoCompleteTool
             { standardCommand = standardCommand.Replace(":", "："); }
             //删除客调命令中的时间
             //standardCommand = Regex.Replace(standardCommand, @"\d+：\d", "");
+            standardCommand = Regex.Replace(standardCommand, @"[0]{2}[0-9]{2}", "");
             standardCommand = Regex.Replace(standardCommand,@"[0-9]{2}(：)[0-9]{2}","");
             standardCommand = Regex.Replace(standardCommand, @"[0-9]{1}(：)[0-9]{2}", "");
             //（1）2022年xxx（2）2022年xxx，在前面加上个“\n”以准确识别
