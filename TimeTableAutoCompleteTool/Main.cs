@@ -89,7 +89,7 @@ namespace TimeTableAutoCompleteTool
         };
         string build = "build 95 - v20261011";
         string readMe = "build95更新内容:\n" +
-            "预留新车次抬头X、T、K";
+            "预留新车次抬头X、T、K，新增车次AF-X、BF-X";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -1303,8 +1303,12 @@ namespace TimeTableAutoCompleteTool
                     trainModel.Contains("BF-GZ") ||
                     trainModel.Contains("AF-S") ||
                     trainModel.Contains("BF-S") ||
+                     trainModel.Contains("AF-X") ||
+                    trainModel.Contains("BF-X") ||
                     trainModel.Contains("AF-GS") ||
                     trainModel.Contains("BF-GS")||
+                    trainModel.Contains("AF-GX") ||
+                    trainModel.Contains("BF-GX") ||
                     trainModel.Contains("AF-E") ||
                     trainModel.Contains("BF-E") )
                 {
