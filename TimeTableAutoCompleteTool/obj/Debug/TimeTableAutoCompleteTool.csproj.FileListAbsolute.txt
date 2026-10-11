@@ -260,3 +260,4 @@ D:\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableA
 \\Mac\Home\Documents\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.exe
 \\Mac\Home\Documents\Apps\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTableAutoCompleteTool.pdb
 E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\obj\Debug\TimeTabl.5CBC0A6E.Up2Date
+E:\ZRC\TimeTableAutoCompleteTool\TimeTableAutoCompleteTool\bin\Debug\Microsoft.mshtml.dll

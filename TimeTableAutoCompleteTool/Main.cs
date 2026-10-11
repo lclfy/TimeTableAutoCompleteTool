@@ -87,9 +87,9 @@ namespace TimeTableAutoCompleteTool
         {
             
         };
-        string build = "build 94 - v20260131";
-        string readMe = "build94更新内容:\n" +
-            "修复因大令中出现00XX车号导致识别错误问题";
+        string build = "build 95 - v20261011";
+        string readMe = "build95更新内容:\n" +
+            "预留新车次抬头X、T、K";
         //综控可以读取07版Excel（运转仅03版）
         //230118，用3.5版本或者4.6.2
         public Main()
@@ -546,7 +546,10 @@ namespace TimeTableAutoCompleteTool
                         if (!command[1].Contains("G") &&
                         !command[1].Contains("D") &&
                         !command[1].Contains("C") &&
-                        !command[1].Contains("J"))
+                        !command[1].Contains("J") &&
+                        !command[1].Contains("X") &&
+                        !command[1].Contains("T") &&
+                        !command[1].Contains("K"))
                         {                //特殊数据
                                          //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
                                          //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
@@ -555,7 +558,10 @@ namespace TimeTableAutoCompleteTool
                                 if (command[command.Length - r - 1].Contains("G") ||
                                     command[command.Length - r - 1].Contains("D") ||
                                     command[command.Length - r - 1].Contains("C") ||
-                                    command[command.Length - r - 1].Contains("J"))
+                                    command[command.Length - r - 1].Contains("J") ||
+                                    command[command.Length - r - 1].Contains("X") ||
+                                    command[command.Length - r - 1].Contains("T") ||
+                                    command[command.Length - r - 1].Contains("K"))
                                 {//找到了就用该项作为车次
                                     command[1] = command[command.Length - r - 1];
                                     break;
@@ -596,6 +602,7 @@ namespace TimeTableAutoCompleteTool
                                 !command[command.Length - n - 1].Contains("D") &&
                                 !command[command.Length - n - 1].Contains("C") &&
                                 !command[command.Length - n - 1].Contains("J") &&
+                                !command[command.Length - n - 1].Contains("X") && !command[command.Length - n - 1].Contains("T") && !command[command.Length - n - 1].Contains("K") &&
                                 !command[command.Length - n - 1].Contains("00")) ||
                                  (command.Length > 2 && command[command.Length - n - 1].Contains("停运）")))
                             {//如果有-则继续判断是否全部停运
@@ -608,6 +615,7 @@ namespace TimeTableAutoCompleteTool
                                         command[command.Length - n - 1].Contains("D") ||
                                         command[command.Length - n - 1].Contains("C") ||
                                         command[command.Length - n - 1].Contains("J") ||
+                                        command[command.Length - n - 1].Contains("X") || command[command.Length - n - 1].Contains("T") || command[command.Length - n - 1].Contains("K") ||
                                         command[command.Length - n - 1].Contains("0"))
                                     {//如果停运标记后面还有车的话
                                         List<CommandModel> tempModels = trainModelAddFunc(Regex.Replace(command[command.Length - n - 1], @"[\u4e00-\u9fa5]", "").Replace('）', ' ').Replace('，', ' ').Split('-'), 1, trainType, trainModel, index);
@@ -846,7 +854,10 @@ namespace TimeTableAutoCompleteTool
                                 if (!command[1].Contains("G") &&
                                 !command[1].Contains("D") &&
                                 !command[1].Contains("C") &&
-                                !command[1].Contains("J"))
+                                !command[1].Contains("J") &&
+                                !command[1].Contains("X") &&
+                                !command[1].Contains("T") &&
+                                !command[1].Contains("K"))
                                 {                //特殊数据
                                                  //304、2018年02月11日，null-G4326/7：18：50分出库11日当天请令：临客线-G4326/7。
                                                  //305、2018年02月11日，null - G4328 / 5：18：50分出库11日当天请令：临客线-G4328/5。
@@ -855,7 +866,10 @@ namespace TimeTableAutoCompleteTool
                                         if (command[command.Length - r - 1].Contains("G") ||
                                             command[command.Length - r - 1].Contains("D") ||
                                             command[command.Length - r - 1].Contains("C") ||
-                                            command[command.Length - r - 1].Contains("J"))
+                                            command[command.Length - r - 1].Contains("J") ||
+                                            command[command.Length - r - 1].Contains("X") ||
+                                            command[command.Length - r - 1].Contains("T") ||
+                                            command[command.Length - r - 1].Contains("K"))
                                         {//找到了就用该项作为车次
                                             command[1] = command[command.Length - r - 1];
                                             break;
@@ -1197,6 +1211,12 @@ namespace TimeTableAutoCompleteTool
                 standardCommand = standardCommand.Replace("d", "D");
             if (standardCommand.Contains("g"))
                 standardCommand = standardCommand.Replace("g", "G");
+            if (standardCommand.Contains("x"))
+                standardCommand = standardCommand.Replace("x", "X");
+            if (standardCommand.Contains("t"))
+                standardCommand = standardCommand.Replace("t", "T");
+            if (standardCommand.Contains("k"))
+                standardCommand = standardCommand.Replace("k", "K");
             if (standardCommand.Contains("c"))
                 standardCommand = standardCommand.Replace("c", "C");
             if (standardCommand.Contains("j"))
@@ -1463,6 +1483,7 @@ namespace TimeTableAutoCompleteTool
                    AllTrainNumberInOneRaw[k].Contains("D") ||
                    AllTrainNumberInOneRaw[k].Contains("C") ||
                    AllTrainNumberInOneRaw[k].Contains("J") ||
+                                      AllTrainNumberInOneRaw[k].Contains("X") || AllTrainNumberInOneRaw[k].Contains("T") || AllTrainNumberInOneRaw[k].Contains("K") ||
                    AllTrainNumberInOneRaw[k].Contains("00"))
                 {
                     if (AllTrainNumberInOneRaw[k].Contains("/") && !AllTrainNumberInOneRaw[k].Contains("G/"))
@@ -3004,7 +3025,10 @@ namespace TimeTableAutoCompleteTool
                                     if ((row.GetCell(j).ToString().Contains("G") ||
                                         row.GetCell(j).ToString().Contains("D") ||
                                         row.GetCell(j).ToString().Contains("C") ||
-                                        row.GetCell(j).ToString().Contains("J")) &&
+                                        row.GetCell(j).ToString().Contains("J") ||
+                                        row.GetCell(j).ToString().Contains("X") ||
+                                        row.GetCell(j).ToString().Contains("T") ||
+                                        row.GetCell(j).ToString().Contains("K")) &&
                                         hasGot)
                                     {//把车次表格先刷白去字
                                         if (!row.GetCell(j).ToString().Contains("由") &&
@@ -3221,6 +3245,18 @@ namespace TimeTableAutoCompleteTool
                                                 else if (trainNum.Contains("C"))
                                                 {
                                                     trainType = "C";
+                                                }
+                                                else if (trainNum.Contains("X"))
+                                                {
+                                                    trainType = "X";
+                                                }
+                                                else if (trainNum.Contains("T"))
+                                                {
+                                                    trainType = "T";
+                                                }
+                                                else if (trainNum.Contains("K"))
+                                                {
+                                                    trainType = "K";
                                                 }
 
                                                 foreach (char item in trainNum)
@@ -5476,6 +5512,18 @@ namespace TimeTableAutoCompleteTool
                                             {
                                                 trainType = "C";
                                             }
+                                            else if (thisTrainNumber.Contains("X"))
+                                            {
+                                                trainType = "X";
+                                            }
+                                            else if (thisTrainNumber.Contains("T"))
+                                            {
+                                                trainType = "T";
+                                            }
+                                            else if (thisTrainNumber.Contains("K"))
+                                            {
+                                                trainType = "K";
+                                            }
                                             if (trainType.Length != 0)
                                             {
                                                 if (originalTrainNumber != 0)
@@ -7729,7 +7777,10 @@ namespace TimeTableAutoCompleteTool
                                     if ((row.GetCell(j).ToString().Contains("G") ||
                                         row.GetCell(j).ToString().Contains("D") ||
                                         row.GetCell(j).ToString().Contains("C") ||
-                                        row.GetCell(j).ToString().Contains("J")) &&
+                                        row.GetCell(j).ToString().Contains("J") ||
+                                        row.GetCell(j).ToString().Contains("X") ||
+                                        row.GetCell(j).ToString().Contains("T") ||
+                                        row.GetCell(j).ToString().Contains("K")) &&
                                         regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(j).ToString().Trim())
                                         && j != firstTrackNumColumn && j != secondTrackNumColumn)
                                     {
@@ -7766,7 +7817,10 @@ namespace TimeTableAutoCompleteTool
                                                 if ((row.GetCell(line).ToString().Contains("G") ||
                                                     row.GetCell(line).ToString().Contains("D") ||
                                                         row.GetCell(line).ToString().Contains("C") ||
-                                                        row.GetCell(line).ToString().Contains("J")) &&
+                                                        row.GetCell(line).ToString().Contains("J") ||
+                                                        row.GetCell(line).ToString().Contains("X") ||
+                                                        row.GetCell(line).ToString().Contains("T") ||
+                                                        row.GetCell(line).ToString().Contains("K")) &&
                                                         regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(line).ToString().Trim()) &&
                                                         line != firstTrackNumColumn && line != secondTrackNumColumn)
                                                 {
@@ -7819,7 +7873,10 @@ namespace TimeTableAutoCompleteTool
                                                 if ((row.GetCell(timeColumn).ToString().Contains("G") ||
                                                         row.GetCell(timeColumn).ToString().Contains("D") ||
                                                         row.GetCell(timeColumn).ToString().Contains("C") ||
-                                                        row.GetCell(timeColumn).ToString().Contains("J")) &&
+                                                        row.GetCell(timeColumn).ToString().Contains("J") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("X") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("T") ||
+                                                        row.GetCell(timeColumn).ToString().Contains("K")) &&
                                                         regexOnlyNumAndAlphabeta.IsMatch(row.GetCell(timeColumn).ToString().Trim()) &&
                                                         timeColumn != firstTrackNumColumn && timeColumn != secondTrackNumColumn)
                                                 {
